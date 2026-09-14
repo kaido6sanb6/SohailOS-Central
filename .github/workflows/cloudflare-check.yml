@@ -7,7 +7,7 @@ on:
       - '.github/workflows/cloudflare-check.yml'
   push:
     branches:
-      - feat/cloudflare-free-gateway
+      - main
     paths:
       - 'cloudflare/sohailos-gateway/**'
       - '.github/workflows/cloudflare-check.yml'
