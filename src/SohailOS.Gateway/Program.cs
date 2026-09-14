@@ -24,6 +24,7 @@ app.UseCors();
 
 const string ProtocolVersion = "2025-06-18";
 var apiToken = Environment.GetEnvironmentVariable("SOHAILOS_GATEWAY_TOKEN");
+var sessionTtl = TimeSpan.FromMinutes(GetPositiveInt("SOHAILOS_MCP_SESSION_TTL_MINUTES", 60));
 
 bool Authorized(HttpRequest request) =>
     !string.IsNullOrWhiteSpace(apiToken) &&
@@ -69,8 +70,11 @@ app.MapPost("/mcp", async (HttpRequest request, HttpResponse response, Cancellat
                                          v.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase)))
         return Results.BadRequest(new { error = "Accept must include application/json or text/event-stream." });
 
+    ExpireSessions();
+
     var rpc = await JsonSerializer.DeserializeAsync<JsonRpcRequest>(request.Body, cancellationToken: cancellationToken);
-    if (rpc is null) return Results.BadRequest();
+    if (rpc is null || !string.Equals(rpc.Jsonrpc, "2.0", StringComparison.Ordinal))
+        return Results.BadRequest(new { error = "A JSON-RPC 2.0 request is required." });
 
     var isInitialize = rpc.Method == "initialize";
     if (!isInitialize)
@@ -81,6 +85,10 @@ app.MapPost("/mcp", async (HttpRequest request, HttpResponse response, Cancellat
         sessions[sessionId] = DateTimeOffset.UtcNow;
     }
 
+    // JSON-RPC notifications do not receive a JSON-RPC response body.
+    if (rpc.Method == "notifications/initialized")
+        return Results.StatusCode(StatusCodes.Status202Accepted);
+
     object result = rpc.Method switch
     {
         "initialize" => new
@@ -89,16 +97,10 @@ app.MapPost("/mcp", async (HttpRequest request, HttpResponse response, Cancellat
             capabilities = new { tools = new { } },
             serverInfo = new { name = "SohailOS", version = "0.1.0" }
         },
-        "notifications/initialized" => new { },
         "ping" => new { },
         "tools/list" => new
         {
-            tools = registry.Definitions.Select(d => new
-            {
-                name = d.Name,
-                description = d.Description,
-                inputSchema = new { type = "object", properties = d.Parameters ?? new Dictionary<string, string>() }
-            })
+            tools = registry.Definitions.Select(ToMcpTool).ToArray()
         },
         "tools/call" => await CallToolAsync(rpc.Params, executor, cancellationToken),
         _ => new { error = new { code = -32601, message = $"Method not found: {rpc.Method}" } }
@@ -124,9 +126,49 @@ app.MapGet("/mcp", (HttpRequest request) =>
 
 app.Run();
 
+void ExpireSessions()
+{
+    var cutoff = DateTimeOffset.UtcNow - sessionTtl;
+    foreach (var pair in sessions)
+        if (pair.Value < cutoff)
+            sessions.TryRemove(pair.Key, out _);
+}
+
+static int GetPositiveInt(string variableName, int fallback)
+{
+    return int.TryParse(Environment.GetEnvironmentVariable(variableName), out var value) && value > 0
+        ? value
+        : fallback;
+}
+
+static object ToMcpTool(ToolDefinition definition)
+{
+    var properties = (definition.Parameters ?? new Dictionary<string, string>())
+        .ToDictionary(
+            pair => pair.Key,
+            pair => (object)new
+            {
+                type = "string",
+                description = pair.Value
+            },
+            StringComparer.Ordinal);
+
+    return new
+    {
+        name = definition.Name,
+        description = definition.Description,
+        inputSchema = new
+        {
+            type = "object",
+            properties,
+            additionalProperties = false
+        }
+    };
+}
+
 static async Task<object> CallToolAsync(JsonElement parameters, IToolExecutor executor, CancellationToken cancellationToken)
 {
-    if (!parameters.TryGetProperty("name", out var nameElement))
+    if (!parameters.TryGetProperty("name", out var nameElement) || nameElement.ValueKind != JsonValueKind.String)
         return new { isError = true, content = new[] { new { type = "text", text = "Missing tool name." } } };
 
     var arguments = new Dictionary<string, object?>();
