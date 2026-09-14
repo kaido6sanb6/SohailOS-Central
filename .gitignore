@@ -1,0 +1,19 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Local configuration and secrets
+appsettings.local.json
+secrets.json
+.env
+.env.*
+
+# Local databases and logs
+*.db
+*.db-shm
+*.db-wal
+logs/
