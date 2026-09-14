@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: sohailos-gateway
+    runtime: docker
+    region: frankfurt
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: SOHAILOS_GATEWAY_TOKEN
+        generateValue: true
+      - key: SOHAILOS_AI_PROVIDER
+        value: auto
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SOHAILOS_OPENAI_MODEL
+        value: gpt-5
+      - key: SOHAILOS_GEMINI_MODEL
+        value: gemini-3.8-flash
+      - key: SOHAILOS_ANTHROPIC_MODEL
+        value: claude-sonnet-5
