@@ -5,11 +5,15 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SohailOS.Core\SohailOS.Core.csproj" />
     <ProjectReference Include="..\SohailOS.Agents\SohailOS.Agents.csproj" />
     <ProjectReference Include="..\SohailOS.AI\SohailOS.AI.csproj" />
     <ProjectReference Include="..\SohailOS.Memory\SohailOS.Memory.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\apply-update.ps1" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
   </ItemGroup>
 </Project>
