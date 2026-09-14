@@ -12,9 +12,6 @@ app.UseCors();
 
 const string ProtocolVersion = "2025-06-18";
 var apiToken = Environment.GetEnvironmentVariable("SOHAILOS_GATEWAY_TOKEN");
-var endpoint = Environment.GetEnvironmentVariable("SOHAILOS_AI_ENDPOINT") ?? "http://localhost:8000/v1";
-var model = Environment.GetEnvironmentVariable("SOHAILOS_AI_MODEL") ?? "Qwen/Qwen3.5-9B";
-var apiKey = Environment.GetEnvironmentVariable("SOHAILOS_AI_API_KEY");
 
 bool Authorized(HttpRequest request) =>
     !string.IsNullOrWhiteSpace(apiToken) &&
@@ -26,8 +23,8 @@ var allowedHosts = (Environment.GetEnvironmentVariable("SOHAILOS_WEB_ALLOWLIST")
     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 registry.Register(new WebFetchTool(httpClient, allowedHosts));
 var executor = new ToolExecutor(registry, new DefaultPermissionPolicy());
-var provider = new OpenAiCompatibleProvider(httpClient, endpoint, model, apiKey);
-var runtime = new AgentRuntime(provider, registry, executor);
+var (_, completionProvider) = AiProviderFactory.Create(httpClient);
+var runtime = new AgentRuntime(completionProvider, registry, executor);
 var sessions = new ConcurrentDictionary<string, DateTimeOffset>();
 
 app.MapGet("/health", () => Results.Ok(new
@@ -35,8 +32,7 @@ app.MapGet("/health", () => Results.Ok(new
     service = "SohailOS.Gateway",
     status = "ok",
     utc = DateTimeOffset.UtcNow,
-    provider = provider.Name,
-    model,
+    provider = completionProvider.Name,
     protocolVersion = ProtocolVersion,
     tools = registry.Definitions.Select(x => x.Name).ToArray(),
     mcpSessions = sessions.Count
@@ -51,26 +47,21 @@ app.MapPost("/v1/agent/run", async (HttpRequest request, AgentRunRequest input, 
         input.Prompt,
         input.ConfirmWrites,
         cancellationToken);
-    return Results.Ok(new { output = answer, provider = provider.Name });
+    return Results.Ok(new { output = answer, provider = completionProvider.Name });
 });
 
 app.MapPost("/mcp", async (HttpRequest request, HttpResponse response, CancellationToken cancellationToken) =>
 {
     if (!Authorized(request)) return Results.Unauthorized();
-
     if (!request.Headers.Accept.Any(v => v.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
                                          v.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase)))
         return Results.BadRequest(new { error = "Accept must include application/json or text/event-stream." });
 
-    var isInitialize = false;
     var rpc = await JsonSerializer.DeserializeAsync<JsonRpcRequest>(request.Body, cancellationToken: cancellationToken);
     if (rpc is null) return Results.BadRequest();
 
-    if (rpc.Method == "initialize")
-    {
-        isInitialize = true;
-    }
-    else
+    var isInitialize = rpc.Method == "initialize";
+    if (!isInitialize)
     {
         var sessionId = request.Headers["Mcp-Session-Id"].FirstOrDefault();
         if (string.IsNullOrWhiteSpace(sessionId) || !sessions.ContainsKey(sessionId))
@@ -106,9 +97,9 @@ app.MapPost("/mcp", async (HttpRequest request, HttpResponse response, Cancellat
         var newSession = Guid.NewGuid().ToString("N");
         sessions[newSession] = DateTimeOffset.UtcNow;
         response.Headers["Mcp-Session-Id"] = newSession;
-        response.Headers["MCP-Protocol-Version"] = ProtocolVersion;
     }
 
+    response.Headers["MCP-Protocol-Version"] = ProtocolVersion;
     response.Headers["Cache-Control"] = "no-store";
     return Results.Json(new { jsonrpc = "2.0", id = rpc.Id, result });
 });
