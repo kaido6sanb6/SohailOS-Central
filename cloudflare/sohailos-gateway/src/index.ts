@@ -25,6 +25,9 @@ type MemorySnapshot = {
   assistant: string;
 };
 
+const MAX_PROMPT_LENGTH = 20_000;
+const MAX_MEMORY_KEY_LENGTH = 200;
+
 const DEFAULT_SYSTEM_PROMPT = `You are SohailOS, a personal AI operating system. Route each request to the most appropriate internal capability (thinking, sociology, cinema, research, statistics, AI, code, product, office, operations, strategy, or learning). Be precise, structured, evidence-aware, and practical. Do not claim actions or integrations that did not actually occur. Treat user data and credentials as confidential.`;
 
 const json = (body: unknown, status = 200, origin = "*") =>
@@ -42,7 +45,7 @@ function allowedOrigin(request: Request, env: Env): string {
   const configured = (env.SOHAILOS_CORS_ORIGINS ?? "*").split(",").map(x => x.trim()).filter(Boolean);
   if (configured.includes("*")) return "*";
   const origin = request.headers.get("origin") ?? "";
-  return configured.includes(origin) ? origin : configured[0] ?? "";
+  return configured.includes(origin) ? origin : "";
 }
 
 function authorized(request: Request, env: Env): boolean {
@@ -61,7 +64,7 @@ function providerFor(prompt: string, env: Env): "openai" | "gemini" | "anthropic
   return "openai";
 }
 
-async function completeOpenAI(systemPrompt: string, userPrompt: string, env: Env, endpoint: string, key: string, model: string): Promise<string> {
+async function completeOpenAI(systemPrompt: string, userPrompt: string, endpoint: string, key: string, model: string): Promise<string> {
   const response = await fetch(`${endpoint.replace(/\/$/, "")}/chat/completions`, {
     method: "POST",
     headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
@@ -99,10 +102,10 @@ async function complete(systemPrompt: string, userPrompt: string, env: Env): Pro
   for (const provider of candidates) {
     try {
       if (provider === "openai" && env.SOHAILOS_OPENAI_API_KEY) {
-        return { content: await completeOpenAI(systemPrompt, userPrompt, env, "https://api.openai.com/v1", env.SOHAILOS_OPENAI_API_KEY, env.SOHAILOS_OPENAI_MODEL ?? "gpt-5.6-luna"), provider };
+        return { content: await completeOpenAI(systemPrompt, userPrompt, "https://api.openai.com/v1", env.SOHAILOS_OPENAI_API_KEY, env.SOHAILOS_OPENAI_MODEL ?? "gpt-5.6-luna"), provider };
       }
       if (provider === "gemini" && env.SOHAILOS_GEMINI_API_KEY) {
-        return { content: await completeOpenAI(systemPrompt, userPrompt, env, "https://generativelanguage.googleapis.com/v1beta/openai", env.SOHAILOS_GEMINI_API_KEY, env.SOHAILOS_GEMINI_MODEL ?? "gemini-2.5-flash"), provider };
+        return { content: await completeOpenAI(systemPrompt, userPrompt, "https://generativelanguage.googleapis.com/v1beta/openai", env.SOHAILOS_GEMINI_API_KEY, env.SOHAILOS_GEMINI_MODEL ?? "gemini-2.5-flash"), provider };
       }
       if (provider === "anthropic" && env.SOHAILOS_ANTHROPIC_API_KEY) {
         return { content: await completeAnthropic(systemPrompt, userPrompt, env), provider };
@@ -144,7 +147,8 @@ async function saveMemory(env: Env, key: string, snapshot: MemorySnapshot): Prom
 
 async function runAgent(request: AgentRequest, env: Env) {
   if (!request.prompt?.trim()) throw new Error("prompt is required");
-  const memoryKey = request.memoryKey ?? "global";
+  if (request.prompt.length > MAX_PROMPT_LENGTH) throw new Error(`prompt exceeds ${MAX_PROMPT_LENGTH} characters`);
+  const memoryKey = (request.memoryKey ?? "global").slice(0, MAX_MEMORY_KEY_LENGTH);
   const memory = await loadMemory(env, memoryKey);
   const memoryContext = memory ? `\nPrevious exchange:\nUser: ${memory.user}\nAssistant: ${memory.assistant}\n` : "";
   const result = await complete(request.systemPrompt ?? DEFAULT_SYSTEM_PROMPT, `${memoryContext}\nCurrent request:\n${request.prompt}`, env);
