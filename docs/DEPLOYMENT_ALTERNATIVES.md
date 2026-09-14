@@ -4,7 +4,7 @@ Render is not the only deployment path. If Render billing verification is unavai
 
 ## Recommended order
 
-1. Koyeb Free Instance — current target for the public gateway. Koyeb provides one free web service per organization with 512 MB RAM, 0.1 vCPU and 2 GB SSD. It can deploy directly from GitHub using the repository Dockerfile and scales to zero after one hour without traffic. It is intended for testing/hobby use, not production.
+1. Koyeb Free Instance — current target for the public gateway. It can deploy directly from GitHub using the repository Dockerfile. Treat the free instance as a testing/hobby target rather than production infrastructure.
 2. Railway Free Trial — strong alternative for Docker/GitHub deployment, subject to its current account verification and free/trial limits.
 3. Hugging Face Spaces — useful for experiments or a later MCP-facing adaptation, but it is not currently the preferred private gateway path for SohailOS.
 
@@ -30,39 +30,48 @@ For three Gemini keys, a single environment variable can therefore contain three
 
 Use the real values only in the host secret store or local untracked environment file. Do not paste them into GitHub issues, chat, source files, Dockerfiles, or commit history.
 
-## Exact Koyeb location for the keys
+## Koyeb: current UI path for secrets
 
-There are two Koyeb screens involved:
+The direct `/secrets` page may redirect to the current Koyeb landing/control-panel screen. If that happens, do not look for a separate Secrets page first.
 
-1. **Create the encrypted secrets:** open the Koyeb control panel's **Secrets** page: https://app.koyeb.com/secrets
-2. Create these four Secrets there:
+Use the Service creation flow instead:
+
+1. Open Koyeb and start **Create Web Service**.
+2. Select **GitHub** as the deployment method.
+3. Select `kaido6sanb6/SohailOS-Central` and branch `main`.
+4. In **Builder**, select **Dockerfile** and use the repository-root `Dockerfile`.
+5. Expand **Environment variables and files** and click **Add variable**.
+6. For each sensitive variable, choose **Secret** as the variable type. Koyeb's current deployment flow can create the Secret directly from this screen; you do not need to navigate to a separate Secrets page first.
+7. Create these four secrets:
    - `SOHAILOS_OPENAI_API_KEYS`
    - `SOHAILOS_GEMINI_API_KEYS`
    - `SOHAILOS_ANTHROPIC_API_KEYS`
    - `SOHAILOS_GATEWAY_TOKEN`
-3. Then, in the SohailOS Service configuration, open **Settings → Environment variables and files**.
-4. Add variables with the same names and set each value to the corresponding Secret reference, for example:
-   - `SOHAILOS_OPENAI_API_KEYS={{ secret.SOHAILOS_OPENAI_API_KEYS }}`
-   - `SOHAILOS_GEMINI_API_KEYS={{ secret.SOHAILOS_GEMINI_API_KEYS }}`
-   - `SOHAILOS_ANTHROPIC_API_KEYS={{ secret.SOHAILOS_ANTHROPIC_API_KEYS }}`
-   - `SOHAILOS_GATEWAY_TOKEN={{ secret.SOHAILOS_GATEWAY_TOKEN }}`
+8. For the model/provider settings, use plaintext variables:
+   - `SOHAILOS_AI_PROVIDER=auto`
+   - `SOHAILOS_OPENAI_MODEL=gpt-5`
+   - `SOHAILOS_GEMINI_MODEL=gemini-3.8-flash`
+   - `SOHAILOS_ANTHROPIC_MODEL=claude-sonnet-5`
+9. Expose HTTP port `10000`. The gateway also reads Koyeb's `PORT` variable and binds to `0.0.0.0`.
+10. Configure the health check as `/health` and deploy.
 
-Koyeb encrypts Secret values server-side and allows them to be referenced by Service environment variables. The environment-variable screen is separate from the global Secrets page.
+If a Secret has already been created globally, Koyeb also supports referencing it from a Service environment variable with the form `{{ secret.SECRET_NAME }}`.
+
+Koyeb documents Secrets as encrypted server-side values that can be reused by Services, and its environment-variable system supports Secret interpolation. See the current Koyeb documentation for Secrets and environment variables.
 
 ## Koyeb deployment target
 
-Connect `kaido6sanb6/SohailOS-Central` to Koyeb using GitHub deployment, select Docker as the builder, use the repository-root `Dockerfile`, expose HTTP port `10000`, and configure the health check at `/health`. The gateway also reads the platform-provided `PORT` value and binds to `0.0.0.0`.
+The repository is already prepared for this deployment path:
 
-Required runtime variables:
-
-- `SOHAILOS_AI_PROVIDER=auto`
-- `SOHAILOS_GATEWAY_TOKEN={{ secret.SOHAILOS_GATEWAY_TOKEN }}`
-- `SOHAILOS_OPENAI_API_KEYS={{ secret.SOHAILOS_OPENAI_API_KEYS }}`
-- `SOHAILOS_GEMINI_API_KEYS={{ secret.SOHAILOS_GEMINI_API_KEYS }}`
-- `SOHAILOS_ANTHROPIC_API_KEYS={{ secret.SOHAILOS_ANTHROPIC_API_KEYS }}`
-- `SOHAILOS_OPENAI_MODEL=gpt-5`
-- `SOHAILOS_GEMINI_MODEL=gemini-3.8-flash`
-- `SOHAILOS_ANTHROPIC_MODEL=claude-sonnet-5`
+- Dockerfile: repository root
+- Gateway: `src/SohailOS.Gateway`
+- HTTP port: `10000` by default, or Koyeb's `PORT` value
+- Health endpoint: `/health`
+- Authenticated API: `POST /v1/agent/run`
+- MCP endpoint: `POST /mcp`
+- Gateway authentication: `SOHAILOS_GATEWAY_TOKEN`
+- Optional web allowlist: `SOHAILOS_WEB_ALLOWLIST`
+- MCP session lifetime: `SOHAILOS_MCP_SESSION_TTL_MINUTES` (default 60)
 
 ## Security
 
@@ -77,6 +86,8 @@ Before calling the backend production-ready, validate:
 - GET `/health`
 - authenticated POST `/v1/agent/run`
 - authenticated MCP initialize/tools/list/tools/call flow
+- correct MCP JSON Schema for tool inputs
+- MCP session expiration
 - multi-key rotation and provider fallback behavior
 - no secrets in repository history
 - CI build and test success
