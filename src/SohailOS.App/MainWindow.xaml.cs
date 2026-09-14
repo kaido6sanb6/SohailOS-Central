@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Windows;
 using SohailOS.Agents;
 using SohailOS.AI;
@@ -10,6 +11,9 @@ public partial class MainWindow : Window
 {
     private readonly IOrchestrator _orchestrator;
     private readonly IMemoryStore _memory;
+    private readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(30) };
+    private readonly InternetConnectivityService _connectivity;
+    private readonly SelfUpdateService _updater;
 
     public MainWindow()
     {
@@ -21,7 +25,7 @@ public partial class MainWindow : Window
             ?? "Qwen/Qwen3.5-9B";
         var apiKey = Environment.GetEnvironmentVariable("SOHAILOS_AI_API_KEY");
 
-        var provider = new OpenAiCompatibleProvider(new HttpClient(), endpoint, model, apiKey);
+        var provider = new OpenAiCompatibleProvider(_httpClient, endpoint, model, apiKey);
         var agents = Enum.GetValues<SohailModule>()
             .Select(m => (IModuleAgent)new ModuleAgent(m, provider, BuildSystemPrompt(m)));
 
@@ -37,6 +41,28 @@ public partial class MainWindow : Window
         var contextBuilder = new ContextBuilder(conversation, _memory, recentTurns: 8);
 
         _orchestrator = new Orchestrator(agents, contextBuilder, conversation);
+        var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.1.0";
+        _updater = new SelfUpdateService(_httpClient, version);
+        _connectivity = new InternetConnectivityService(_httpClient, online =>
+            Dispatcher.Invoke(() => FooterText.Text = online ? "Online" : "Offline"));
+        Closed += async (_, _) => await _connectivity.DisposeAsync();
+        _ = CheckForUpdateAsync();
+    }
+
+    private async Task CheckForUpdateAsync()
+    {
+        try
+        {
+            if (await _updater.CheckAndStageAsync())
+            {
+                ResponseBox.Text = "A verified update has been staged. SohailOS will restart to apply it.";
+                Close();
+            }
+        }
+        catch (Exception ex)
+        {
+            await _memory.SaveAsync("last.update.error", ex.Message);
+        }
     }
 
     private async void Run_Click(object sender, RoutedEventArgs e)
