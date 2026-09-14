@@ -1,5 +1,6 @@
 using SohailOS.Agents;
 using SohailOS.Core;
+using Xunit;
 
 namespace SohailOS.Tests;
 
