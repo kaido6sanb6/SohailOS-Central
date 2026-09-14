@@ -1,6 +1,5 @@
 param(
-    [string]$AppName = "sohailos",
-    [string]$ServiceName = "sohailos"
+    [string]$AppName = "sohailos"
 )
 
 $ErrorActionPreference = "Stop"
@@ -22,20 +21,6 @@ Write-Host "  SOHAILOS_SUPABASE_SERVICE_ROLE_KEY"
 
 $repo = "github.com/kaido6sanb6/SohailOS-Central"
 
-$envArgs = @(
-    "--env", "PORT=10000",
-    "--env", "SOHAILOS_AI_PROVIDER=auto",
-    "--env", "SOHAILOS_OPENAI_MODEL=gpt-5",
-    "--env", "SOHAILOS_GEMINI_MODEL=gemini-3.8-flash",
-    "--env", "SOHAILOS_ANTHROPIC_MODEL=claude-sonnet-5",
-    "--env", "SOHAILOS_OPENAI_API_KEYS={{secret.SOHAILOS_OPENAI_API_KEYS}}",
-    "--env", "SOHAILOS_GEMINI_API_KEYS={{secret.SOHAILOS_GEMINI_API_KEYS}}",
-    "--env", "SOHAILOS_ANTHROPIC_API_KEYS={{secret.SOHAILOS_ANTHROPIC_API_KEYS}}",
-    "--env", "SOHAILOS_GATEWAY_TOKEN={{secret.SOHAILOS_GATEWAY_TOKEN}}",
-    "--env", "SOHAILOS_SUPABASE_URL={{secret.SOHAILOS_SUPABASE_URL}}",
-    "--env", "SOHAILOS_SUPABASE_SERVICE_ROLE_KEY={{secret.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY}}"
-)
-
 $arguments = @(
     "apps", "init", $AppName,
     "--git", $repo,
@@ -43,7 +28,6 @@ $arguments = @(
     "--git-builder", "docker",
     "--ports", "10000:http",
     "--routes", "/:10000",
-    "--checks", "10000:http:/health",
     "--instance-type", "nano",
     "--max-scale", "1",
     "--min-scale", "1",
