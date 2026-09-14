@@ -3,7 +3,6 @@ using System.Windows;
 using SohailOS.Agents;
 using SohailOS.AI;
 using SohailOS.Core;
-using SohailOS.Integrations;
 using SohailOS.Memory;
 
 namespace SohailOS.App;
@@ -12,8 +11,6 @@ public partial class MainWindow : Window
 {
     private readonly IOrchestrator _orchestrator;
     private readonly IMemoryStore _memory;
-    private readonly IConversationStore _conversation;
-    private readonly AgentRuntime _runtime;
     private readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(30) };
     private readonly InternetConnectivityService _connectivity;
     private readonly SelfUpdateService _updater;
@@ -35,17 +32,10 @@ public partial class MainWindow : Window
         var conversationPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "SohailOS", "conversation.json");
-        _conversation = new FileConversationStore(conversationPath);
-        var contextBuilder = new ContextBuilder(_conversation, _memory, recentTurns: 8);
+        var conversation = new FileConversationStore(conversationPath);
+        var contextBuilder = new ContextBuilder(conversation, _memory, recentTurns: 8);
 
-        _orchestrator = new Orchestrator(agents, contextBuilder, _conversation);
-
-        var registry = new ToolRegistry();
-        var allowedHosts = (Environment.GetEnvironmentVariable("SOHAILOS_WEB_ALLOWLIST") ?? "")
-            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        registry.Register(new WebFetchTool(_httpClient, allowedHosts));
-        var executor = new ToolExecutor(registry, new DefaultPermissionPolicy());
-        _runtime = new AgentRuntime(providerPair.Completion, registry, executor);
+        _orchestrator = new Orchestrator(agents, contextBuilder, conversation);
 
         var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.1.0";
         _updater = new SelfUpdateService(_httpClient, version);
@@ -79,13 +69,11 @@ public partial class MainWindow : Window
             var requestText = RequestBox.Text.Trim();
             await _memory.SaveAsync("last.request", requestText);
 
-            var route = new UserRequest(requestText, DateTimeOffset.UtcNow);
-            var routed = await _orchestrator.HandleAsync(route);
-            var prompt = $"Route: {routed.Route.PrimaryModule}.\n\nUser request:\n{requestText}\n\nUse available read-only tools when they materially improve the answer. Return the best final answer for the user.";
-            var content = await _runtime.RunAsync(BuildSystemPrompt(routed.Route.PrimaryModule), prompt);
+            var result = await _orchestrator.HandleAsync(
+                new UserRequest(requestText, DateTimeOffset.UtcNow));
 
-            await _memory.SaveAsync("last.response", content);
-            ResponseBox.Text = $"[{routed.Route.PrimaryModule}] {content}";
+            await _memory.SaveAsync("last.response", result.Content);
+            ResponseBox.Text = $"[{result.Route.PrimaryModule}] {result.Content}";
         }
         catch (Exception ex)
         {
