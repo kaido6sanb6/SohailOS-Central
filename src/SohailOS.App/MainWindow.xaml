@@ -14,6 +14,9 @@
         <TextBox x:Name="ResponseBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" MinHeight="300"/>
       </StackPanel>
     </Grid>
-    <TextBlock Grid.Row="2" Text="Orchestrator • Memory • AI Provider Layer" Opacity="0.65"/>
+    <StackPanel Grid.Row="2" Orientation="Horizontal">
+      <TextBlock Text="Orchestrator • Memory • AI Provider Layer" Opacity="0.65"/>
+      <TextBlock x:Name="FooterText" Text="Checking connectivity…" Margin="20,0,0,0" Opacity="0.65"/>
+    </StackPanel>
   </Grid>
 </Window>
