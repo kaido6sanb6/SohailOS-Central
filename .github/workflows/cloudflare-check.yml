@@ -1,0 +1,30 @@
+name: Cloudflare Worker Check
+
+on:
+  pull_request:
+    paths:
+      - 'cloudflare/sohailos-gateway/**'
+      - '.github/workflows/cloudflare-check.yml'
+  push:
+    branches:
+      - feat/cloudflare-free-gateway
+    paths:
+      - 'cloudflare/sohailos-gateway/**'
+      - '.github/workflows/cloudflare-check.yml'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cloudflare/sohailos-gateway
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: cloudflare/sohailos-gateway/package.json
+      - run: npm install
+      - run: npm run typecheck
+      - run: npx wrangler deploy --dry-run
