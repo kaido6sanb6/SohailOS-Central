@@ -18,50 +18,57 @@ SohailOS supports multiple keys for OpenAI, Gemini, and Anthropic. Use the plura
 - `SOHAILOS_GEMINI_API_KEYS`
 - `SOHAILOS_ANTHROPIC_API_KEYS`
 
-The application rotates through the configured keys and tries the remaining keys if the current key fails. The singular variables remain supported for compatibility:
-
-- `OPENAI_API_KEY` / `SOHAILOS_OPENAI_API_KEY`
-- `GEMINI_API_KEY` / `SOHAILOS_GEMINI_API_KEY`
-- `ANTHROPIC_API_KEY` / `SOHAILOS_ANTHROPIC_API_KEY`
-
-For three Gemini keys, a single environment variable can therefore contain three values, for example:
-
-`SOHAILOS_GEMINI_API_KEYS=KEY_1;KEY_2;KEY_3`
+The application rotates through the configured keys and tries the remaining keys if the current key fails. The singular variables remain supported for compatibility.
 
 Use the real values only in the host secret store or local untracked environment file. Do not paste them into GitHub issues, chat, source files, Dockerfiles, or commit history.
 
-## Koyeb: current UI path for secrets
+## Koyeb: why the dashboard path may not match your account
 
-The direct `/secrets` page may redirect to the current Koyeb landing/control-panel screen. If that happens, do not look for a separate Secrets page first.
+Koyeb's current public documentation still describes an **Overview → Create Web Service** flow for GitHub deployments. citeturn1search2 If your account currently lands on a different dashboard and does not expose that control, do not block the project on the UI.
 
-Use the Service creation flow instead:
+The Koyeb CLI is a supported deployment path and can create the App and Service directly from the GitHub repository. It also supports Secret interpolation such as `{{secret.NAME}}`. citeturn2search0turn2search1
 
-1. Open Koyeb and start **Create Web Service**.
-2. Select **GitHub** as the deployment method.
-3. Select `kaido6sanb6/SohailOS-Central` and branch `main`.
-4. In **Builder**, select **Dockerfile** and use the repository-root `Dockerfile`.
-5. Expand **Environment variables and files** and click **Add variable**.
-6. For each sensitive variable, choose **Secret** as the variable type. Koyeb's current deployment flow can create the Secret directly from this screen; you do not need to navigate to a separate Secrets page first.
-7. Create these four secrets:
+The repository contains `scripts/deploy-koyeb.ps1` for this path. It expects the Koyeb Secrets to already exist and never embeds their values.
+
+### CLI deployment
+
+1. Install and authenticate the Koyeb CLI locally.
+2. Create the required Koyeb Secrets using the CLI or any working Koyeb secret-management screen:
    - `SOHAILOS_OPENAI_API_KEYS`
    - `SOHAILOS_GEMINI_API_KEYS`
    - `SOHAILOS_ANTHROPIC_API_KEYS`
    - `SOHAILOS_GATEWAY_TOKEN`
-8. For the model/provider settings, use plaintext variables:
-   - `SOHAILOS_AI_PROVIDER=auto`
-   - `SOHAILOS_OPENAI_MODEL=gpt-5`
-   - `SOHAILOS_GEMINI_MODEL=gemini-3.8-flash`
-   - `SOHAILOS_ANTHROPIC_MODEL=claude-sonnet-5`
-9. Expose HTTP port `10000`. The gateway also reads Koyeb's `PORT` variable and binds to `0.0.0.0`.
-10. Configure the health check as `/health` and deploy.
+   - `SOHAILOS_SUPABASE_URL`
+   - `SOHAILOS_SUPABASE_SERVICE_ROLE_KEY`
+3. From the repository root, run:
 
-If a Secret has already been created globally, Koyeb also supports referencing it from a Service environment variable with the form `{{ secret.SECRET_NAME }}`.
+```powershell
+.\scripts\deploy-koyeb.ps1
+```
 
-Koyeb documents Secrets as encrypted server-side values that can be reused by Services, and its environment-variable system supports Secret interpolation. See the current Koyeb documentation for Secrets and environment variables.
+The script deploys `main` from `github.com/kaido6sanb6/SohailOS-Central`, uses the repository Dockerfile, exposes HTTP `10000`, and attaches the secrets through Koyeb interpolation.
+
+Koyeb's CLI reference documents `koyeb secrets create NAME --value ...` and `koyeb apps init` with GitHub, Docker builder, ports, and `--env` secret interpolation. citeturn2search0
+
+Koyeb also defines `PORT` for Web Services and permits explicitly setting it; SohailOS listens on the supplied value and defaults to `10000`. citeturn2search3
+
+## Koyeb control-panel path when available
+
+If the dashboard for your account later exposes the creation control, the expected flow is:
+
+1. Start the Web Service creation flow.
+2. Select **GitHub**.
+3. Select `kaido6sanb6/SohailOS-Central` and branch `main`.
+4. Select **Dockerfile** as the builder.
+5. Expand **Environment variables and files** and add the required plaintext/Secret variables.
+6. Expose HTTP port `10000` and use `/health` for the health check.
+7. Deploy.
+
+The public Koyeb documentation currently describes this GitHub/Docker deployment flow. citeturn1search0turn1search2
 
 ## Koyeb deployment target
 
-The repository is already prepared for this deployment path:
+The repository is prepared for this deployment path:
 
 - Dockerfile: repository root
 - Gateway: `src/SohailOS.Gateway`
@@ -72,10 +79,22 @@ The repository is already prepared for this deployment path:
 - Gateway authentication: `SOHAILOS_GATEWAY_TOKEN`
 - Optional web allowlist: `SOHAILOS_WEB_ALLOWLIST`
 - MCP session lifetime: `SOHAILOS_MCP_SESSION_TTL_MINUTES` (default 60)
+- Optional persistent memory: Supabase via `SOHAILOS_SUPABASE_URL` and `SOHAILOS_SUPABASE_SERVICE_ROLE_KEY`
+
+## Supabase persistent memory
+
+Apply `supabase/migrations/001_sohailos_memory.sql` to the Supabase project. Then provide these values as Koyeb Secrets:
+
+- `SOHAILOS_SUPABASE_URL`
+- `SOHAILOS_SUPABASE_SERVICE_ROLE_KEY`
+
+The gateway uses Supabase persistence automatically when both are configured; otherwise it falls back to `InMemoryStore` for local development.
+
+The service-role key is server-side only and must never be placed in a client application, ChatGPT configuration, GitHub file, or chat message.
 
 ## Security
 
-Never commit `OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `SOHAILOS_*_API_KEYS`, `SOHAILOS_GATEWAY_TOKEN`, GitHub tokens, or any other secret.
+Never commit `OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `SOHAILOS_*_API_KEYS`, `SOHAILOS_GATEWAY_TOKEN`, `SOHAILOS_SUPABASE_SERVICE_ROLE_KEY`, GitHub tokens, or any other secret.
 
 The repository contains `.env.example` only as a placeholder configuration reference. Real `.env.*` files are ignored by Git.
 
@@ -91,4 +110,6 @@ Before calling the backend production-ready, validate:
 - multi-key rotation and provider fallback behavior
 - no secrets in repository history
 - CI build and test success
-- persistent remote memory rather than ephemeral local storage
+- persistent Supabase memory with a real project
+- public HTTPS deployment
+- final ChatGPT MCP/App connection
