@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text.Json;
 using SohailOS.Agents;
 using SohailOS.AI;
@@ -5,7 +6,11 @@ using SohailOS.Core;
 using SohailOS.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 var app = builder.Build();
+app.UseCors();
+
+const string ProtocolVersion = "2025-06-18";
 var apiToken = Environment.GetEnvironmentVariable("SOHAILOS_GATEWAY_TOKEN");
 var endpoint = Environment.GetEnvironmentVariable("SOHAILOS_AI_ENDPOINT") ?? "http://localhost:8000/v1";
 var model = Environment.GetEnvironmentVariable("SOHAILOS_AI_MODEL") ?? "Qwen/Qwen3.5-9B";
@@ -23,6 +28,7 @@ registry.Register(new WebFetchTool(httpClient, allowedHosts));
 var executor = new ToolExecutor(registry, new DefaultPermissionPolicy());
 var provider = new OpenAiCompatibleProvider(httpClient, endpoint, model, apiKey);
 var runtime = new AgentRuntime(provider, registry, executor);
+var sessions = new ConcurrentDictionary<string, DateTimeOffset>();
 
 app.MapGet("/health", () => Results.Ok(new
 {
@@ -30,7 +36,10 @@ app.MapGet("/health", () => Results.Ok(new
     status = "ok",
     utc = DateTimeOffset.UtcNow,
     provider = provider.Name,
-    tools = registry.Definitions.Select(x => x.Name).ToArray()
+    model,
+    protocolVersion = ProtocolVersion,
+    tools = registry.Definitions.Select(x => x.Name).ToArray(),
+    mcpSessions = sessions.Count
 }));
 
 app.MapPost("/v1/agent/run", async (HttpRequest request, AgentRunRequest input, CancellationToken cancellationToken) =>
@@ -45,21 +54,69 @@ app.MapPost("/v1/agent/run", async (HttpRequest request, AgentRunRequest input, 
     return Results.Ok(new { output = answer, provider = provider.Name });
 });
 
-app.MapPost("/mcp", async (HttpRequest request, CancellationToken cancellationToken) =>
+app.MapPost("/mcp", async (HttpRequest request, HttpResponse response, CancellationToken cancellationToken) =>
 {
     if (!Authorized(request)) return Results.Unauthorized();
+
+    if (!request.Headers.Accept.Any(v => v.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
+                                         v.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase)))
+        return Results.BadRequest(new { error = "Accept must include application/json or text/event-stream." });
+
+    var isInitialize = false;
     var rpc = await JsonSerializer.DeserializeAsync<JsonRpcRequest>(request.Body, cancellationToken: cancellationToken);
     if (rpc is null) return Results.BadRequest();
 
+    if (rpc.Method == "initialize")
+    {
+        isInitialize = true;
+    }
+    else
+    {
+        var sessionId = request.Headers["Mcp-Session-Id"].FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(sessionId) || !sessions.ContainsKey(sessionId))
+            return Results.StatusCode(StatusCodes.Status404NotFound);
+        sessions[sessionId] = DateTimeOffset.UtcNow;
+    }
+
     object result = rpc.Method switch
     {
-        "initialize" => new { protocolVersion = "2025-06-18", capabilities = new { tools = new { } }, serverInfo = new { name = "SohailOS", version = "0.1.0" } },
-        "tools/list" => new { tools = registry.Definitions.Select(d => new { name = d.Name, description = d.Description, inputSchema = new { type = "object", properties = d.Parameters ?? new Dictionary<string, string>() } }) },
+        "initialize" => new
+        {
+            protocolVersion = ProtocolVersion,
+            capabilities = new { tools = new { } },
+            serverInfo = new { name = "SohailOS", version = "0.1.0" }
+        },
+        "notifications/initialized" => new { },
+        "ping" => new { },
+        "tools/list" => new
+        {
+            tools = registry.Definitions.Select(d => new
+            {
+                name = d.Name,
+                description = d.Description,
+                inputSchema = new { type = "object", properties = d.Parameters ?? new Dictionary<string, string>() }
+            })
+        },
         "tools/call" => await CallToolAsync(rpc.Params, executor, cancellationToken),
         _ => new { error = new { code = -32601, message = $"Method not found: {rpc.Method}" } }
     };
 
+    if (isInitialize)
+    {
+        var newSession = Guid.NewGuid().ToString("N");
+        sessions[newSession] = DateTimeOffset.UtcNow;
+        response.Headers["Mcp-Session-Id"] = newSession;
+        response.Headers["MCP-Protocol-Version"] = ProtocolVersion;
+    }
+
+    response.Headers["Cache-Control"] = "no-store";
     return Results.Json(new { jsonrpc = "2.0", id = rpc.Id, result });
+});
+
+app.MapGet("/mcp", (HttpRequest request) =>
+{
+    if (!Authorized(request)) return Results.Unauthorized();
+    return Results.StatusCode(StatusCodes.Status405MethodNotAllowed);
 });
 
 app.Run();
