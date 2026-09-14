@@ -1,0 +1,19 @@
+<Window x:Class="SohailOS.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="SohailOS" Width="1100" Height="700">
+  <Grid Margin="24">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <TextBlock Text="SohailOS" FontSize="28" FontWeight="SemiBold" />
+    <Grid Grid.Row="1" Margin="0,20,0,20">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="3*"/></Grid.ColumnDefinitions>
+      <StackPanel Margin="0,0,16,0">
+        <TextBlock Text="Request" FontSize="16" Margin="0,0,0,8"/>
+        <TextBox x:Name="RequestBox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" MinHeight="240"/>
+        <Button Content="Run" Click="Run_Click" Width="120" HorizontalAlignment="Left" Margin="0,12,0,0"/>
+      </StackPanel>
+      <StackPanel Grid.Column="1">
+        <TextBlock Text="Response" FontSize="16" Margin="0,0,0,8"/>
+        <TextBox x:Name="ResponseBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" MinHeight="300"/>
+      </StackPanel>
+    </Grid>
+    <TextBlock Grid.Row="2" Text="Orchestrator • Memory • AI Provider Layer" Opacity="0.65"/>
+  </Grid>
+</Window>
