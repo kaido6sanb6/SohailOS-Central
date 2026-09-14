@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using SohailOS.Core;
 
 namespace SohailOS.Memory;
@@ -78,5 +79,5 @@ public sealed class SupabaseMemoryStore : IMemoryStore
         throw new HttpRequestException($"Supabase memory request failed with {(int)response.StatusCode}: {body}");
     }
 
-    private sealed record MemoryRow(string Value);
+    private sealed record MemoryRow([property: JsonPropertyName("value")] string Value);
 }
