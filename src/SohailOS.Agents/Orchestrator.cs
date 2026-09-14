@@ -35,15 +35,16 @@ public sealed class Orchestrator : IOrchestrator
         _conversationStore = conversationStore;
     }
 
+    public RouteDecision DecideRoute(string text) => Route(text);
+
     public async Task<AgentResponse> HandleAsync(UserRequest request, CancellationToken cancellationToken = default)
     {
-        var route = Route(request.Text);
+        var route = DecideRoute(request.Text);
         if (!_agents.TryGetValue(route.PrimaryModule, out var agent))
             throw new InvalidOperationException($"No agent registered for {route.PrimaryModule}.");
 
         if (_conversationStore is not null)
-            await _conversationStore.AppendAsync(
-                new ConversationTurn("user", request.Text, request.CreatedAt), cancellationToken);
+            await _conversationStore.AppendAsync(new ConversationTurn("user", request.Text, request.CreatedAt), cancellationToken);
 
         var executionRequest = request;
         if (_contextBuilder is not null)
@@ -55,8 +56,7 @@ public sealed class Orchestrator : IOrchestrator
         var content = await agent.ExecuteAsync(executionRequest, cancellationToken);
 
         if (_conversationStore is not null)
-            await _conversationStore.AppendAsync(
-                new ConversationTurn("assistant", content, DateTimeOffset.UtcNow), cancellationToken);
+            await _conversationStore.AppendAsync(new ConversationTurn("assistant", content, DateTimeOffset.UtcNow), cancellationToken);
 
         return new AgentResponse(content, route, DateTimeOffset.UtcNow,
             new Dictionary<string, object?> { ["provider"] = "configured-provider" });
@@ -65,15 +65,10 @@ public sealed class Orchestrator : IOrchestrator
     private static RouteDecision Route(string text)
     {
         var normalized = Normalize(text);
-        var scores = Keywords.ToDictionary(
-            pair => pair.Key,
+        var scores = Keywords.ToDictionary(pair => pair.Key,
             pair => pair.Value.Count(term => normalized.Contains(Normalize(term), StringComparison.Ordinal)));
 
-        var ranked = scores.Where(x => x.Value > 0)
-            .OrderByDescending(x => x.Value)
-            .ThenBy(x => x.Key)
-            .ToList();
-
+        var ranked = scores.Where(x => x.Value > 0).OrderByDescending(x => x.Value).ThenBy(x => x.Key).ToList();
         if (ranked.Count == 0)
             return new(SohailModule.Think, [], "No specialist signal detected; general reasoning fallback.", .55);
 
@@ -81,7 +76,6 @@ public sealed class Orchestrator : IOrchestrator
         var score = ranked[0].Value;
         var supporting = ranked.Skip(1).Take(2).Select(x => x.Key).ToArray();
         var confidence = Math.Min(.96, .55 + (.10 * score) + (supporting.Length > 0 ? .05 : 0));
-
         return new(primary, supporting, $"Matched {score} keyword signal(s) for {primary}.", confidence);
     }
 
