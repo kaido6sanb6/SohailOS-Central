@@ -6,7 +6,19 @@ using SohailOS.Core;
 using SohailOS.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+{
+    var origins = (Environment.GetEnvironmentVariable("SOHAILOS_CORS_ORIGINS") ?? "")
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    if (origins.Length == 0)
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    else
+        policy.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod();
+}));
+
 var app = builder.Build();
 app.UseCors();
 
