@@ -16,6 +16,8 @@ Implemented in the repository:
 - Stub AI provider for local bootstrapping
 - Generic module-agent implementation
 - Memory-store contract and local JSON memory
+- Optional Supabase/PostgREST persistent memory store with schema migration
+- Agent runtime integration for loading/saving a selected persistent memory key
 - Persistent conversation history in local JSON
 - Context builder combining routing, recent conversation, and persisted context
 - Tool definitions, registry, and permission policy
@@ -38,10 +40,11 @@ Implemented in the repository:
 - `.gitignore` for build artifacts, local configuration, databases, and logs
 - GitHub Actions CI workflow definition
 - AMD Instinct/local vLLM deployment documentation
+- Koyeb CLI deployment script that avoids the dashboard creation flow
 
 ## V1 remaining work
 
-The core agent loop is implemented. The remaining work is primarily production integration and deployment rather than rebuilding the reasoning core.
+The core agent loop and the first remote persistence layer are implemented. The remaining work is primarily production integration and deployment rather than rebuilding the reasoning core.
 
 ### Required for a practical V1
 
@@ -53,12 +56,12 @@ The core agent loop is implemented. The remaining work is primarily production i
 6. Structured logging, audit events, retry/rate-limit handling, and basic request/cost telemetry.
 7. End-to-end integration tests for MCP and at least one real provider.
 8. Signed release metadata and rollback for the self-update path.
+9. Production validation of Supabase persistence with a real project, without placing the service-role key in source control.
 
 ### V1.1 / post-V1
 
 - Full MCP Streamable HTTP/SSE compatibility where required by the target clients
 - OAuth authorization for multi-user/remote deployments
-- SQLite/EF Core memory backend
 - Retrieval, embeddings, long-term memory, and memory governance
 - Full GitHub/Notion/Todoist/Supabase/Airtable/TWG adapter suite
 - Automatic model routing by task and cost/latency policy
@@ -68,7 +71,7 @@ The core agent loop is implemented. The remaining work is primarily production i
 
 ## V1 readiness estimate
 
-Based on the repository state, the architectural foundation and agent runtime are approximately **75–80% of the practical V1 scope**. The remaining **20–25%** is concentrated in deployment, secure credentials, real integrations, remote confirmation, production hardening, and final ChatGPT registration.
+Based on the repository state, the architectural foundation, agent runtime, hardened MCP foundation, and first remote persistence layer are approximately **80–85% of the practical V1 scope**. The remaining **15–20%** is concentrated in public deployment, secure credential setup, real integrations, remote confirmation, production hardening, end-to-end validation, and final ChatGPT registration.
 
 This percentage is an engineering readiness estimate, not a claim that the application is already installable as a finished ChatGPT app. The Android and Windows ChatGPT clients can only use the SohailOS agent after the remote gateway is deployed and the ChatGPT-side app connection/registration is completed.
 

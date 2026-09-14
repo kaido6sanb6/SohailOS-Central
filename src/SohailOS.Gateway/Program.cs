@@ -4,6 +4,7 @@ using SohailOS.Agents;
 using SohailOS.AI;
 using SohailOS.Core;
 using SohailOS.Integrations;
+using SohailOS.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
@@ -37,7 +38,8 @@ var allowedHosts = (Environment.GetEnvironmentVariable("SOHAILOS_WEB_ALLOWLIST")
 registry.Register(new WebFetchTool(httpClient, allowedHosts));
 var executor = new ToolExecutor(registry, new DefaultPermissionPolicy());
 var (_, completionProvider) = AiProviderFactory.Create(httpClient);
-var runtime = new AgentRuntime(completionProvider, registry, executor);
+var memory = CreateMemoryStore(httpClient);
+var runtime = new AgentRuntime(completionProvider, registry, executor, memory);
 var sessions = new ConcurrentDictionary<string, DateTimeOffset>();
 
 app.MapGet("/health", () => Results.Ok(new
@@ -46,6 +48,7 @@ app.MapGet("/health", () => Results.Ok(new
     status = "ok",
     utc = DateTimeOffset.UtcNow,
     provider = completionProvider.Name,
+    memory = memory.GetType().Name,
     protocolVersion = ProtocolVersion,
     tools = registry.Definitions.Select(x => x.Name).ToArray(),
     mcpSessions = sessions.Count
@@ -59,8 +62,9 @@ app.MapPost("/v1/agent/run", async (HttpRequest request, AgentRunRequest input, 
         input.SystemPrompt ?? "You are SohailOS, a personal AI operating system. Use tools only when useful and never claim an action occurred without a successful tool result.",
         input.Prompt,
         input.ConfirmWrites,
+        input.MemoryKey ?? "global",
         cancellationToken);
-    return Results.Ok(new { output = answer, provider = completionProvider.Name });
+    return Results.Ok(new { output = answer, provider = completionProvider.Name, memoryKey = input.MemoryKey ?? "global" });
 });
 
 app.MapPost("/mcp", async (HttpRequest request, HttpResponse response, CancellationToken cancellationToken) =>
@@ -126,6 +130,19 @@ app.MapGet("/mcp", (HttpRequest request) =>
 
 app.Run();
 
+static IMemoryStore CreateMemoryStore(HttpClient httpClient)
+{
+    var url = Environment.GetEnvironmentVariable("SOHAILOS_SUPABASE_URL");
+    var key = Environment.GetEnvironmentVariable("SOHAILOS_SUPABASE_SERVICE_ROLE_KEY");
+    if (!string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(key))
+    {
+        var table = Environment.GetEnvironmentVariable("SOHAILOS_SUPABASE_MEMORY_TABLE") ?? "sohailos_memory";
+        return new SupabaseMemoryStore(httpClient, url, key, table);
+    }
+
+    return new InMemoryStore();
+}
+
 void ExpireSessions()
 {
     var cutoff = DateTimeOffset.UtcNow - sessionTtl;
@@ -185,5 +202,5 @@ static async Task<object> CallToolAsync(JsonElement parameters, IToolExecutor ex
     };
 }
 
-public sealed record AgentRunRequest(string Prompt, string? SystemPrompt, bool ConfirmWrites = false);
+public sealed record AgentRunRequest(string Prompt, string? SystemPrompt, bool ConfirmWrites = false, string? MemoryKey = "global");
 public sealed record JsonRpcRequest(string Jsonrpc, JsonElement Id, string Method, JsonElement Params);
