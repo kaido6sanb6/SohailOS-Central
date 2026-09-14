@@ -1,3 +1,4 @@
+using SohailOS.Agents;
 using SohailOS.Core;
 
 namespace SohailOS.Tests;
@@ -25,9 +26,35 @@ public sealed class AgentCoreTests
         Assert.NotNull(registry.Get("MEMORY.READ"));
     }
 
-    private sealed class FakeTool(string name) : ITool
+    [Fact]
+    public async Task ToolExecutor_BlocksWriteWithoutConfirmation()
     {
-        public ToolDefinition Definition { get; } = new(name, "test", ToolPermission.ReadOnly);
+        var registry = new ToolRegistry();
+        registry.Register(new FakeTool("write", ToolPermission.Write));
+        var executor = new ToolExecutor(registry, new DefaultPermissionPolicy());
+
+        var result = await executor.ExecuteAsync(new ToolCall("write", new Dictionary<string, object?>()));
+
+        Assert.False(result.Executed);
+        Assert.True(result.RequiresConfirmation);
+    }
+
+    [Fact]
+    public async Task ToolExecutor_ExecutesReadOnlyAutomatically()
+    {
+        var registry = new ToolRegistry();
+        registry.Register(new FakeTool("read", ToolPermission.ReadOnly));
+        var executor = new ToolExecutor(registry, new DefaultPermissionPolicy());
+
+        var result = await executor.ExecuteAsync(new ToolCall("read", new Dictionary<string, object?>()));
+
+        Assert.True(result.Executed);
+        Assert.True(result.Result.Success);
+    }
+
+    private sealed class FakeTool(string name, ToolPermission permission = ToolPermission.ReadOnly) : ITool
+    {
+        public ToolDefinition Definition { get; } = new(name, "test", permission);
 
         public Task<ToolResult> ExecuteAsync(
             IReadOnlyDictionary<string, object?> arguments,
