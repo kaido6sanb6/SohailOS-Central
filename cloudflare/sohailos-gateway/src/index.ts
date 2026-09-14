@@ -70,7 +70,7 @@ async function completeOpenAI(systemPrompt: string, userPrompt: string, endpoint
     headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
     body: JSON.stringify({ model, messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }] }),
   });
-  const data = await response.json<any>();
+  const data = await response.json() as any;
   if (!response.ok) throw new Error(`AI provider failed: ${response.status}`);
   return data?.choices?.[0]?.message?.content ?? "";
 }
@@ -90,7 +90,7 @@ async function completeAnthropic(systemPrompt: string, userPrompt: string, env: 
       messages: [{ role: "user", content: userPrompt }],
     }),
   });
-  const data = await response.json<any>();
+  const data = await response.json() as any;
   if (!response.ok) throw new Error(`AI provider failed: ${response.status}`);
   return Array.isArray(data?.content) ? data.content.filter((x: any) => x.type === "text").map((x: any) => x.text).join("\n") : "";
 }
@@ -123,7 +123,7 @@ async function loadMemory(env: Env, key: string): Promise<MemorySnapshot | null>
   const url = `${env.SOHAILOS_SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${encodeURIComponent(table)}?select=value&key=eq.${encodeURIComponent(key)}&limit=1`;
   const response = await fetch(url, { headers: { apikey: env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY, authorization: `Bearer ${env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY}` } });
   if (!response.ok) return null;
-  const rows = await response.json<any[]>();
+  const rows = await response.json() as any[];
   const value = rows?.[0]?.value;
   if (!value) return null;
   try { return JSON.parse(value) as MemorySnapshot; } catch { return null; }
@@ -157,7 +157,7 @@ async function runAgent(request: AgentRequest, env: Env) {
 }
 
 async function mcp(request: Request, env: Env) {
-  const body = await request.json<any>();
+  const body = await request.json() as any;
   const id = body?.id ?? null;
   if (body?.method === "notifications/initialized") return new Response(null, { status: 202 });
   if (body?.method === "initialize") {
@@ -184,7 +184,7 @@ export default {
     if (url.pathname === "/health" && request.method === "GET") return json({ service: "SohailOS Cloudflare Gateway", status: "ok", memory: env.SOHAILOS_SUPABASE_URL ? "supabase" : "none", providerConfigured: Boolean(env.SOHAILOS_OPENAI_API_KEY || env.SOHAILOS_GEMINI_API_KEY || env.SOHAILOS_ANTHROPIC_API_KEY) }, 200, origin);
     if (!authorized(request, env)) return json({ error: "Unauthorized" }, 401, origin);
     try {
-      if (url.pathname === "/v1/agent/run" && request.method === "POST") return json(await runAgent(await request.json<AgentRequest>(), env), 200, origin);
+      if (url.pathname === "/v1/agent/run" && request.method === "POST") return json(await runAgent(await request.json() as AgentRequest, env), 200, origin);
       if (url.pathname === "/mcp" && request.method === "POST") return await mcp(request, env);
       return json({ error: "Not found" }, 404, origin);
     } catch (error) {
