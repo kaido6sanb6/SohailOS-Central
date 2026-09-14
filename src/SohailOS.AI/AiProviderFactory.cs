@@ -6,9 +6,7 @@ public static class AiProviderFactory
 {
     public static (IAiProvider Legacy, IAiCompletionProvider Completion) Create(HttpClient httpClient)
     {
-        var provider = (Environment.GetEnvironmentVariable("SOHAILOS_AI_PROVIDER") ?? "openai")
-            .Trim().ToLowerInvariant();
-
+        var provider = (Environment.GetEnvironmentVariable("SOHAILOS_AI_PROVIDER") ?? "openai").Trim().ToLowerInvariant();
         return provider switch
         {
             "anthropic" or "claude" => CreateAnthropic(httpClient),
@@ -27,10 +25,7 @@ public static class AiProviderFactory
         TryAdd(providers, "anthropic", () => CreateAnthropic(httpClient).Item2);
         TryAdd(providers, "gemini", () => CreateGemini(httpClient).Item2);
         TryAdd(providers, "local", () => CreateOpenAiCompatible(httpClient).Item2);
-
-        if (providers.Count == 0)
-            throw new InvalidOperationException("No AI provider is configured. Configure OpenAI, Anthropic, Gemini, or a local OpenAI-compatible endpoint.");
-
+        if (providers.Count == 0) throw new InvalidOperationException("No AI provider is configured. Configure OpenAI, Anthropic, Gemini, or a local OpenAI-compatible endpoint.");
         var router = new RoutedCompletionProvider(providers);
         return (router, router);
     }
@@ -41,15 +36,24 @@ public static class AiProviderFactory
         catch (InvalidOperationException) { }
     }
 
+    private static IReadOnlyList<string> ReadKeys(params string[] variableNames)
+    {
+        foreach (var variableName in variableNames)
+        {
+            var raw = Environment.GetEnvironmentVariable(variableName);
+            if (string.IsNullOrWhiteSpace(raw)) continue;
+            var keys = raw.Split(new[] { ',', ';', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.Ordinal).ToArray();
+            if (keys.Length > 0) return keys;
+        }
+        throw new InvalidOperationException($"API key is required. Configure one of: {string.Join(", ", variableNames)}.");
+    }
+
     private static (IAiProvider, IAiCompletionProvider) CreateOpenAi(HttpClient httpClient)
     {
         var endpoint = Environment.GetEnvironmentVariable("SOHAILOS_OPENAI_ENDPOINT") ?? "https://api.openai.com/v1";
         var model = Environment.GetEnvironmentVariable("SOHAILOS_OPENAI_MODEL") ?? "gpt-5";
-        var key = Environment.GetEnvironmentVariable("SOHAILOS_OPENAI_API_KEY")
-            ?? Environment.GetEnvironmentVariable("OPENAI_API_KEY")
-            ?? Environment.GetEnvironmentVariable("SOHAILOS_AI_API_KEY")
-            ?? throw new InvalidOperationException("OpenAI API key is required for the OpenAI provider.");
-        var provider = new OpenAiCompatibleProvider(httpClient, endpoint, model, key);
+        var keys = ReadKeys("SOHAILOS_OPENAI_API_KEYS", "SOHAILOS_OPENAI_API_KEY", "OPENAI_API_KEY", "SOHAILOS_AI_API_KEY");
+        var provider = new KeyPoolCompletionProvider("openai", keys.Select(key => (IAiCompletionProvider)new OpenAiCompatibleProvider(httpClient, endpoint, model, key)).ToArray());
         return (provider, provider);
     }
 
@@ -57,10 +61,8 @@ public static class AiProviderFactory
     {
         var endpoint = Environment.GetEnvironmentVariable("SOHAILOS_GEMINI_ENDPOINT") ?? "https://generativelanguage.googleapis.com/v1beta/openai";
         var model = Environment.GetEnvironmentVariable("SOHAILOS_GEMINI_MODEL") ?? "gemini-3.8-flash";
-        var key = Environment.GetEnvironmentVariable("SOHAILOS_GEMINI_API_KEY")
-            ?? Environment.GetEnvironmentVariable("GEMINI_API_KEY")
-            ?? throw new InvalidOperationException("Gemini API key is required for the Gemini provider.");
-        var provider = new OpenAiCompatibleProvider(httpClient, endpoint, model, key);
+        var keys = ReadKeys("SOHAILOS_GEMINI_API_KEYS", "SOHAILOS_GEMINI_API_KEY", "GEMINI_API_KEY");
+        var provider = new KeyPoolCompletionProvider("gemini", keys.Select(key => (IAiCompletionProvider)new OpenAiCompatibleProvider(httpClient, endpoint, model, key)).ToArray());
         return (provider, provider);
     }
 
@@ -76,10 +78,8 @@ public static class AiProviderFactory
     private static (IAiProvider, IAiCompletionProvider) CreateAnthropic(HttpClient httpClient)
     {
         var model = Environment.GetEnvironmentVariable("SOHAILOS_ANTHROPIC_MODEL") ?? "claude-sonnet-5";
-        var key = Environment.GetEnvironmentVariable("SOHAILOS_ANTHROPIC_API_KEY")
-            ?? Environment.GetEnvironmentVariable("ANTHROPIC_API_KEY")
-            ?? throw new InvalidOperationException("Anthropic API key is required for the Anthropic provider.");
-        var provider = new AnthropicProvider(httpClient, model, key);
+        var keys = ReadKeys("SOHAILOS_ANTHROPIC_API_KEYS", "SOHAILOS_ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY");
+        var provider = new KeyPoolCompletionProvider("anthropic", keys.Select(key => (IAiCompletionProvider)new AnthropicProvider(httpClient, model, key)).ToArray());
         return (provider, provider);
     }
 
@@ -90,10 +90,7 @@ public static class AiProviderFactory
         private readonly IReadOnlyList<NamedProvider> _providers;
         public RoutedCompletionProvider(IReadOnlyList<NamedProvider> providers) => _providers = providers;
         public string Name => "auto:" + string.Join(",", _providers.Select(x => x.Name));
-
-        public async Task<string> CompleteAsync(string systemPrompt, string userPrompt, CancellationToken cancellationToken = default)
-            => (await CompleteAsync(systemPrompt, userPrompt, Array.Empty<ToolDefinition>(), cancellationToken)).Content;
-
+        public async Task<string> CompleteAsync(string systemPrompt, string userPrompt, CancellationToken cancellationToken = default) => (await CompleteAsync(systemPrompt, userPrompt, Array.Empty<ToolDefinition>(), cancellationToken)).Content;
         public async Task<AiCompletion> CompleteAsync(string systemPrompt, string userPrompt, IReadOnlyCollection<ToolDefinition> tools, CancellationToken cancellationToken = default)
         {
             var selected = Select(userPrompt);
@@ -108,7 +105,6 @@ public static class AiProviderFactory
                 throw;
             }
         }
-
         private NamedProvider Select(string prompt)
         {
             var text = prompt.ToLowerInvariant();
@@ -118,7 +114,6 @@ public static class AiProviderFactory
             if (ContainsAny(text, "هگل", "مارکس", "فلسفه", "تحلیل عمیق", "استدلال", "reasoning")) return Find("anthropic") ?? Find("openai") ?? _providers[0];
             return Find("openai") ?? _providers[0];
         }
-
         private NamedProvider? Find(string name) => _providers.FirstOrDefault(x => x.Name == name);
         private static bool ContainsAny(string text, params string[] terms) => terms.Any(term => text.Contains(term, StringComparison.OrdinalIgnoreCase));
     }
