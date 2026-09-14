@@ -3,6 +3,7 @@ using System.Windows;
 using SohailOS.Agents;
 using SohailOS.AI;
 using SohailOS.Core;
+using SohailOS.Integrations;
 using SohailOS.Memory;
 
 namespace SohailOS.App;
@@ -11,6 +12,8 @@ public partial class MainWindow : Window
 {
     private readonly IOrchestrator _orchestrator;
     private readonly IMemoryStore _memory;
+    private readonly IConversationStore _conversation;
+    private readonly AgentRuntime _runtime;
     private readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(30) };
     private readonly InternetConnectivityService _connectivity;
     private readonly SelfUpdateService _updater;
@@ -19,13 +22,8 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        var endpoint = Environment.GetEnvironmentVariable("SOHAILOS_AI_ENDPOINT")
-            ?? "http://localhost:8000/v1";
-        var model = Environment.GetEnvironmentVariable("SOHAILOS_AI_MODEL")
-            ?? "Qwen/Qwen3.5-9B";
-        var apiKey = Environment.GetEnvironmentVariable("SOHAILOS_AI_API_KEY");
-
-        var provider = new OpenAiCompatibleProvider(_httpClient, endpoint, model, apiKey);
+        var providerPair = AiProviderFactory.Create(_httpClient);
+        var provider = providerPair.Legacy;
         var agents = Enum.GetValues<SohailModule>()
             .Select(m => (IModuleAgent)new ModuleAgent(m, provider, BuildSystemPrompt(m)));
 
@@ -37,10 +35,18 @@ public partial class MainWindow : Window
         var conversationPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "SohailOS", "conversation.json");
-        var conversation = new FileConversationStore(conversationPath);
-        var contextBuilder = new ContextBuilder(conversation, _memory, recentTurns: 8);
+        _conversation = new FileConversationStore(conversationPath);
+        var contextBuilder = new ContextBuilder(_conversation, _memory, recentTurns: 8);
 
-        _orchestrator = new Orchestrator(agents, contextBuilder, conversation);
+        _orchestrator = new Orchestrator(agents, contextBuilder, _conversation);
+
+        var registry = new ToolRegistry();
+        var allowedHosts = (Environment.GetEnvironmentVariable("SOHAILOS_WEB_ALLOWLIST") ?? "")
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        registry.Register(new WebFetchTool(_httpClient, allowedHosts));
+        var executor = new ToolExecutor(registry, new DefaultPermissionPolicy());
+        _runtime = new AgentRuntime(providerPair.Completion, registry, executor);
+
         var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.1.0";
         _updater = new SelfUpdateService(_httpClient, version);
         _connectivity = new InternetConnectivityService(_httpClient, online =>
@@ -73,11 +79,13 @@ public partial class MainWindow : Window
             var requestText = RequestBox.Text.Trim();
             await _memory.SaveAsync("last.request", requestText);
 
-            var result = await _orchestrator.HandleAsync(
-                new UserRequest(requestText, DateTimeOffset.UtcNow));
+            var route = new UserRequest(requestText, DateTimeOffset.UtcNow);
+            var routed = await _orchestrator.HandleAsync(route);
+            var prompt = $"Route: {routed.Route.PrimaryModule}.\n\nUser request:\n{requestText}\n\nUse available read-only tools when they materially improve the answer. Return the best final answer for the user.";
+            var content = await _runtime.RunAsync(BuildSystemPrompt(routed.Route.PrimaryModule), prompt);
 
-            await _memory.SaveAsync("last.response", result.Content);
-            ResponseBox.Text = $"[{result.Route.PrimaryModule}] {result.Content}";
+            await _memory.SaveAsync("last.response", content);
+            ResponseBox.Text = $"[{routed.Route.PrimaryModule}] {content}";
         }
         catch (Exception ex)
         {
