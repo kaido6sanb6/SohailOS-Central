@@ -25,7 +25,7 @@ type MemorySnapshot = {
   assistant: string;
 };
 
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 const MAX_PROMPT_LENGTH = 20_000;
 const MAX_MEMORY_KEY_LENGTH = 200;
 const MAX_MEMORY_CONTEXT_LENGTH = 8_000;
@@ -222,10 +222,23 @@ async function mcp(request: Request, env: Env) {
     const name = body?.params?.name;
     if (name !== "sohailos_agent_run") return json({ jsonrpc: "2.0", id, error: { code: -32602, message: "Unknown tool" } }, 400, origin);
     const args = body?.params?.arguments ?? {};
-    const result = await runAgent({ prompt: String(args.prompt ?? ""), memoryKey: args.memoryKey ? String(args.memoryKey) : "global" }, env);
-    return json({ jsonrpc: "2.0", id, result: { content: [{ type: "text", text: result.content }], structuredContent: result } }, 200, origin);
+    try {
+      const result = await runAgent({ prompt: String(args.prompt ?? ""), memoryKey: args.memoryKey ? String(args.memoryKey) : "global" }, env);
+      return json({ jsonrpc: "2.0", id, result: { content: [{ type: "text", text: result.content }], structuredContent: result } }, 200, origin);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Agent execution failed";
+      return json({ jsonrpc: "2.0", id, result: { isError: true, content: [{ type: "text", text: message }] } }, 200, origin);
+    }
   }
   return json({ jsonrpc: "2.0", id, error: { code: -32601, message: "Method not found" } }, 404, origin);
+}
+
+function isClientError(message: string): boolean {
+  return message === "Request body must be valid JSON" || message === "prompt is required" || message.startsWith("prompt exceeds");
+}
+
+function isProviderConfigurationError(message: string): boolean {
+  return message === "No AI provider is configured. Add at least one provider secret.";
 }
 
 export default {
@@ -239,7 +252,8 @@ export default {
     }
 
     if (url.pathname === "/health" && request.method === "GET") {
-      return json({ service: "SohailOS Cloudflare Gateway", version: VERSION, status: "ok", memory: env.SOHAILOS_SUPABASE_URL ? "supabase" : "none", providerConfigured: Boolean(env.SOHAILOS_OPENAI_API_KEY || env.SOHAILOS_GEMINI_API_KEY || env.SOHAILOS_ANTHROPIC_API_KEY) }, 200, origin);
+      const memoryConfigured = Boolean(env.SOHAILOS_SUPABASE_URL && env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY);
+      return json({ service: "SohailOS Cloudflare Gateway", version: VERSION, status: "ok", memory: memoryConfigured ? "supabase" : "none", providerConfigured: Boolean(env.SOHAILOS_OPENAI_API_KEY || env.SOHAILOS_GEMINI_API_KEY || env.SOHAILOS_ANTHROPIC_API_KEY) }, 200, origin);
     }
 
     if (!authorized(request, env)) return json({ error: "Unauthorized" }, 401, origin);
@@ -250,7 +264,7 @@ export default {
       return json({ error: "Not found" }, 404, origin);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Internal error";
-      const status = message === "Request body must be valid JSON" || message === "prompt is required" || message.startsWith("prompt exceeds") ? 400 : 500;
+      const status = isClientError(message) ? 400 : isProviderConfigurationError(message) ? 503 : 500;
       return json({ error: message }, status, origin);
     }
   },
