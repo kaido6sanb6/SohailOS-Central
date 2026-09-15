@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "sohailos-gateway",
+  "name": "sohailos-central",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-14",
   "workers_dev": true,
