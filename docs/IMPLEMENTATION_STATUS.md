@@ -1,6 +1,8 @@
 # SohailOS implementation status
 
-## Phase 2 — foundation and agent runtime
+## Current V1 state
+
+The core SohailOS runtime and the first remote gateway are implemented. The Cloudflare Worker gateway is deployed through GitHub Actions, with type-checking, Wrangler dry-run validation, deployment, and public endpoint smoke tests wired into the deployment pipeline.
 
 Implemented in the repository:
 
@@ -9,7 +11,7 @@ Implemented in the repository:
 - 12-module enum and master orchestrator
 - Scored rule-based routing with primary/supporting modules
 - Public orchestrator route decision for single-pass routing by desktop/remote runtimes
-- Provider-independent `IAiProvider` and `IAiCompletionProvider` contracts
+- Provider-independent AI contracts
 - OpenAI-compatible provider with structured tool-call parsing
 - Native Anthropic provider with tool-use parsing
 - Gemini compatibility through the OpenAI-compatible provider endpoint configuration
@@ -31,48 +33,66 @@ Implemented in the repository:
 - GitHub Actions release workflow for Windows packaging and update-manifest generation
 - Remote `SohailOS.Gateway` ASP.NET Core project
 - Authenticated `/v1/agent/run` gateway endpoint
-- Authenticated MCP JSON-RPC endpoint with `initialize`, `ping`, `notifications/initialized`, `tools/list`, and `tools/call`
-- MCP session identifiers and protocol headers for remote client lifecycle
-- Gateway AI provider selection through the existing provider factory, allowing local/OpenAI-compatible/Gemini or Anthropic configuration
+- Authenticated MCP JSON-RPC endpoint
+- MCP lifecycle and tool discovery support
+- Gateway AI provider selection through the provider factory
 - ChatGPT Apps SDK / remote MCP integration documentation
 - Multi-provider, internet, update, and deployment documentation
 - xUnit routing and agent-core tests
 - `.gitignore` for build artifacts, local configuration, databases, and logs
 - GitHub Actions CI workflow definition
 - AMD Instinct/local vLLM deployment documentation
-- Koyeb CLI deployment script that avoids the dashboard creation flow
+- Koyeb CLI deployment script
+- Cloudflare Worker gateway at `cloudflare/sohailos-gateway/`
+- Cloudflare deployment workflow with credential validation and public `/health` + `/` smoke tests
+- Runtime hardening: request limits, timeouts, security headers, origin allow-listing, sanitized provider errors, and best-effort Supabase persistence
 
-## V1 remaining work
+## Deployment state
 
-The core agent loop and the first remote persistence layer are implemented. The remaining work is primarily production integration and deployment rather than rebuilding the reasoning core.
+The Cloudflare deployment workflow has successfully completed its deployment job, including the real Worker deployment step. GitHub Actions secrets for Cloudflare deployment are therefore configured correctly.
 
-### Required for a practical V1
+The remaining runtime configuration cannot be safely completed by repository automation alone because the Cloudflare runtime secrets contain private credentials. They must be entered in Cloudflare's Worker Secrets UI by the account owner.
 
-1. Public HTTPS deployment of `SohailOS.Gateway`.
-2. Complete ChatGPT Custom App registration against the remote MCP endpoint, subject to the ChatGPT plan/workspace features available to the user.
-3. Secure secret storage for gateway and desktop credentials rather than relying only on environment variables.
-4. At least the first real cloud adapters: GitHub plus one productivity/data service such as Notion or Todoist.
-5. Remote write confirmation flow so destructive/write actions cannot execute silently.
-6. Structured logging, audit events, retry/rate-limit handling, and basic request/cost telemetry.
-7. End-to-end integration tests for MCP and at least one real provider.
-8. Signed release metadata and rollback for the self-update path.
-9. Production validation of Supabase persistence with a real project, without placing the service-role key in source control.
+Required runtime secrets:
 
-### V1.1 / post-V1
+- `SOHAILOS_GATEWAY_TOKEN`
+- At least one of `SOHAILOS_OPENAI_API_KEY`, `SOHAILOS_GEMINI_API_KEY`, or `SOHAILOS_ANTHROPIC_API_KEY`
 
-- Full MCP Streamable HTTP/SSE compatibility where required by the target clients
+Optional runtime secrets/configuration:
+
+- `SOHAILOS_OPENAI_MODEL`
+- `SOHAILOS_GEMINI_MODEL`
+- `SOHAILOS_ANTHROPIC_MODEL`
+- `SOHAILOS_SUPABASE_URL`
+- `SOHAILOS_SUPABASE_SERVICE_ROLE_KEY`
+- `SOHAILOS_SUPABASE_TABLE`
+- `SOHAILOS_CORS_ORIGINS`
+
+No secret should be committed to GitHub or pasted into ChatGPT.
+
+## What remains for a complete user-facing V1
+
+1. Enter the Cloudflare runtime secrets listed above.
+2. Confirm `/health` reports `providerConfigured: true` and the expected memory mode.
+3. Run one authenticated `/v1/agent/run` request with a non-sensitive test prompt.
+4. Run MCP `initialize`, `tools/list`, and `tools/call` against `/mcp`.
+5. Register the remote MCP endpoint in the user's ChatGPT environment if the user's plan/workspace exposes the required app/connector capability.
+6. Perform one end-to-end request from ChatGPT through the remote MCP gateway.
+
+Everything above can be validated without exposing the user's API keys in the repository or conversation.
+
+## V1.1 / post-V1
+
+- Full MCP Streamable HTTP/SSE compatibility where required by target clients
 - OAuth authorization for multi-user/remote deployments
 - Retrieval, embeddings, long-term memory, and memory governance
 - Full GitHub/Notion/Todoist/Supabase/Airtable/TWG adapter suite
 - Automatic model routing by task and cost/latency policy
 - Rich desktop task workspace and settings UI
 - AMD hardware detection/benchmarking on the user's actual machine
-- More complete observability and operational controls
+- Expanded observability, audit events, rate-limit handling, and cost telemetry
+- Signed release metadata and rollback for the self-update path
 
-## V1 readiness estimate
+## Readiness estimate
 
-Based on the repository state, the architectural foundation, agent runtime, hardened MCP foundation, and first remote persistence layer are approximately **80–85% of the practical V1 scope**. The remaining **15–20%** is concentrated in public deployment, secure credential setup, real integrations, remote confirmation, production hardening, end-to-end validation, and final ChatGPT registration.
-
-This percentage is an engineering readiness estimate, not a claim that the application is already installable as a finished ChatGPT app. The Android and Windows ChatGPT clients can only use the SohailOS agent after the remote gateway is deployed and the ChatGPT-side app connection/registration is completed.
-
-The architecture keeps model providers and external integrations behind interfaces so the core system remains replaceable, testable, and independent of any single AI vendor.
+The engineering foundation and deployment path are now substantially complete. The remaining work is primarily account-owned runtime secret configuration and final remote-client registration/validation, rather than core implementation.
