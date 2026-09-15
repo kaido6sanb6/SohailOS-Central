@@ -5,7 +5,10 @@ on:
   push:
     branches: [main]
     paths:
-      - 'cloudflare/sohailos-gateway/**'
+      - 'cloudflare/sohailos-gateway/src/**'
+      - 'cloudflare/sohailos-gateway/package.json'
+      - 'cloudflare/sohailos-gateway/tsconfig.json'
+      - 'cloudflare/sohailos-gateway/wrangler.jsonc'
       - '.github/workflows/deploy-cloudflare.yml'
 
 jobs:
