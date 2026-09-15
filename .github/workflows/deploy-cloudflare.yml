@@ -44,3 +44,15 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: cloudflare/sohailos-gateway
           command: deploy
+      - name: Smoke test public endpoints
+        working-directory: .
+        env:
+          SOHAILOS_GATEWAY_URL: https://sohailos-central.mydominetestq.workers.dev
+        run: |
+          set -euo pipefail
+          health="$(curl --fail --silent --show-error --retry 5 --retry-delay 3 "$SOHAILOS_GATEWAY_URL/health")"
+          echo "$health"
+          echo "$health" | grep -q '"status":"ok"'
+          root="$(curl --fail --silent --show-error --retry 5 --retry-delay 3 "$SOHAILOS_GATEWAY_URL/")"
+          echo "$root"
+          echo "$root" | grep -q 'SohailOS Cloudflare Gateway'
