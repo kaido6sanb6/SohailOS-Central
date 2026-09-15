@@ -38,6 +38,10 @@ const call = await rpc("tools/call", {
   name: "sohailos_agent_run",
   arguments: { prompt, memoryKey: "ci-smoke" },
 }, 3);
+const errorText = call?.result?.isError
+  ? call?.result?.content?.find((item) => item?.type === "text")?.text ?? "MCP tool execution failed"
+  : "";
+if (errorText) throw new Error(`tools/call returned an MCP execution error: ${errorText}`);
 const text = call?.result?.content?.find((item) => item?.type === "text")?.text ?? "";
 if (!text.trim()) throw new Error(`tools/call returned no text: ${JSON.stringify(call)}`);
 
