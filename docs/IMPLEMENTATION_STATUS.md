@@ -2,7 +2,7 @@
 
 ## Current V1 state
 
-The core SohailOS runtime and the first remote gateway are implemented. The Cloudflare Worker gateway is deployed through GitHub Actions, with type-checking, Wrangler dry-run validation, deployment, and public endpoint smoke tests wired into the deployment pipeline.
+The core SohailOS runtime and the first remote gateway are implemented. The Cloudflare Worker gateway is deployed through GitHub Actions, with type-checking, Wrangler dry-run validation, deployment, runtime-secret synchronization, and public/authenticated endpoint smoke tests wired into the deployment pipeline.
 
 Implemented in the repository:
 
@@ -46,38 +46,50 @@ Implemented in the repository:
 - Cloudflare Worker gateway at `cloudflare/sohailos-gateway/`
 - Cloudflare deployment workflow with credential validation and public `/health` + `/` smoke tests
 - Runtime hardening: request limits, timeouts, security headers, origin allow-listing, sanitized provider errors, and best-effort Supabase persistence
+- MCP execution errors returned as protocol-level tool errors instead of generic HTTP 500 responses
 
 ## Deployment state
 
-The Cloudflare deployment workflow has successfully completed its deployment job, including the real Worker deployment step. GitHub Actions secrets for Cloudflare deployment are therefore configured correctly.
+The Cloudflare deployment path is operational: GitHub Actions has successfully authenticated with Cloudflare and deployed the Worker. Runtime secrets are now supported through GitHub Actions secrets: the deployment workflow synchronizes configured private values into Cloudflare Worker secrets without printing their contents.
 
-The remaining runtime configuration cannot be safely completed by repository automation alone because the Cloudflare runtime secrets contain private credentials. They must be entered in Cloudflare's Worker Secrets UI by the account owner.
+Required GitHub Actions secrets for a complete live V1:
 
-Required runtime secrets:
-
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
 - `SOHAILOS_GATEWAY_TOKEN`
 - At least one of `SOHAILOS_OPENAI_API_KEY`, `SOHAILOS_GEMINI_API_KEY`, or `SOHAILOS_ANTHROPIC_API_KEY`
 
-Optional runtime secrets/configuration:
+Optional GitHub Actions secrets:
+
+- `SOHAILOS_SUPABASE_URL`
+- `SOHAILOS_SUPABASE_SERVICE_ROLE_KEY`
+
+Optional Worker configuration:
 
 - `SOHAILOS_OPENAI_MODEL`
 - `SOHAILOS_GEMINI_MODEL`
 - `SOHAILOS_ANTHROPIC_MODEL`
-- `SOHAILOS_SUPABASE_URL`
-- `SOHAILOS_SUPABASE_SERVICE_ROLE_KEY`
 - `SOHAILOS_SUPABASE_TABLE`
 - `SOHAILOS_CORS_ORIGINS`
 
 No secret should be committed to GitHub or pasted into ChatGPT.
 
+## Current blocker
+
+The latest live Worker health check reports `providerConfigured: false`. This means the deployment infrastructure is working, but no AI provider credential is currently visible to the Worker runtime. The repository cannot manufacture or recover a private provider credential. Once one provider key is present in GitHub Actions secrets, the deployment workflow will synchronize it automatically on the next deployment.
+
+The current workflow deliberately fails the release smoke test when `providerConfigured` is false. This prevents a green CI result from being mistaken for a fully functional AI gateway.
+
 ## What remains for a complete user-facing V1
 
-1. Enter the Cloudflare runtime secrets listed above.
-2. Confirm `/health` reports `providerConfigured: true` and the expected memory mode.
-3. Run one authenticated `/v1/agent/run` request with a non-sensitive test prompt.
-4. Run MCP `initialize`, `tools/list`, and `tools/call` against `/mcp`.
-5. Register the remote MCP endpoint in the user's ChatGPT environment if the user's plan/workspace exposes the required app/connector capability.
-6. Perform one end-to-end request from ChatGPT through the remote MCP gateway.
+1. Add at least one AI provider key as a GitHub Actions secret (`SOHAILOS_OPENAI_API_KEY`, `SOHAILOS_GEMINI_API_KEY`, or `SOHAILOS_ANTHROPIC_API_KEY`). Do not send the value through ChatGPT.
+2. If persistent remote memory is desired, add `SOHAILOS_SUPABASE_URL` and `SOHAILOS_SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secrets.
+3. Trigger the Cloudflare deployment workflow or push a relevant `main` change.
+4. Require `/health` to report `providerConfigured: true`.
+5. Require an authenticated `/v1/agent/run` request to succeed.
+6. Require MCP `initialize`, `tools/list`, and `tools/call` to succeed.
+7. Register the remote MCP endpoint in the user's ChatGPT environment if the user's plan/workspace exposes the required app/connector capability.
+8. Perform one end-to-end request from ChatGPT through the remote MCP gateway.
 
 Everything above can be validated without exposing the user's API keys in the repository or conversation.
 
@@ -95,4 +107,4 @@ Everything above can be validated without exposing the user's API keys in the re
 
 ## Readiness estimate
 
-The engineering foundation and deployment path are now substantially complete. The remaining work is primarily account-owned runtime secret configuration and final remote-client registration/validation, rather than core implementation.
+The engineering foundation and deployment path are complete. The remaining V1 work is account-owned runtime configuration and final remote-client registration/validation; the repository automation now handles the secure propagation and verification of those runtime settings.
