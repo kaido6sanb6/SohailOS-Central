@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'cloudflare/sohailos-gateway/src/**'
+      - 'cloudflare/sohailos-gateway/scripts/**'
       - 'cloudflare/sohailos-gateway/package.json'
       - 'cloudflare/sohailos-gateway/tsconfig.json'
       - 'cloudflare/sohailos-gateway/wrangler.jsonc'
@@ -56,3 +57,10 @@ jobs:
           root="$(curl --fail --silent --show-error --retry 5 --retry-delay 3 "$SOHAILOS_GATEWAY_URL/")"
           echo "$root"
           echo "$root" | grep -q 'SohailOS Cloudflare Gateway'
+      - name: Smoke test authenticated MCP
+        working-directory: cloudflare/sohailos-gateway
+        env:
+          SOHAILOS_GATEWAY_URL: https://sohailos-central.mydominetestq.workers.dev
+          SOHAILOS_GATEWAY_TOKEN: ${{ secrets.SOHAILOS_GATEWAY_TOKEN }}
+          SOHAILOS_SMOKE_PROMPT: 'Reply with exactly: SOHAILOS_MCP_OK'
+        run: node scripts/smoke-mcp.mjs
