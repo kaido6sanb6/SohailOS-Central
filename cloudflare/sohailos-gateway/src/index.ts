@@ -23,7 +23,7 @@ const MAX_PROMPT_LENGTH = 20_000;
 const MAX_MEMORY_KEY_LENGTH = 200;
 const MAX_MEMORY_CONTEXT_LENGTH = 8_000;
 const PROVIDER_TIMEOUT_MS = 45_000;
-const DEFAULT_CLOUDFLARE_AI_MODEL = "@cf/google/gemma-4-26b-a4b-it";
+const DEFAULT_CLOUDFLARE_AI_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 const DEFAULT_SYSTEM_PROMPT = `You are SohailOS, a personal AI operating system. Route each request to the most appropriate internal capability (thinking, sociology, cinema, research, statistics, AI, code, product, office, operations, strategy, or learning). Be precise, structured, evidence-aware, and practical. Do not claim actions or integrations that did not actually occur. Treat user data and credentials as confidential.`;
 
 function responseHeaders(origin: string): Headers {
