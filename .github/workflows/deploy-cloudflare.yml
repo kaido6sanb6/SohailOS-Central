@@ -94,7 +94,7 @@ jobs:
           health="$(curl --fail --silent --show-error --retry 5 --retry-delay 3 "$SOHAILOS_GATEWAY_URL/health")"
           echo "$health"
           if ! echo "$health" | grep -q '"providerConfigured":true'; then
-            echo "::error::The Worker is deployed but no AI provider runtime secret is configured. Add SOHAILOS_OPENAI_API_KEY, SOHAILOS_GEMINI_API_KEY, or SOHAILOS_ANTHROPIC_API_KEY to GitHub Actions secrets."
+            echo "::error::The Worker is deployed but no AI provider is configured. Configure Cloudflare Workers AI binding or one of the explicit provider secrets."
             exit 1
           fi
       - name: Smoke test authenticated MCP
@@ -104,3 +104,9 @@ jobs:
           SOHAILOS_GATEWAY_TOKEN: ${{ secrets.SOHAILOS_GATEWAY_TOKEN }}
           SOHAILOS_SMOKE_PROMPT: 'Reply with exactly: SOHAILOS_MCP_OK'
         run: node scripts/smoke-mcp.mjs
+      - name: Smoke test Cloudflare AI provider contract
+        working-directory: cloudflare/sohailos-gateway
+        env:
+          SOHAILOS_GATEWAY_URL: https://sohailos-central.mydominetestq.workers.dev
+          SOHAILOS_GATEWAY_TOKEN: ${{ secrets.SOHAILOS_GATEWAY_TOKEN }}
+        run: node scripts/smoke-cloudflare-ai.mjs
