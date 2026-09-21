@@ -30,7 +30,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "${env:RUNNER_TEMP}\ecosystem-reconciliation.json" --write
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "${env:RUNNER_TEMP}\ecosystem-reconciliation.json" --write --fail-on-removal
           if ($LASTEXITCODE -ne 0) {
             exit $LASTEXITCODE
           }
