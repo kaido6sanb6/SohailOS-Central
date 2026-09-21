@@ -14,6 +14,7 @@ public static class Program
             var reportPath = GetOption(options, "report", Path.Combine("ecosystem", "reconciliation.json"));
             var owner = GetOption(options, "owner", "kaido6sanb6");
             var write = options.ContainsKey("write");
+            var failOnRemoval = options.ContainsKey("fail-on-removal");
 
             var manifest = JsonNode.Parse(
                 await File.ReadAllTextAsync(manifestPath))
@@ -41,15 +42,19 @@ public static class Program
 
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(reportPath))!);
 
-            result.Report["write_applied"] = write && result.HasChanges;
-
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
+            var addedCount = result.Report["added"]?.AsArray().Count ?? 0;
+            var removedCount = result.Report["removed"]?.AsArray().Count ?? 0;
+            var changedCount = result.Report["changed"]?.AsArray().Count ?? 0;
+            var safeToWrite = write && result.HasChanges && !(failOnRemoval && removedCount > 0);
+
+            result.Report["write_applied"] = safeToWrite;
             await File.WriteAllTextAsync(
                 reportPath,
                 result.Report.ToJsonString(jsonOptions));
 
-            if (write && result.HasChanges)
+            if (safeToWrite)
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(manifestPath))!);
                 await File.WriteAllTextAsync(
@@ -57,12 +62,14 @@ public static class Program
                     result.Manifest.ToJsonString(jsonOptions));
             }
 
-            var addedCount = result.Report["added"]?.AsArray().Count ?? 0;
-            var removedCount = result.Report["removed"]?.AsArray().Count ?? 0;
-            var changedCount = result.Report["changed"]?.AsArray().Count ?? 0;
-
             Console.WriteLine(
-                $"Ecosystem reconciliation: live={liveRepositories.Count}, added={addedCount}, changed={changedCount}, removed={removedCount}, write={(write && result.HasChanges ? "applied" : "not-applied")}");
+                $"Ecosystem reconciliation: live={liveRepositories.Count}, added={addedCount}, changed={changedCount}, removed={removedCount}, write={(safeToWrite ? "applied" : "not-applied")}");
+
+            if (failOnRemoval && removedCount > 0)
+            {
+                Console.WriteLine("Ecosystem reconciliation detected a repository removal; no manifest write was applied.");
+                return 2;
+            }
 
             return 0;
         }
