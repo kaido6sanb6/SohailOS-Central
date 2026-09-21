@@ -39,7 +39,8 @@ public class EcosystemReconcilerEndToEndTests
                     }
                 },
                 edges = Array.Empty<object>(),
-                routing = Array.Empty<object>()
+                routing = Array.Empty<object>(),
+                upstream = Array.Empty<object>()
             }, new JsonSerializerOptions { WriteIndented = true }));
 
             File.WriteAllText(inventoryPath, JsonSerializer.Serialize(new[]
@@ -93,6 +94,11 @@ public class EcosystemReconcilerEndToEndTests
                 report.RootElement.GetProperty("added")[0].GetString());
             Assert.Equal(1, report.RootElement.GetProperty("registry_repository_count_before").GetInt32());
             Assert.Equal(2, report.RootElement.GetProperty("registry_repository_count_after").GetInt32());
+
+            var upstream = manifest.RootElement.GetProperty("upstream").EnumerateArray();
+            Assert.Contains(upstream, entry =>
+                entry.GetProperty("repo").GetString() == "kaido6sanb6/glowing-rotary-phone" &&
+                entry.GetProperty("status").GetString() == "unverified");
         }
         finally
         {
