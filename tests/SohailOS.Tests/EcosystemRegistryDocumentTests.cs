@@ -66,7 +66,7 @@ public class EcosystemRegistryDocumentTests
     public void Manifest_QuarantinesNonApplicationRepositories()
     {
         using var document = JsonDocument.Parse(File.ReadAllText(ManifestPath));
-        var repositories = document.RootElement.GetProperty("repositories")
+        var repositories = document.GetProperty("repositories")
             .EnumerateArray()
             .ToDictionary(
                 x => x.GetProperty("repo").GetString()!,
@@ -86,7 +86,10 @@ public class EcosystemRegistryDocumentTests
     [Fact]
     public void RegistryReadme_IsDocumentedSeparatelyFromTheMachineManifest()
     {
-        var readmePath = Path.Combine(AppContext.BaseDirectory, "ecosystem", "README.md");
+        var readmePath = Path.Combine(
+            Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.FullName,
+            "ecosystem",
+            "README.md");
 
         Assert.True(File.Exists(readmePath));
         Assert.Contains("ecosystem/ecosystem.json", File.ReadAllText(readmePath), StringComparison.Ordinal);
