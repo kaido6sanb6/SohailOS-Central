@@ -22,6 +22,7 @@ public static class EcosystemReconciler
         var repositories = manifest["repositories"] as JsonArray
             ?? throw new InvalidDataException("Manifest.repositories must be an array.");
 
+        var registryRepositoryCountBefore = repositories.Count;
         var existing = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var node in repositories)
@@ -125,7 +126,8 @@ public static class EcosystemReconciler
             ["schema_version"] = "1.0",
             ["generated_at"] = observedAt.UtcDateTime.ToString("O"),
             ["owner"] = owner,
-            ["manifest_repository_count"] = existing.Count,
+            ["registry_repository_count_before"] = registryRepositoryCountBefore,
+            ["registry_repository_count_after"] = repositories.Count,
             ["live_repository_count"] = liveByName.Count,
             ["added"] = added,
             ["removed"] = removed,
