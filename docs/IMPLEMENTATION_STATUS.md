@@ -93,6 +93,10 @@ The current workflow deliberately fails the release smoke test when `providerCon
 
 Everything above can be validated without exposing the user's API keys in the repository or conversation.
 
+## Ecosystem integration
+
+The repository now includes a machine-readable ecosystem control plane at `ecosystem/ecosystem.json` covering the 46 repositories visible in the authenticated owner inventory. The registry is validated for identity/edge/routing integrity, separates evidence from unverified provenance, and keeps network/proxy repositories and the untrusted prompt-research corpus out of automatic runtime routing.
+
 ## V1.1 / post-V1
 
 - Full MCP Streamable HTTP/SSE compatibility where required by target clients
