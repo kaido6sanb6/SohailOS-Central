@@ -100,6 +100,79 @@ public class EcosystemReconcilerEndToEndTests
         }
     }
 
+
+    [Fact]
+    public void ReconcileWithFailOnRemoval_ReportsRemovalAndDoesNotWrite()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var projectPath = Path.Combine(repoRoot, "src", "SohailOS.Ecosystem", "SohailOS.Ecosystem.csproj");
+        var tempRoot = Path.Combine(Path.GetTempPath(), "sohailos-ecosystem-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+
+        var manifestPath = Path.Combine(tempRoot, "ecosystem.json");
+        var inventoryPath = Path.Combine(tempRoot, "inventory.json");
+        var reportPath = Path.Combine(tempRoot, "reconciliation.json");
+
+        try
+        {
+            var original = JsonSerializer.Serialize(new
+            {
+                schema_version = "1.0",
+                control_plane = "kaido6sanb6/SohailOS-Central",
+                repositories = new[]
+                {
+                    new
+                    {
+                        repo = "kaido6sanb6/retired-repository",
+                        default_branch = "main",
+                        role = "reference",
+                        capabilities = new[] { "reference" },
+                        verification_status = "verified",
+                        auto_route = false,
+                        evidence = new[] { "https://github.com/kaido6sanb6/retired-repository" },
+                        notes = "must remain for human review"
+                    }
+                },
+                edges = Array.Empty<object>(),
+                routing = Array.Empty<object>()
+            }, new JsonSerializerOptions { WriteIndented = true });
+
+            File.WriteAllText(manifestPath, original);
+
+            File.WriteAllText(
+                inventoryPath,
+                JsonSerializer.Serialize(new[]
+                {
+                    new
+                    {
+                        id = 2,
+                        name = "glowing-rotary-phone",
+                        full_name = "kaido6sanb6/glowing-rotary-phone",
+                        default_branch = "main",
+                        html_url = "https://github.com/kaido6sanb6/glowing-rotary-phone"
+                    }
+                }, new JsonSerializerOptions { WriteIndented = true }));
+
+            var result = RunDotnet(
+                repoRoot,
+                projectPath,
+                $"--owner kaido6sanb6 --manifest \"{manifestPath}\" --inventory \"{inventoryPath}\" --report \"{reportPath}\" --write --fail-on-removal");
+
+            Assert.Equal(2, result.ExitCode);
+            Assert.Contains("removal", result.StdOut, StringComparison.OrdinalIgnoreCase);
+
+            Assert.Equal(original, File.ReadAllText(manifestPath));
+
+            using var report = JsonDocument.Parse(File.ReadAllText(reportPath));
+            Assert.Equal(1, report.RootElement.GetProperty("removed").GetArrayLength());
+            Assert.False(report.RootElement.GetProperty("write_applied").GetBoolean());
+        }
+        finally
+        {
+            Directory.Delete(tempRoot, recursive: true);
+        }
+    }
+
     private static (int ExitCode, string StdOut, string StdErr) RunDotnet(
         string workingDirectory,
         string projectPath,
