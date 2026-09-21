@@ -33,6 +33,8 @@ public class EcosystemReconcilerContractTests
         Assert.Contains("automation/ecosystem-sync", workflow, StringComparison.Ordinal);
         Assert.Contains("gh pr list", workflow, StringComparison.Ordinal);
         Assert.Contains("open reconciliation PR", workflow, StringComparison.Ordinal);
+        Assert.Contains("ConvertFrom-Json", workflow, StringComparison.Ordinal);
+        Assert.Contains("automation/ecosystem-sync", workflow, StringComparison.Ordinal);
     }
 
     [Fact]
