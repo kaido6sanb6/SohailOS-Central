@@ -20,7 +20,7 @@ public class EcosystemRegistryDocumentTests
         Assert.True(root.TryGetProperty("edges", out var edges));
         Assert.True(root.TryGetProperty("routing", out var routing));
 
-        Assert.Equal(46, repositories.GetArrayLength());
+        Assert.Equal(47, repositories.GetArrayLength());
         Assert.NotEqual(0, edges.GetArrayLength());
         Assert.NotEqual(0, routing.GetArrayLength());
         Assert.Equal("kaido6sanb6/SohailOS-Central", root.GetProperty("control_plane").GetString());
@@ -38,8 +38,9 @@ public class EcosystemRegistryDocumentTests
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        Assert.Equal(46, ids.Count);
+        Assert.Equal(47, ids.Count);
         Assert.Contains("kaido6sanb6/SohailOS-Central", ids);
+        Assert.Contains("kaido6sanb6/glowing-rotary-phone", ids);
 
         foreach (var edge in root.GetProperty("edges").EnumerateArray())
         {
@@ -79,8 +80,25 @@ public class EcosystemRegistryDocumentTests
             "kaido6sanb6/V2ray-for-Doprax"
         })
         {
-            Assert.False(repositories[name].GetProperty("auto_route").GetBoolean());
+                Assert.False(repositories[name].GetProperty("auto_route").GetBoolean());
         }
+    }
+
+    [Fact]
+    public void NewlyDiscoveredRepository_IsRegisteredButNotAutoRouted()
+    {
+        using var document = JsonDocument.Parse(File.ReadAllText(ManifestPath));
+        var repositories = document.RootElement.GetProperty("repositories")
+            .EnumerateArray()
+            .ToDictionary(
+                x => x.GetProperty("repo").GetString()!,
+                StringComparer.OrdinalIgnoreCase);
+
+        var discovered = repositories["kaido6sanb6/glowing-rotary-phone"];
+
+        Assert.Equal("unclassified", discovered.GetProperty("role").GetString());
+        Assert.Equal("unverified", discovered.GetProperty("verification_status").GetString());
+        Assert.False(discovered.GetProperty("auto_route").GetBoolean());
     }
 
     [Fact]
