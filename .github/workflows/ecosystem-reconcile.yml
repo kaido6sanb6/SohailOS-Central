@@ -26,21 +26,28 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Reconcile public owner inventory
+        id: reconcile
+        continue-on-error: true
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "${env:RUNNER_TEMP}\ecosystem-reconciliation.json" --write --fail-on-removal
-          if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-          }
+          "exit_code=$LASTEXITCODE" >> $env:GITHUB_OUTPUT
 
       - name: Publish reconciliation report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ecosystem-reconciliation
           path: ${{ runner.temp }}/ecosystem-reconciliation.json
           if-no-files-found: error
+
+      - name: Fail when reconciliation fails
+        if: steps.reconcile.outputs.exit_code != '0'
+        shell: pwsh
+        run: |
+          exit [int]"${{ steps.reconcile.outputs.exit_code }}"
 
       - name: Detect manifest changes
         id: changes
