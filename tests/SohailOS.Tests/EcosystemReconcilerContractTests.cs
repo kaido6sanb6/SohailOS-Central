@@ -30,6 +30,9 @@ public class EcosystemReconcilerContractTests
         Assert.Contains("--write", workflow, StringComparison.Ordinal);
         Assert.Contains("--fail-on-removal", workflow, StringComparison.Ordinal);
         Assert.Contains("if: always()", workflow, StringComparison.Ordinal);
+        Assert.Contains("automation/ecosystem-sync", workflow, StringComparison.Ordinal);
+        Assert.Contains("gh pr list", workflow, StringComparison.Ordinal);
+        Assert.Contains("open reconciliation PR", workflow, StringComparison.Ordinal);
     }
 
     [Fact]
