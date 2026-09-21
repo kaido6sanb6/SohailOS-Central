@@ -10,9 +10,9 @@ public static class Program
         try
         {
             var options = ParseArguments(args);
-            var manifestPath = options.GetRequired("manifest", Path.Combine("ecosystem", "ecosystem.json"));
-            var reportPath = options.GetRequired("report", Path.Combine("ecosystem", "reconciliation.json"));
-            var owner = options.GetRequired("owner", "kaido6sanb6");
+            var manifestPath = GetOption(options, "manifest", Path.Combine("ecosystem", "ecosystem.json"));
+            var reportPath = GetOption(options, "report", Path.Combine("ecosystem", "reconciliation.json"));
+            var owner = GetOption(options, "owner", "kaido6sanb6");
             var write = options.ContainsKey("write");
 
             var manifest = JsonNode.Parse(
@@ -137,8 +137,8 @@ public static class Program
         return result;
     }
 
-    private static string GetRequired(
-        this Dictionary<string, string> options,
+    private static string GetOption(
+        Dictionary<string, string> options,
         string key,
         string defaultValue)
         => options.TryGetValue(key, out var value) ? value : defaultValue;
