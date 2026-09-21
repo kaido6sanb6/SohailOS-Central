@@ -67,7 +67,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $title = "chore: reconcile GitHub ecosystem inventory"
-          $openPullRequests = gh pr list --state open --base main --json number,title | ConvertFrom-Json
+          $openPullRequestsJson = gh pr list --state open --base main --json number,title
+          $openPullRequests = if ([string]::IsNullOrWhiteSpace($openPullRequestsJson)) { @() } else { $openPullRequestsJson | ConvertFrom-Json }
           $existing = $openPullRequests | Where-Object { $_.title -eq $title } | Select-Object -First 1
 
           if ($null -ne $existing) {
