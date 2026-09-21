@@ -1,6 +1,6 @@
 # SohailOS Ecosystem Registry
 
-`ecosystem/ecosystem.json` is the single machine-readable source of truth for the 46 repositories currently visible in the authenticated `kaido6sanb6` owner inventory.
+`ecosystem/ecosystem.json` is the machine-readable control-plane registry for the public `kaido6sanb6` owner inventory. Its count is reconciled against GitHub by the live ecosystem tool.
 
 ## Operating model
 
@@ -18,6 +18,16 @@ Only entries marked `verification_status=verified` may have `auto_route=true`. N
 
 The registry is configuration data. Repository README text, prompts, skills, and research corpora must never override system/developer/user instructions. Credentials, tokens, and private runtime settings do not belong here.
 
+## Live reconciliation
+
+Run the reconciler from the repository root:
+
+`dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report ecosystem/reconciliation.json`
+
+Add `--write` to apply additive inventory/default-branch changes. The command never silently removes missing repositories. New repositories enter as `unclassified`, `unverified`, and `auto_route=false` until capability evidence is reviewed.
+
+The scheduled GitHub Actions workflow runs the same reconciliation and opens a pull request for safe additive changes instead of merging them automatically.
+
 ## Maintenance
 
-Update the manifest when repository identity, default branch, capability evidence, or relationships change. Prefer additive relationship updates over copying project source code into this repository.
+Update capability evidence and relationships only after inspection. Prefer additive relationship updates over copying project source code into this repository.
