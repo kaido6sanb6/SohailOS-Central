@@ -4,7 +4,7 @@
 
 **Goal:** Upgrade `SohailOS-Central` from a manually maintained 46-repository registry into a self-reconciling GitHub ecosystem layer with live public-repository discovery, capability/knowledge governance, deterministic drift reports, and automated CI verification.
 
-**Architecture:** Keep `SohailOS-Central` as the control plane and preserve repository separation. A PowerShell reconciliation tool will query GitHub's public owner inventory, reconcile identity/default-branch/lifecycle metadata, add newly discovered repositories as unverified stubs, preserve verified capabilities, and emit a deterministic report. CI will test the reconciliation contract and a scheduled/manual workflow will perform live checks.
+**Architecture:** Keep `SohailOS-Central` as the control plane and preserve repository separation. A .NET 10 reconciliation executable (`src/SohailOS.Ecosystem`) queries GitHub's public owner inventory, reconciles identity/default-branch metadata, adds newly discovered repositories as unverified stubs, preserves verified capabilities, and emits a deterministic report. CI tests the reconciliation contract and a scheduled/manual workflow performs live checks.
 
 **Tech Stack:** PowerShell 7, GitHub REST API, JSON, .NET 10/xUnit, GitHub Actions.
 
@@ -199,3 +199,13 @@ Expected: all commands exit 0.
 ## Execution and integration
 
 Implement on `feat/live-ecosystem-knowledge-layer`, open a pull request against `main`, wait for GitHub Actions verification, review the resulting diff, then merge only after the requested checks pass.
+
+
+## Implementation status
+
+- [x] Live reconciliation implemented as a .NET 10 project.
+- [x] Fixture-driven end-to-end tests cover additions, metadata preservation, provenance registration, before/after counts, and safe removal failure.
+- [x] `ecosystem/ecosystem.json` reconciled from 46 to the 47 repositories currently visible in the live public owner inventory.
+- [x] Scheduled/manual GitHub Actions workflow added; reconciliation failures still publish their report artifact.
+- [x] Gateway nullable warning corrected while validating the feature branch.
+- [ ] A future version may add authenticated private-repository inventory and capability-document scanning for newly discovered repos; these are intentionally not inferred in this implementation.
