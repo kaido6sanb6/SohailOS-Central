@@ -1648,11 +1648,10 @@
       "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
     }
   ],
-  "repositories_count": 47,
   "sync": {
     "owner": "kaido6sanb6",
     "scope": "public-owner-inventory",
-    "last_reconciled_at": "2026-09-22T00:00:00.0000000Z",
+    "last_reconciled_at": "2026-09-22",
     "live_repository_count": 47,
     "registry_repository_count": 47
   }
