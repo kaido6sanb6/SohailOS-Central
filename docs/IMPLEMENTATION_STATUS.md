@@ -95,7 +95,7 @@ Everything above can be validated without exposing the user's API keys in the re
 
 ## Ecosystem integration
 
-The repository now includes a machine-readable ecosystem control plane at `ecosystem/ecosystem.json` covering the 46 repositories visible in the authenticated owner inventory. The registry is validated for identity/edge/routing integrity, separates evidence from unverified provenance, and keeps network/proxy repositories and the untrusted prompt-research corpus out of automatic runtime routing.
+The repository now includes a live ecosystem knowledge/capability layer. `ecosystem/ecosystem.json` records the public owner inventory, capabilities, relationship edges, routing state, and verification state; `src/SohailOS.Ecosystem/` reconciles that registry against GitHub and safely records additive inventory/default-branch drift. New repositories remain `unclassified`, `unverified`, and `auto_route=false` until reviewed.
 
 ## V1.1 / post-V1
 
