@@ -91,6 +91,8 @@ public class EcosystemReconcilerEndToEndTests
             Assert.Equal(1, report.RootElement.GetProperty("added").GetArrayLength());
             Assert.Equal("kaido6sanb6/glowing-rotary-phone",
                 report.RootElement.GetProperty("added")[0].GetString());
+            Assert.Equal(1, report.RootElement.GetProperty("registry_repository_count_before").GetInt32());
+            Assert.Equal(2, report.RootElement.GetProperty("registry_repository_count_after").GetInt32());
         }
         finally
         {
