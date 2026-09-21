@@ -56,6 +56,6 @@ Sensitive personal information, credentials, API keys, tokens, and secrets must 
 
 ## Ecosystem control plane
 
-The `ecosystem/ecosystem.json` manifest registers all 46 owner-scoped repositories and defines their capabilities, explicit relationship edges, routing classes, and provenance verification state. `SohailOS-Central` remains the control plane; repositories are connected by metadata and capability composition rather than merged into this repository.
+The `ecosystem/ecosystem.json` manifest is the control-plane registry for the owner-scoped GitHub ecosystem. A live reconciler compares it with GitHub and safely records newly discovered repositories or metadata drift. `SohailOS-Central` remains the control plane; repositories are connected by metadata and capability composition rather than merged into this repository.
 
-See `docs/IMPLEMENTATION_STATUS.md` for the current production-readiness gap list.
+See `docs/ECOSYSTEM_KNOWLEDGE_LAYER.md` for the retrieval/knowledge model and `docs/IMPLEMENTATION_STATUS.md` for the current production-readiness gap list.

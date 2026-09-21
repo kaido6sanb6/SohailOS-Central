@@ -1,0 +1,87 @@
+name: ecosystem-reconcile
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+concurrency:
+  group: ecosystem-reconcile
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  reconcile:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Reconcile public owner inventory
+        id: reconcile
+        continue-on-error: true
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "${env:RUNNER_TEMP}\ecosystem-reconciliation.json" --write --fail-on-removal
+          "exit_code=$LASTEXITCODE" >> $env:GITHUB_OUTPUT
+
+      - name: Publish reconciliation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-reconciliation
+          path: ${{ runner.temp }}/ecosystem-reconciliation.json
+          if-no-files-found: error
+
+      - name: Fail when reconciliation fails
+        if: steps.reconcile.outputs.exit_code != '0'
+        shell: pwsh
+        run: |
+          exit [int]"${{ steps.reconcile.outputs.exit_code }}"
+
+      - name: Detect manifest changes
+        id: changes
+        shell: pwsh
+        run: |
+          $changes = git status --porcelain -- ecosystem/ecosystem.json
+          if ([string]::IsNullOrWhiteSpace($changes)) {
+            "changed=false" >> $env:GITHUB_OUTPUT
+          } else {
+            "changed=true" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Open reconciliation pull request
+        if: steps.changes.outputs.changed == 'true'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $title = "chore: reconcile GitHub ecosystem inventory"
+          $openPullRequestsJson = gh pr list --state open --base main --json number,title
+          $openPullRequests = if ([string]::IsNullOrWhiteSpace($openPullRequestsJson)) { @() } else { $openPullRequestsJson | ConvertFrom-Json }
+          $existing = $openPullRequests | Where-Object { $_.title -eq $title } | Select-Object -First 1
+
+          if ($null -ne $existing) {
+            Write-Host "An ecosystem reconciliation pull request (#$($existing.number)) is already open; skipping duplicate PR creation."
+            exit 0
+          }
+
+          $branch = "automation/ecosystem-sync/${{ github.run_id }}"
+          git checkout -b $branch
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ecosystem/ecosystem.json
+          git commit -m "chore: reconcile GitHub ecosystem inventory"
+          git push origin "HEAD:$branch"
+
+          gh pr create --base main --head $branch --title $title --body "Automated ecosystem reconciliation detected additive repository or default-branch metadata drift. New repositories remain unverified and are not auto-routed."

@@ -70,8 +70,9 @@ app.MapPost("/v1/agent/run", async (HttpRequest request, AgentRunRequest input, 
 app.MapPost("/mcp", async (HttpRequest request, HttpResponse response, CancellationToken cancellationToken) =>
 {
     if (!Authorized(request)) return Results.Unauthorized();
-    if (!request.Headers.Accept.Any(v => v is not null && v.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
-                                         v.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase)))
+    if (!request.Headers.Accept.Any(v => v is not null &&
+                                         (v.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
+                                          v.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase))))
         return Results.BadRequest(new { error = "Accept must include application/json or text/event-stream." });
 
     ExpireSessions();

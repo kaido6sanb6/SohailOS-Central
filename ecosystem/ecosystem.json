@@ -694,6 +694,24 @@
         "https://github.com/kaido6sanb6/vllm/blob/main/README.md"
       ],
       "notes": ""
+    },
+    {
+      "repo": "kaido6sanb6/glowing-rotary-phone",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/glowing-rotary-phone/blob/main/README.md"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1380590223,
+        "private": false,
+        "fork": false,
+        "last_seen_at": "2026-09-22T00:00:00.0000000Z"
+      }
     }
   ],
   "edges": [
@@ -1622,6 +1640,19 @@
       "upstream": null,
       "status": "unverified",
       "reason": "Normalized GitHub connector metadata exposed identity/default branch but did not return reliable parent/source fields."
+    },
+    {
+      "repo": "kaido6sanb6/glowing-rotary-phone",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
     }
-  ]
+  ],
+  "sync": {
+    "owner": "kaido6sanb6",
+    "scope": "public-owner-inventory",
+    "last_reconciled_at": "2026-09-22",
+    "live_repository_count": 47,
+    "registry_repository_count": 47
+  }
 }
