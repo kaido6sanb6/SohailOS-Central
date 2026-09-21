@@ -19,11 +19,13 @@ public class EcosystemRegistryDocumentTests
         Assert.True(root.TryGetProperty("repositories", out var repositories));
         Assert.True(root.TryGetProperty("edges", out var edges));
         Assert.True(root.TryGetProperty("routing", out var routing));
+        Assert.True(root.TryGetProperty("sync", out var sync));
 
         Assert.Equal(47, repositories.GetArrayLength());
         Assert.NotEqual(0, edges.GetArrayLength());
         Assert.NotEqual(0, routing.GetArrayLength());
         Assert.Equal("kaido6sanb6/SohailOS-Central", root.GetProperty("control_plane").GetString());
+        Assert.Equal(47, sync.GetProperty("live_repository_count").GetInt32());
     }
 
     [Fact]
@@ -80,7 +82,7 @@ public class EcosystemRegistryDocumentTests
             "kaido6sanb6/V2ray-for-Doprax"
         })
         {
-                Assert.False(repositories[name].GetProperty("auto_route").GetBoolean());
+            Assert.False(repositories[name].GetProperty("auto_route").GetBoolean());
         }
     }
 
