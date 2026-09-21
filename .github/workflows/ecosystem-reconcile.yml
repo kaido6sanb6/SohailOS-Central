@@ -67,10 +67,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $title = "chore: reconcile GitHub ecosystem inventory"
-          $existing = gh pr list --state open --base main --json number,title --jq '.[] | select(.title == "'"$title"'") | .number' | Select-Object -First 1
+          $openPullRequests = gh pr list --state open --base main --json number,title | ConvertFrom-Json
+          $existing = $openPullRequests | Where-Object { $_.title -eq $title } | Select-Object -First 1
 
-          if (-not [string]::IsNullOrWhiteSpace($existing)) {
-            Write-Host "An ecosystem reconciliation pull request (#$existing) is already open; skipping duplicate PR creation."
+          if ($null -ne $existing) {
+            Write-Host "An ecosystem reconciliation pull request (#$($existing.number)) is already open; skipping duplicate PR creation."
             exit 0
           }
 
