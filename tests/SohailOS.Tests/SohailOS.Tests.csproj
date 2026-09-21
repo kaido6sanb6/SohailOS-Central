@@ -8,4 +8,14 @@
     <ProjectReference Include="..\..\src\SohailOS.Agents\SohailOS.Agents.csproj" />
     <ProjectReference Include="..\..\src\SohailOS.AI\SohailOS.AI.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\ecosystem\ecosystem.json">
+      <Link>ecosystem\ecosystem.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ecosystem\README.md">
+      <Link>ecosystem\README.md</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
