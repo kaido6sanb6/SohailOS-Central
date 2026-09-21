@@ -126,7 +126,8 @@ public static class Program
         {
             var arg = args[i];
 
-            if (string.Equals(arg, "--write", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(arg, "--write", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(arg, "--fail-on-removal", StringComparison.OrdinalIgnoreCase))
             {
                 result["write"] = "true";
                 continue;
