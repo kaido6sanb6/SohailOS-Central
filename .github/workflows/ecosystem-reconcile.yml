@@ -66,7 +66,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $branch = "automation/ecosystem-sync/${{ github.run_id }}"
+          $title = "chore: reconcile GitHub ecosystem inventory"
+          $existing = gh pr list --state open --base main --json number,title --jq '.[] | select(.title == "'"$title"'") | .number' | Select-Object -First 1
+
+          if (-not [string]::IsNullOrWhiteSpace($existing)) {
+            Write-Host "An ecosystem reconciliation pull request (#$existing) is already open; skipping duplicate PR creation."
+            exit 0
+          }
+
+          $branch = "automation/ecosystem-sync"
           git checkout -b $branch
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -74,4 +82,4 @@ jobs:
           git commit -m "chore: reconcile GitHub ecosystem inventory"
           git push origin "HEAD:$branch"
 
-          gh pr create --base main --head $branch --title "chore: reconcile GitHub ecosystem inventory" --body "Automated ecosystem reconciliation detected additive repository or default-branch metadata drift. New repositories remain unverified and are not auto-routed."
+          gh pr create --base main --head $branch --title $title --body "Automated ecosystem reconciliation detected additive repository or default-branch metadata drift. New repositories remain unverified and are not auto-routed."
