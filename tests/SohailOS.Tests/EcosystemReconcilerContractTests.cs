@@ -28,6 +28,8 @@ public class EcosystemReconcilerContractTests
         Assert.Contains("workflow_dispatch:", workflow, StringComparison.Ordinal);
         Assert.Contains("src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj", workflow, StringComparison.Ordinal);
         Assert.Contains("--write", workflow, StringComparison.Ordinal);
+        Assert.Contains("--fail-on-removal", workflow, StringComparison.Ordinal);
+        Assert.Contains("if: always()", workflow, StringComparison.Ordinal);
     }
 
     [Fact]
