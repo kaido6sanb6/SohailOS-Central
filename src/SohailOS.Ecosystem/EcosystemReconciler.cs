@@ -22,6 +22,13 @@ public static class EcosystemReconciler
         var repositories = manifest["repositories"] as JsonArray
             ?? throw new InvalidDataException("Manifest.repositories must be an array.");
 
+        var upstream = manifest["upstream"] as JsonArray;
+        if (upstream is null)
+        {
+            upstream = new JsonArray();
+            manifest["upstream"] = upstream;
+        }
+
         var registryRepositoryCountBefore = repositories.Count;
         var existing = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
 
@@ -96,6 +103,13 @@ public static class EcosystemReconciler
             };
 
             repositories.Add(newRepository);
+            upstream.Add(new JsonObject
+            {
+                ["repo"] = live.FullName,
+                ["upstream"] = null,
+                ["status"] = "unverified",
+                ["reason"] = "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+            });
             existing.Add(live.FullName, newRepository);
             added.Add(live.FullName);
         }
