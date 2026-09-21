@@ -126,10 +126,15 @@ public static class Program
         {
             var arg = args[i];
 
-            if (string.Equals(arg, "--write", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(arg, "--fail-on-removal", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(arg, "--write", StringComparison.OrdinalIgnoreCase))
             {
                 result["write"] = "true";
+                continue;
+            }
+
+            if (string.Equals(arg, "--fail-on-removal", StringComparison.OrdinalIgnoreCase))
+            {
+                result["fail-on-removal"] = "true";
                 continue;
             }
 
