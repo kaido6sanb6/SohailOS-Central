@@ -182,8 +182,9 @@ public static class Program
 
     private static async Task<JsonObject> LoadManifestAsync(string path)
     {
-        return await JsonNode.ParseAsync(
-                File.OpenRead(path))
+        await using var stream = File.OpenRead(path);
+
+        return await JsonNode.ParseAsync(stream)
             as JsonObject
             ?? throw new InvalidDataException(
                 "Manifest root must be a JSON object.");
