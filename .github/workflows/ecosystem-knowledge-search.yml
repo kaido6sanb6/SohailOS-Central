@@ -2,6 +2,8 @@ name: Sync GitHub Knowledge Fabric to Cloudflare AI Search
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [forks_reconciled]
   push:
     branches: [main]
     paths:
