@@ -3,7 +3,7 @@ name: ecosystem-reconcile
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 3 * * *"
+    - cron: "*/15 * * * *"
 
 concurrency:
   group: ecosystem-reconcile
@@ -11,7 +11,6 @@ concurrency:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   reconcile:
@@ -60,28 +59,22 @@ jobs:
             "changed=true" >> $env:GITHUB_OUTPUT
           }
 
-      - name: Open reconciliation pull request
+      - name: Commit reconciliation directly to main
         if: steps.changes.outputs.changed == 'true'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $title = "chore: reconcile GitHub ecosystem inventory"
-          $openPullRequestsJson = gh pr list --state open --base main --json number,title
-          $openPullRequests = if ([string]::IsNullOrWhiteSpace($openPullRequestsJson)) { @() } else { $openPullRequestsJson | ConvertFrom-Json }
-          $existing = $openPullRequests | Where-Object { $_.title -eq $title } | Select-Object -First 1
-
-          if ($null -ne $existing) {
-            Write-Host "An ecosystem reconciliation pull request (#$($existing.number)) is already open; skipping duplicate PR creation."
-            exit 0
-          }
-
-          $branch = "automation/ecosystem-sync/${{ github.run_id }}"
-          git checkout -b $branch
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ecosystem/ecosystem.json
           git commit -m "chore: reconcile GitHub ecosystem inventory"
-          git push origin "HEAD:$branch"
+          git push origin "HEAD:main"
 
-          gh pr create --base main --head $branch --title $title --body "Automated ecosystem reconciliation detected additive repository or default-branch metadata drift. New repositories remain unverified and are not auto-routed."
+      - name: Trigger knowledge synchronization
+        if: steps.changes.outputs.changed == 'true'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/${{ github.repository }}/dispatches" -f event_type=forks_reconciled
