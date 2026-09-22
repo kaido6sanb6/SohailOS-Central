@@ -81,6 +81,12 @@ public class InMemoryDataPlaneProvider : DataPlaneProvider
         return Task.FromResult(new KnowledgeWriteResult(true, values.Length));
     }
 
+    public virtual Task<bool> EmbeddingExistsAsync(string generationId, string chunkId, CancellationToken cancellationToken = default)
+    {
+        lock (_gate)
+            return Task.FromResult(_embeddings.ContainsKey($"{generationId}|{chunkId}"));
+    }
+
     public virtual Task<KnowledgeWriteResult> TombstoneAsync(IEnumerable<string> ids, string reason, CancellationToken cancellationToken = default)
     {
         var values = ids.Distinct(StringComparer.Ordinal).ToArray();
@@ -90,18 +96,7 @@ public class InMemoryDataPlaneProvider : DataPlaneProvider
             {
                 if (id.StartsWith("gh:doc:", StringComparison.Ordinal))
                 {
-                    if (_documents.TryGetValue(id, out var doc))
-                        _documents[id] = doc with { Deleted = true, DeletedAt = DateTimeOffset.UtcNow };
-
-                    foreach (var revision in _revisions.Values.Where(x => x.Path == id[(id.IndexOf(':', 7) + 1)..]).ToArray())
-                    {
-                        _revisions[revision.RevisionId] = revision with
-                        {
-                            State = KnowledgeIndexState.Tombstoned,
-                            FailureReason = reason
-                        };
-                        RemoveRevisionContent(revision.RevisionId);
-                    }
+                    TombstoneDocumentInternal(id, reason);
                 }
                 else if (id.StartsWith("gh:rev:", StringComparison.Ordinal))
                 {
@@ -416,6 +411,29 @@ public class InMemoryDataPlaneProvider : DataPlaneProvider
             .Where(x => x.FetchedAt <= moment)
             .OrderByDescending(x => x.FetchedAt)
             .FirstOrDefault();
+    }
+
+    private void TombstoneDocumentInternal(string docId, string reason)
+    {
+        if (!_documents.TryGetValue(docId, out var doc))
+        {
+            _tombstones.Add(docId);
+            return;
+        }
+
+        _documents[docId] = doc with { Deleted = true, DeletedAt = DateTimeOffset.UtcNow };
+        foreach (var revision in _revisions.Values
+                     .Where(x => x.RepoId == doc.RepoId && x.Path == doc.NormalizedPath)
+                     .ToArray())
+        {
+            _revisions[revision.RevisionId] = revision with
+            {
+                State = KnowledgeIndexState.Tombstoned,
+                FailureReason = reason
+            };
+            RemoveRevisionContent(revision.RevisionId);
+        }
+        _tombstones.Add(docId);
     }
 
     private void TombstoneDocument(string docId, string reason)
