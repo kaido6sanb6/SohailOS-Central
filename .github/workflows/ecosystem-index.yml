@@ -1,0 +1,58 @@
+name: ecosystem-index
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "47 3 * * *"
+
+concurrency:
+  group: ecosystem-index
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  index:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Index live GitHub ecosystem
+        id: index
+        continue-on-error: true
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --index --index-path "${env:RUNNER_TEMP}\sohailos-knowledge-index.json" --index-report "${env:RUNNER_TEMP}\ecosystem-index-report.json"
+          "exit_code=$LASTEXITCODE" >> $env:GITHUB_OUTPUT
+
+      - name: Publish index report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-index-report
+          path: ${{ runner.temp }}/ecosystem-index-report.json
+          if-no-files-found: error
+
+      - name: Publish Gate-0 index snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-gate0-index
+          path: ${{ runner.temp }}/sohailos-knowledge-index.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Fail when indexing has permanent failures
+        if: steps.index.outputs.exit_code != '0'
+        shell: pwsh
+        run: |
+          exit [int]"${{ steps.index.outputs.exit_code }}"
