@@ -35,6 +35,10 @@ public static class EcosystemKnowledgeTools
         public ToolDefinition Definition { get; } =
             new(name, description, ToolPermission.ReadOnly);
 
+        public abstract Task<ToolResult> ExecuteAsync(
+            IReadOnlyDictionary<string, object?> arguments,
+            CancellationToken cancellationToken = default);
+
         protected static string? Arg(
             IReadOnlyDictionary<string, object?> arguments,
             string name)
