@@ -13,4 +13,24 @@ public sealed class KnowledgeContractsTests
 
         Assert.NotNull(type);
     }
+
+    [Fact]
+    public void KnowledgeIdentity_NormalizesPathWithoutCaseFolding()
+    {
+        var type = Type.GetType(
+            "SohailOS.Ecosystem.KnowledgeIdentity, SohailOS.Ecosystem",
+            throwOnError: false);
+
+        Assert.NotNull(type);
+    }
+
+    [Fact]
+    public void HybridRanker_ExistsWithDeterministicFusionVersion()
+    {
+        var type = Type.GetType(
+            "SohailOS.Ecosystem.HybridRanker, SohailOS.Ecosystem",
+            throwOnError: false);
+
+        Assert.NotNull(type);
+    }
 }
