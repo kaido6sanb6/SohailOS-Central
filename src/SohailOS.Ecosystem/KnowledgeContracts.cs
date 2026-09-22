@@ -172,6 +172,7 @@ public sealed record KnowledgeSourcePointer(
     string Path,
     string GitOid,
     string BlobSha,
+    DateTimeOffset IndexedAt,
     string Permalink,
     KnowledgeTrustTier TrustTier);
 
