@@ -30,12 +30,8 @@ public class EcosystemReconcilerContractTests
         Assert.Contains("--write", workflow, StringComparison.Ordinal);
         Assert.Contains("--fail-on-removal", workflow, StringComparison.Ordinal);
         Assert.Contains("if: always()", workflow, StringComparison.Ordinal);
-        Assert.Contains("automation/ecosystem-sync", workflow, StringComparison.Ordinal);
-        Assert.Contains("${{ github.run_id }}", workflow, StringComparison.Ordinal);
-        Assert.Contains("gh pr list", workflow, StringComparison.Ordinal);
-        Assert.Contains("Open reconciliation pull request", workflow, StringComparison.Ordinal);
-        Assert.Contains("ConvertFrom-Json", workflow, StringComparison.Ordinal);
-        Assert.Contains("IsNullOrWhiteSpace", workflow, StringComparison.Ordinal);
+        Assert.Contains("gh api --method POST", workflow, StringComparison.Ordinal);
+        Assert.Contains("forks_reconciled", workflow, StringComparison.Ordinal);
         Assert.Contains("automation/ecosystem-sync", workflow, StringComparison.Ordinal);
     }
 
