@@ -6,6 +6,7 @@ using SohailOS.Core;
 using SohailOS.Integrations;
 using SohailOS.Memory;
 using SohailOS.Ecosystem;
+using SohailOS.Gateway;
 
 var builder = WebApplication.CreateBuilder(args);
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
