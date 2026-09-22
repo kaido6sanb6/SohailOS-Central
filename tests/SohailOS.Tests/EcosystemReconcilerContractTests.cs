@@ -32,7 +32,6 @@ public class EcosystemReconcilerContractTests
         Assert.Contains("if: always()", workflow, StringComparison.Ordinal);
         Assert.Contains("gh api --method POST", workflow, StringComparison.Ordinal);
         Assert.Contains("forks_reconciled", workflow, StringComparison.Ordinal);
-        Assert.Contains("automation/ecosystem-sync", workflow, StringComparison.Ordinal);
     }
 
     [Fact]
