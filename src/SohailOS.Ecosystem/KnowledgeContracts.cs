@@ -187,13 +187,16 @@ public interface DataPlaneProvider
     Task<KnowledgeProviderCapabilities> CapabilitiesAsync(CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> MigrateAsync(string targetVersion, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> UpsertRevisionsAsync(IEnumerable<SourceRevision> revisions, CancellationToken cancellationToken = default);
+    Task<KnowledgeWriteResult> UpsertDocumentsAsync(IEnumerable<DocumentRecord> documents, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> UpsertChunksAsync(IEnumerable<ChunkRecord> chunks, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> UpsertEmbeddingsAsync(string generationId, IEnumerable<(string ChunkId, float[] Vector)> items, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> TombstoneAsync(IEnumerable<string> ids, string reason, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> RecordRunAsync(KnowledgeRunRecord run, CancellationToken cancellationToken = default);
+    Task<KnowledgeWriteResult> SetRevisionStateAsync(string revisionId, KnowledgeIndexState state, string? reason = null, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<KnowledgeHit>> LexicalSearchAsync(string query, KnowledgeFilters filters, int k, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<KnowledgeHit>> VectorSearchAsync(float[] vector, string generationId, KnowledgeFilters filters, int k, CancellationToken cancellationToken = default);
     Task<KnowledgeDocumentResult?> GetDocumentAsync(string docId, string? asOf, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<DocumentRecord>> ListDocumentsAsync(string repoId, bool includeDeleted, CancellationToken cancellationToken = default);
     Task<KnowledgeSourcePointer?> GetSourceAsync(string revisionId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<EmbeddingGeneration>> ListGenerationsAsync(CancellationToken cancellationToken = default);
 }
