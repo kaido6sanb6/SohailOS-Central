@@ -199,7 +199,6 @@ public static class Program
                 new JsonSerializerOptions { WriteIndented = true }));
 
         return runResults.Any(x =>
-        return runResults.Any(x =>
             x.State is KnowledgeIndexState.FailedPermanent) ? 2 : 0;
     }
 
