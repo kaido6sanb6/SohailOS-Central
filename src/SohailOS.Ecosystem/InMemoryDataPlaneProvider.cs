@@ -269,6 +269,7 @@ public class InMemoryDataPlaneProvider : DataPlaneProvider
                     revision.Path,
                     revision.GitOid,
                     revision.BlobSha,
+                    revision.FetchedAt,
                     $"https://github.com/{repository.FullName}/blob/{revision.GitOid}/{revision.Path}",
                     repository.TrustTier));
         }
