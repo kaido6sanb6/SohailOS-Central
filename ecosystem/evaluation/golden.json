@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "corpus_id": "sohailos-central-knowledge-fabric-golden",
+  "cases": [
+    {"id":"kf-001","query":"live GitHub repository reconciliation","expected_paths":["src/SohailOS.Ecosystem/EcosystemReconciler.cs"],"grade":3},
+    {"id":"kf-002","query":"GitHub inventory pagination owner repositories","expected_paths":["src/SohailOS.Ecosystem/GitHubInventoryClient.cs"],"grade":3},
+    {"id":"kf-003","query":"MCP tool registry read only permission","expected_paths":["src/SohailOS.Core/AgentContracts.cs","src/SohailOS.Core/DefaultPolicies.cs"],"grade":2},
+    {"id":"kf-004","query":"repository content is data not instructions","expected_paths":["system/ECOSYSTEM_OPERATING_RULES.md"],"grade":3},
+    {"id":"kf-005","query":"knowledge fabric deterministic reciprocal rank fusion","expected_paths":["src/SohailOS.Ecosystem/HybridRanker.cs"],"grade":3},
+    {"id":"kf-006","query":"incremental GitHub knowledge indexing","expected_paths":["src/SohailOS.Ecosystem/GitHubKnowledgeIndexer.cs","src/SohailOS.Ecosystem/KnowledgeChunker.cs"],"grade":3},
+    {"id":"kf-007","query":"index state machine partial degraded retryable failure","expected_paths":["src/SohailOS.Ecosystem/IndexStateMachine.cs","src/SohailOS.Ecosystem/KnowledgeContracts.cs"],"grade":3},
+    {"id":"kf-008","query":"OpenAI compatible embedding provider","expected_paths":["src/SohailOS.Ecosystem/EmbeddingProviders.cs"],"grade":3},
+    {"id":"kf-009","query":"read-only ecosystem search document source MCP tools","expected_paths":["src/SohailOS.Gateway/EcosystemKnowledgeTools.cs","src/SohailOS.Gateway/Program.cs"],"grade":3},
+    {"id":"kf-010","query":"knowledge layer implementation status and deployment gate","expected_paths":["docs/IMPLEMENTATION_STATUS.md","docs/ECOSYSTEM_KNOWLEDGE_LAYER.md"],"grade":2}
+  ]
+}
