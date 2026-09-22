@@ -102,6 +102,10 @@ public static class Program
             options,
             "index-report",
             Path.Combine("ecosystem", "index-report.json"));
+        var knowledgeGraphPath = GetOption(
+            options,
+            "knowledge-graph",
+            Path.Combine("ecosystem", "generated", "knowledge-graph.json"));
 
         var manifest = await LoadManifestAsync(manifestPath);
         var liveRepositories = await LoadLiveRepositoriesAsync(options, owner);
@@ -150,6 +154,19 @@ public static class Program
             Console.WriteLine(
                 $"Indexed {repository.FullName}: state={result.State}, counts={JsonSerializer.Serialize(result.Counts)}, degraded={string.Join(",", result.DegradedFlags)}");
         }
+
+        var inventoryForGraph = options.TryGetValue("inventory", out var inventoryPathForGraph)
+            ? await LoadInventoryJsonAsync(inventoryPathForGraph)
+            : new JsonArray();
+
+        var graph = KnowledgeGraphBuilder.Build(liveRepositories, inventoryForGraph);
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(Path.GetFullPath(knowledgeGraphPath))!);
+        await File.WriteAllTextAsync(
+            knowledgeGraphPath,
+            JsonSerializer.Serialize(
+                graph,
+                new JsonSerializerOptions { WriteIndented = true }));
 
         var report = new
         {
@@ -210,6 +227,13 @@ public static class Program
             $"Knowledge search export: files={result.Files.Count}, chunks={result.ChunkCount}, bytes={result.TotalBytes}, output={outputPath}");
 
         return 0;
+    }
+
+    private static async Task<JsonArray> LoadInventoryJsonAsync(string path)
+    {
+        await using var stream = File.OpenRead(path);
+        return await JsonNode.ParseAsync(stream) as JsonArray
+            ?? throw new InvalidDataException("Inventory root must be a JSON array.");
     }
 
     private static async Task<JsonObject> LoadManifestAsync(string path)
