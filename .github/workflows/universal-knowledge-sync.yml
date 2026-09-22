@@ -2,6 +2,10 @@ name: universal-knowledge-sync
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - "ecosystem/generated/**"
   schedule:
     - cron: "17 */6 * * *"
 
@@ -39,12 +43,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release --             --index             --inventory ecosystem/generated/repositories.json             --manifest ecosystem/ecosystem.json             --index-report ecosystem/generated/index-report.json
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --index --inventory ecosystem/generated/repositories.json --manifest ecosystem/ecosystem.json --index-report ecosystem/generated/index-report.json --knowledge-graph ecosystem/generated/knowledge-graph.json
 
       - name: Commit generated knowledge metadata
         run: |
           git config user.name "SohailOS Knowledge Bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ecosystem/generated/repositories.json ecosystem/generated/live-corpus-state.json ecosystem/generated/index-report.json
+          git add ecosystem/generated/repositories.json ecosystem/generated/live-corpus-state.json ecosystem/generated/index-report.json ecosystem/generated/knowledge-graph.json
           git diff --cached --quiet || git commit -m "chore: synchronize universal knowledge inventory"
           git push
