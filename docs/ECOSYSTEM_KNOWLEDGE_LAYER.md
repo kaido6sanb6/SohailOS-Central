@@ -63,3 +63,13 @@ The public-owner inventory is sufficient for the current public repository set. 
 Use the smallest repository subset that materially improves the current task. Do not load or execute every repository simply because it exists.
 
 GitHub repositories are one capability source among many: installed skills, MCP applications, web, files, local execution, and specialized research tools can be composed when relevant.
+
+## Knowledge Fabric implementation
+
+The repository now contains a Gate-0 provider-neutral knowledge fabric implementation under `src/SohailOS.Ecosystem/`. It can discover the live public owner inventory, fetch GitHub trees/blobs by commit, chunk eligible text deterministically, retain repository/path/commit/blob provenance, perform lexical retrieval, and expose an optional embedding-provider seam. A JSON-file Gate-0 data plane is available for local persistence and test/development use.
+
+The continuous indexing workflow is `.github/workflows/ecosystem-index.yml`. It has `contents: read` permissions only and publishes the Gate-0 index snapshot and run report as workflow artifacts. It does not mutate GitHub repositories or open pull requests.
+
+The Gateway exposes the Knowledge-Fabric retrieval subset through exactly three read-only tools: `ecosystem.search`, `ecosystem.get_document`, and `ecosystem.get_source`. MCP tool annotations use `readOnlyHint: true` for read-only tools, matching the current MCP tool-annotation model. Tool annotations are descriptive metadata, not security enforcement; the actual enforcement boundary remains the ToolRegistry/permission model and the absence of write-capable Knowledge-Fabric tools.
+
+Persistent PostgreSQL/pgvector is intentionally provider-gated. No Supabase project is connected in the current environment, so the repository does not claim a live external vector data plane or persistent remote semantic search.
