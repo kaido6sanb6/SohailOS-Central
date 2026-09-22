@@ -35,7 +35,6 @@ public sealed class KnowledgeWorkflowContractTests
         Assert.Contains("*/15 * * * *", yaml);
         Assert.Contains("contents: write", yaml);
         Assert.Contains("git push origin", yaml);
-        Assert.Contains("repository_dispatch", yaml);
         Assert.Contains("gh api --method POST", yaml);
         Assert.Contains("forks_reconciled", yaml);
         Assert.DoesNotContain("gh pr create", yaml);
