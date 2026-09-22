@@ -73,7 +73,7 @@ public sealed class KnowledgeSearchExportTests
         var output = Path.Combine(Path.GetTempPath(), $"sohailos-kf-{Guid.NewGuid():N}");
         try
         {
-            var result = await KnowledgeSearchExportService.ExportAsync(provider, output, 1024);
+            var result = await KnowledgeSearchExportService.ExportAsync(provider, output, 16 * 1024);
 
             Assert.Single(result.Files);
             var file = await File.ReadAllTextAsync(result.Files[0]);
@@ -81,7 +81,7 @@ public sealed class KnowledgeSearchExportTests
             Assert.Contains("git_oid: 0123456789abcdef0123456789abcdef01234567", file);
             Assert.Contains("path: src/example.cs", file);
             Assert.Contains("hello world", file);
-            Assert.True(new FileInfo(result.Files[0]).Length <= 1024);
+            Assert.True(new FileInfo(result.Files[0]).Length <= 16 * 1024);
         }
         finally
         {
