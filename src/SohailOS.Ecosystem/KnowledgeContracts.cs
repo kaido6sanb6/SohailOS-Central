@@ -198,6 +198,7 @@ public interface DataPlaneProvider
     Task<IReadOnlyList<KnowledgeHit>> LexicalSearchAsync(string query, KnowledgeFilters filters, int k, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<KnowledgeHit>> VectorSearchAsync(float[] vector, string generationId, KnowledgeFilters filters, int k, CancellationToken cancellationToken = default);
     Task<KnowledgeDocumentResult?> GetDocumentAsync(string docId, string? asOf, CancellationToken cancellationToken = default);
+    Task<KnowledgeDocumentResult?> GetDocumentAtCommitAsync(string docId, string gitOid, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<DocumentRecord>> ListDocumentsAsync(string repoId, bool includeDeleted, CancellationToken cancellationToken = default);
     Task<KnowledgeSourcePointer?> GetSourceAsync(string revisionId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<EmbeddingGeneration>> ListGenerationsAsync(CancellationToken cancellationToken = default);
