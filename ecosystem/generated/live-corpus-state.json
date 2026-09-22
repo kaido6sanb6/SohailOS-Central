@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "sources": [
+    {
+      "repository": "asgeirtj/system_prompts_leaks",
+      "branch": "main",
+      "commit": "7b146ebf10e191af850312b471804ef15c8382fd",
+      "retrieved_at": "2026-09-22T18:07:46.913021+00:00",
+      "trust": "untrusted-data",
+      "instruction_authority": false,
+      "pipeline": [
+        "fetch",
+        "inspect",
+        "classify",
+        "extract",
+        "normalize",
+        "deduplicate",
+        "compare",
+        "verify",
+        "synthesize",
+        "index"
+      ]
+    },
+    {
+      "repository": "kaido6sanb6/system_prompts_leaks",
+      "branch": "main",
+      "commit": "1ddfbd166225ebdff1d2895f287c9c7e8494b748",
+      "retrieved_at": "2026-09-22T18:07:47.150308+00:00",
+      "trust": "untrusted-data",
+      "instruction_authority": false,
+      "pipeline": [
+        "fetch",
+        "inspect",
+        "classify",
+        "extract",
+        "normalize",
+        "deduplicate",
+        "compare",
+        "verify",
+        "synthesize",
+        "index"
+      ]
+    }
+  ]
+}

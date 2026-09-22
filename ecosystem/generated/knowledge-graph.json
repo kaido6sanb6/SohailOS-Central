@@ -1,0 +1,1169 @@
+{
+  "SchemaVersion": "1.0",
+  "GeneratedAt": "2026-09-22T18:11:08.7611401+00:00",
+  "Nodes": [
+    {
+      "Id": "repo:1370133186",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/SohailOS-Central",
+      "Trust": "authoritative"
+    },
+    {
+      "Id": "repo:1375649771",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/system_prompts_leaks",
+      "Trust": "untrusted-data"
+    },
+    {
+      "Id": "repo:1375977992",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/claude-code",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380520866",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/prompts.chat",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380523113",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/ChatGPT-Shortcut",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380526014",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/chatgpt-prompts-for-academic-writing",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380530684",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/generative-ai-for-beginners",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380532122",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/NextChat",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380535165",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/hermes-agent",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380538907",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/gpt4free",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380539769",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/lobehub",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380541711",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/AutoGPT",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380543325",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/andrej-karpathy-skills",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380543868",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/gstack",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380544669",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/claude-codee",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380546764",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/cc-switch",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380547362",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/mindshub",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380548284",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/NemoClaw",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380548810",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/hermes-webui",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380549445",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/screenpipe",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380550040",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/paseo",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380552439",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/transformerss",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380552911",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/ollama",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380553669",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/ChatGLM-6B",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380554171",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Open-AutoGLM",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380554867",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/vllm",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380555507",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/OmniRoute",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380555882",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/openinterpreter",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380556090",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/AIClient2API",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380556940",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/JavaGuide",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380557646",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/deepseek-harness",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380560473",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/pytorch-image-models",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380561400",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/skills",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380561998",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/tokenizers",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380562592",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/chat-ui",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380563027",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/text-generation-inference",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380563852",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/text-embeddings-inference",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380564496",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/deep-rl-class",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380565019",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/notebooks",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380565879",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/huggingface_hub",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380566476",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/datatrove",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380567582",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/OpenMetadata",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380568059",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/datahub",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1380590223",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/glowing-rotary-phone",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381283967",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/awesome-gpt-image-2",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381296112",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/awesome-gpt-image-2-API-and-Prompts",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381297522",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/go-openai",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381848977",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/open-design",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381850669",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/ruflo",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381878513",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/DeepSeek-Reasonix",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381881778",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/WeKnora",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381882444",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/dsh-desktop",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381884320",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/voyager",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381886661",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/MemOS",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381888260",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/yao",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381920450",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/awesome-GLAM-semweb",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381922850",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/humanities_data_benchmark",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381924249",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/EEBO-TCP-Collections-Navigations",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381925048",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/ECCO-TCP",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381926086",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Evans-TCP",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381927728",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Notebooks4Historical_Newspapers",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381930632",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/zotero-scihub",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381935033",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/impresso-frontend",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381935655",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/ontology",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381936597",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/graph_skills",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381938062",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/persian-nlp-benchmark",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381954133",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/OpenNMT-py",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381954870",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/v",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381960102",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/scholarly",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381960965",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/how-to-scrape-google-scholar",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381961538",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/scholar.py",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381962405",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Side-Auto_Sci-Hub",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381963191",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/scihub",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381963538",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/SciDownl",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381964003",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/PyPaperBot",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381964367",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/scihub.py",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381964694",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/SciHubEVA",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381965494",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/rio",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381965841",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/jasp-desktop",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381967115",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Some-Many-Books",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381967830",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/social-data-analysis",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381968900",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/textnets",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381969984",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/graph-theory",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381970813",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Mastodon-Sociologists",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381972412",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Auto-Empirical-Research-Skills",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1381973005",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/hamuleite",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382004395",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Gaddel",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382028559",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/research-agent",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382029008",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Research-RAG",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382029552",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/parsbert",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382030000",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/hazm",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382031172",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/grobid",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382034044",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/iiifc-theme",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382034401",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/training",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382034986",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/iiif-stories",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382035955",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/awesome-iiif",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382036379",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/api",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382036828",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/Ketaba-OCR-LoRA",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382037192",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/AraMS-28k-Dataset",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382037857",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/tarima",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382038587",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/rasam-dataset",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382039206",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/htr-united",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:1382039866",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/kraken",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:615262582",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/V2ray-for-Doprax",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:622884679",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/argo-pass",
+      "Trust": "unverified"
+    },
+    {
+      "Id": "repo:653543719",
+      "Type": "Repository",
+      "Name": "kaido6sanb6/dddeu83",
+      "Trust": "unverified"
+    }
+  ],
+  "Edges": [
+    {
+      "From": "kaido6sanb6/AIClient2API",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/AraMS-28k-Dataset",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Auto-Empirical-Research-Skills",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/AutoGPT",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/ChatGLM-6B",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/ChatGPT-Shortcut",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/DeepSeek-Reasonix",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/ECCO-TCP",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/EEBO-TCP-Collections-Navigations",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Evans-TCP",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Gaddel",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/JavaGuide",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Ketaba-OCR-LoRA",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Mastodon-Sociologists",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/MemOS",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/NemoClaw",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/NextChat",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Notebooks4Historical_Newspapers",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/OmniRoute",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Open-AutoGLM",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/OpenMetadata",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/OpenNMT-py",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/PyPaperBot",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Research-RAG",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/SciDownl",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/SciHubEVA",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Side-Auto_Sci-Hub",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/Some-Many-Books",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/V2ray-for-Doprax",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/WeKnora",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/andrej-karpathy-skills",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/api",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/argo-pass",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/awesome-GLAM-semweb",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/awesome-gpt-image-2",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/awesome-gpt-image-2-API-and-Prompts",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/awesome-iiif",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/cc-switch",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/chat-ui",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/chatgpt-prompts-for-academic-writing",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/claude-code",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/claude-codee",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/datahub",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/datatrove",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/dddeu83",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/deep-rl-class",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/deepseek-harness",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/dsh-desktop",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/generative-ai-for-beginners",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/glowing-rotary-phone",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/go-openai",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/gpt4free",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/graph-theory",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/graph_skills",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/grobid",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/gstack",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/hamuleite",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/hazm",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/hermes-agent",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/hermes-webui",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/how-to-scrape-google-scholar",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/htr-united",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/huggingface_hub",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/humanities_data_benchmark",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/iiif-stories",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/iiifc-theme",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/impresso-frontend",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/jasp-desktop",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/kraken",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/lobehub",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/mindshub",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/notebooks",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/ollama",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/ontology",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/open-design",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/openinterpreter",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/parsbert",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/paseo",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/persian-nlp-benchmark",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/prompts.chat",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/pytorch-image-models",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/rasam-dataset",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/research-agent",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/rio",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/ruflo",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/scholar.py",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/scholarly",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/scihub",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/scihub.py",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/screenpipe",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/skills",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/social-data-analysis",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/system_prompts_leaks",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "RESEARCH_CORPUS_FOR"
+    },
+    {
+      "From": "kaido6sanb6/tarima",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/text-embeddings-inference",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/text-generation-inference",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/textnets",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/tokenizers",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/training",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/transformerss",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/v",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/vllm",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/voyager",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/yao",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    },
+    {
+      "From": "kaido6sanb6/zotero-scihub",
+      "To": "kaido6sanb6/SohailOS-Central",
+      "Type": "KNOWLEDGE_SOURCE_FOR"
+    }
+  ]
+}
