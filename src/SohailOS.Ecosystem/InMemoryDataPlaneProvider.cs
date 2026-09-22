@@ -237,6 +237,15 @@ public class InMemoryDataPlaneProvider : DataPlaneProvider
         }
     }
 
+    public virtual Task<IReadOnlyList<RepositoryIdentity>> ListRepositoriesAsync(CancellationToken cancellationToken = default)
+    {
+        lock (_gate)
+            return Task.FromResult<IReadOnlyList<RepositoryIdentity>>(
+                _repositories.Values
+                    .OrderBy(x => x.FullName, StringComparer.OrdinalIgnoreCase)
+                    .ToArray());
+    }
+
     public virtual Task<IReadOnlyList<DocumentRecord>> ListDocumentsAsync(string repoId, bool includeDeleted, CancellationToken cancellationToken = default)
     {
         lock (_gate)

@@ -23,6 +23,24 @@ public sealed class KnowledgeWorkflowContractTests
         Assert.DoesNotContain("create_pull_request", yaml);
     }
 
+
+    [Fact]
+    public void ManagedSearchWorkflow_Uses_ReadOnlyGitHub_And_AI_SearchSync()
+    {
+        var path = FindRepositoryFile(".github/workflows/ecosystem-knowledge-search.yml");
+        Assert.True(File.Exists(path), $"Expected managed search workflow at {path}.");
+
+        var yaml = File.ReadAllText(path);
+        Assert.Contains("workflow_dispatch", yaml);
+        Assert.Contains("schedule:", yaml);
+        Assert.Contains("contents: read", yaml);
+        Assert.DoesNotContain("contents: write", yaml);
+        Assert.Contains("--export-search", yaml);
+        Assert.Contains("sync-knowledge-ai-search.mjs", yaml);
+        Assert.Contains("CLOUDFLARE_API_TOKEN", yaml);
+        Assert.Contains("CLOUDFLARE_ACCOUNT_ID", yaml);
+    }
+
     [Fact]
     public void GoldenEvaluationCorpus_IsVersionedAndHasUniqueCaseIds()
     {

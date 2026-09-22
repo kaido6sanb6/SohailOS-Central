@@ -577,15 +577,17 @@ data_not_instructions: true
 
 ### 12.1 Version Pinning
 
-- **DP1.** The vector extension version MUST be pinned in the deployment
-  manifest and asserted at startup. If the pinned version provides iterative
-  index scans, the system SHOULD use them for filtered queries.
-- **DP2.** Version assertions MUST fail loudly. Silent capability downgrade is
-  PROHIBITED.
+- **DP1.** The selected provider configuration MUST be pinned and asserted.
+- **DP2.** Version/capability assertions MUST fail loudly. Silent capability
+  downgrade is PROHIBITED.
+- **DP3.** The preferred managed deployment is Cloudflare AI Search with
+  vector + keyword indexing, RRF fusion, and optional reranking. Cloudflare
+  documents these capabilities in its current AI Search API.
 
-> **RESOLVED OQ-3:** No extension version is hard-coded before a target
-> deployment exists. The target provider deployment manifest MUST pin and
-> assert the installed vector-extension version before Gate 2 is enabled.
+> **RESOLVED OQ-3:** The preferred managed deployment is Cloudflare AI Search,
+> which encapsulates vector/keyword indexing and its underlying vector store.
+> PostgreSQL/pgvector remains a conforming alternative. Provider-specific
+> versions MUST be asserted by the selected deployment.
 
 ---
 
@@ -652,7 +654,8 @@ Tombstoning MUST:
 
 > **RESOLVED OQ-5:** Default retention policy is 365 days for public content
 > and 30 days for private content, subject to operator override before private
-> indexing. Enforcement belongs to the external provider deployment stage.
+> indexing. The managed public search export excludes unverified and tombstoned
+> repositories; private indexing remains disabled by default.
 
 ---
 
@@ -748,6 +751,7 @@ NOT begin before approval.**
 | 26 | Added document control and change protocol | ADD | 0 |
 | 27 | Approved the specification, resolved OQ-1 through OQ-6, and recorded Gate-0 implementation status | MODIFY | 0, 12, 13, 14, 15, 16 |
 | 28 | Promoted v0.2.0 from draft to approved, reconciled the status table, and clarified deterministic-ID semantics for operational run IDs | MODIFY | 0, 3 |
+| 29 | Added a managed Cloudflare AI Search deployment path and scoped the three-tool allowlist explicitly to the Knowledge-Fabric surface | MODIFY | 1, 11, 12 |
 
 ---
 

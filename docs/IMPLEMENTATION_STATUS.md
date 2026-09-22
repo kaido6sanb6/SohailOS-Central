@@ -103,7 +103,7 @@ Gate-0 implementation is present on the knowledge-fabric branch and includes pro
 
 The continuous index workflow uses the live `kaido6sanb6` public repository inventory, so a future public repository can enter the ingestion set without hard-coding a new repository name in the workflow. New or otherwise unverified repositories remain reference-only and are not eligible for automatic execution routing.
 
-Persistent external vector search remains deployment-gated because there is no connected Supabase project or other selected PostgreSQL/pgvector target in the current environment. No live external semantic-search deployment is claimed.
+Managed external semantic retrieval is now implemented as a deployment path through Cloudflare AI Search. The synchronization workflow builds the GitHub-derived index, exports provenance-rich searchable documents, provisions/configures a hybrid AI Search instance, uploads current items, deletes stale items, and publishes the generated MCP endpoint as an artifact. Cloudflare AI Search provides managed vector + keyword retrieval and MCP access. A live deployment is claimed only after the workflow succeeds with a Cloudflare token that has AI Search Edit/Run permissions.
 
 ## V1.1 / post-V1
 
