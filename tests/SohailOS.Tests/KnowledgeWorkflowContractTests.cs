@@ -69,6 +69,20 @@ public sealed class KnowledgeWorkflowContractTests
     }
 
     [Fact]
+    public void UniversalKnowledgeSync_IsMainPushTriggered_WithoutGeneratedArtifactLoop()
+    {
+        var path = FindRepositoryFile(".github/workflows/universal-knowledge-sync.yml");
+        Assert.True(File.Exists(path), $"Expected universal sync workflow at {path}.");
+
+        var yaml = File.ReadAllText(path);
+        Assert.Contains("push:", yaml);
+        Assert.Contains("branches: [ main ]", yaml);
+        Assert.Contains("paths-ignore:", yaml);
+        Assert.Contains("ecosystem/generated/**", yaml);
+        Assert.DoesNotContain("branches: [ feat/universal-knowledge-os ]", yaml);
+    }
+
+    [Fact]
     public void GoldenEvaluationCorpus_IsVersionedAndHasUniqueCaseIds()
     {
         var path = FindRepositoryFile("ecosystem/evaluation/golden.json");
