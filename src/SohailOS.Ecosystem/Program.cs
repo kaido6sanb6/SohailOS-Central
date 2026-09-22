@@ -110,7 +110,7 @@ public static class Program
         var manifest = await LoadManifestAsync(manifestPath);
         var liveRepositories = await LoadLiveRepositoriesAsync(options, owner);
 
-        var provider = new JsonFileDataPlaneProvider(indexPath);
+        var provider = new JsonFileDataPlaneProvider(indexPath, autoSave: false);
         var sourceClient = new GitHubKnowledgeSourceClient(
             new HttpClient { Timeout = TimeSpan.FromSeconds(60) });
 
@@ -190,12 +190,15 @@ public static class Program
         Directory.CreateDirectory(
             Path.GetDirectoryName(Path.GetFullPath(reportPath))!);
 
+        await provider.FlushAsync();
+
         await File.WriteAllTextAsync(
             reportPath,
             JsonSerializer.Serialize(
                 report,
                 new JsonSerializerOptions { WriteIndented = true }));
 
+        return runResults.Any(x =>
         return runResults.Any(x =>
             x.State is KnowledgeIndexState.FailedPermanent) ? 2 : 0;
     }
