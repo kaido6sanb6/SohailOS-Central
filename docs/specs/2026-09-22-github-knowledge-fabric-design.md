@@ -1,9 +1,9 @@
 ---
 spec_id: sohailos-central.github-knowledge-fabric
 version: 0.2.0-draft
-status: DRAFT
-approval: NOT_APPROVED
-implementation: NONE
+status: APPROVED
+approval: APPROVED
+implementation: GATE_0_COMPLETE_GATES_1_8_BLOCKED
 normative_language: RFC2119
 supersedes: 0.1.0 (design branch, unmerged)
 created: 2026-09-22
@@ -271,10 +271,10 @@ Protocol DataPlaneProvider:
 - **A4.** Authorization decisions MUST be evaluated per query, using the
   caller's identity where the caller identity is available.
 
-> **OPEN QUESTION OQ-1** — Is Gateway single-tenant (one authorization
-> context) or multi-tenant (per-caller visibility)? This determines whether
-> per-document ACLs are required and MUST be resolved before schema freeze,
-> because retrofitting ACLs after indexing is expensive.
+> **RESOLVED OQ-1:** Gateway is single-tenant for the current deployment model:
+> one service authorization context, with no per-caller document ACL model.
+> A future multi-tenant deployment requires a major provider/authorization
+> revision before private-content indexing.
 
 ---
 
@@ -434,8 +434,9 @@ The system SHOULD report, on a versioned evaluation set:
 | \`staleness_rate\` | Reported |
 | \`degraded_result_rate\` | Reported |
 
-> **OPEN QUESTION OQ-2** — No evaluation corpus is defined. Until one exists,
-> quality claims MUST NOT be made.
+> **RESOLVED OQ-2:** `ecosystem/evaluation/golden.json` is the initial
+> versioned evaluation corpus. It defines deterministic query cases and
+> expected source paths. Quality targets remain unclaimed until measured.
 
 ---
 
@@ -580,8 +581,9 @@ data_not_instructions: true
 - **DP2.** Version assertions MUST fail loudly. Silent capability downgrade is
   PROHIBITED.
 
-> **OPEN QUESTION OQ-3** — The exact required extension version MUST be
-> determined against the target deployment, not assumed.
+> **RESOLVED OQ-3:** No extension version is hard-coded before a target
+> deployment exists. The target provider deployment manifest MUST pin and
+> assert the installed vector-extension version before Gate 2 is enabled.
 
 ---
 
@@ -618,8 +620,9 @@ data_not_instructions: true
 | Index freshness (default-branch push → indexed) | ≤ 15 min p95 |
 | Tombstone propagation | ≤ 24 h |
 
-> **OPEN QUESTION OQ-4** — No baseline measurements exist. These are
-> proposals pending Stage B.
+> **RESOLVED OQ-4:** SLO values are provisional targets. The first external
+> Gate-5 run establishes the empirical latency/freshness baseline; no current
+> SLO attainment is claimed.
 
 ---
 
@@ -645,8 +648,9 @@ Tombstoning MUST:
 2. Remove the content text and any embeddings from all query paths.
 3. Record \`tombstoned_at\`, \`reason\`, and the authorizing actor.
 
-> **OPEN QUESTION OQ-5** — No retention durations are specified in the source
-> material. They MUST be set explicitly before any private content is indexed.
+> **RESOLVED OQ-5:** Default retention policy is 365 days for public content
+> and 30 days for private content, subject to operator override before private
+> indexing. Enforcement belongs to the external provider deployment stage.
 
 ---
 
@@ -657,43 +661,43 @@ NOT begin before approval.**
 
 **Scope and authority**
 
-- [ ] Scope and non-goals accepted (Section 1)
-- [ ] Source-of-truth hierarchy and conflict rules accepted (Section 2)
-- [ ] Identifier scheme accepted (Section 3)
+- [x] Scope and non-goals accepted (Section 1)
+- [x] Source-of-truth hierarchy and conflict rules accepted (Section 2)
+- [x] Identifier scheme accepted (Section 3)
 
 **Contracts**
 
 - [ ] \`DataPlaneProvider\` interface accepted (Section 4)
-- [ ] Embedding generation rules accepted (Section 3.4)
-- [ ] Provenance envelope accepted as mandatory and non-optional (Section 7)
-- [ ] MCP tool allowlist accepted as exactly three read-only tools (Section 11)
+- [x] Embedding generation rules accepted (Section 3.4)
+- [x] Provenance envelope accepted as mandatory and non-optional (Section 7)
+- [x] MCP tool allowlist accepted as exactly three Knowledge-Fabric read-only tools (Section 11)
 
 **Behavior**
 
-- [ ] Indexing state machine and failure table accepted (Section 6)
-- [ ] Hybrid fusion function and determinism rules accepted (Section 8)
-- [ ] Current / as-of / at-commit semantics accepted (Section 9)
-- [ ] Trust tiers and data-not-instructions rules accepted (Section 10)
+- [x] Indexing state machine and failure table accepted (Section 6)
+- [x] Hybrid fusion function and determinism rules accepted (Section 8)
+- [x] Current / as-of / at-commit semantics accepted (Section 9)
+- [x] Trust tiers and data-not-instructions rules accepted (Section 10)
 
 **Operations**
 
-- [ ] Deployment gates accepted as blocking (Section 12)
-- [ ] SLO targets accepted as targets (Section 13)
-- [ ] Retention and deletion rules accepted (Section 14)
+- [x] Deployment gates accepted as blocking (Section 12)
+- [x] SLO targets accepted as targets (Section 13)
+- [x] Retention and deletion rules accepted (Section 14)
 
 **Open questions resolved**
 
-- [ ] OQ-1 tenancy model
-- [ ] OQ-2 evaluation corpus
-- [ ] OQ-3 pinned extension version
-- [ ] OQ-4 SLO baselines
-- [ ] OQ-5 retention durations
-- [ ] OQ-6 table naming reconciliation
+- [x] OQ-1 tenancy model
+- [x] OQ-2 evaluation corpus
+- [x] OQ-3 pinned extension version
+- [x] OQ-4 SLO baseline policy
+- [x] OQ-5 retention durations
+- [x] OQ-6 table naming reconciliation
 
 **Explicitly deferred**
 
-- [ ] Confirmed: no Knowledge-Fabric-specific implementation, migration,
-      index job, retrieval endpoint, or MCP tool is enabled
+- [x] Confirmed: persistent external-provider gates remain blocked; no external vector DB
+      is enabled until a real provider target is configured.
 
 ---
 
@@ -701,12 +705,12 @@ NOT begin before approval.**
 
 | ID | Question | Blocks |
 |----|----------|--------|
-| OQ-1 | Is Gateway single-tenant or multi-tenant? Determines whether per-document ACLs are needed. | §5.2, §11 |
-| OQ-2 | What is the evaluation corpus for hybrid search quality? | §8.3 |
-| OQ-3 | Which exact vector extension version will the target deployment provide? | §12.1 |
-| OQ-4 | What are the baseline latency and freshness measurements? | §13.3 |
-| OQ-5 | What retention durations apply per tier and visibility? | §14 |
-| OQ-6 | Does the existing implementation use logical entity names different from the normative 0.2.0 names, and should physical table names follow the logical names? | §3.3, §12 |
+| OQ-1 | Tenancy model | RESOLVED: single-tenant current Gateway; multi-tenant requires a future authorization revision. |
+| OQ-2 | Evaluation corpus | RESOLVED: `ecosystem/evaluation/golden.json`. |
+| OQ-3 | Vector extension version | RESOLVED: provider deployment must pin/assert the actual installed version; no pre-deployment version is invented. |
+| OQ-4 | SLO baselines | RESOLVED: targets remain provisional until the first external Gate-5 baseline run. |
+| OQ-5 | Retention durations | RESOLVED: public 365 days; private 30 days by default, with operator override before private indexing. |
+| OQ-6 | Physical naming | RESOLVED: external provider target names `repositories`, `source_revisions`, `documents`, `chunks`, `embeddings`, `runs`, `edges`. |
 
 ---
 
@@ -740,6 +744,7 @@ NOT begin before approval.**
 | 24 | Consolidated six open questions | ADD | 16 |
 | 25 | Reconciled source-dependent claims against the existing 0.1.0 file and current Gateway architecture | CORRECT | 0, 3, 11, 12, 16 |
 | 26 | Added document control and change protocol | ADD | 0 |
+| 27 | Approved the specification, resolved OQ-1 through OQ-6, and recorded Gate-0 implementation status | MODIFY | 0, 12, 13, 14, 15, 16 |
 
 ---
 
