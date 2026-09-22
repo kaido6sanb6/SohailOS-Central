@@ -25,6 +25,33 @@ public sealed class KnowledgeWorkflowContractTests
 
 
     [Fact]
+    public void EcosystemReconcileWorkflow_AutoCommitsInventoryChanges_AndDispatchesKnowledgeSync()
+    {
+        var path = FindRepositoryFile(".github/workflows/ecosystem-reconcile.yml");
+        Assert.True(File.Exists(path), $\"Expected reconciliation workflow at {path}.\");
+
+        var yaml = File.ReadAllText(path);
+        Assert.Contains("schedule:", yaml);
+        Assert.Contains("*/15 * * * *", yaml);
+        Assert.Contains("contents: write", yaml);
+        Assert.Contains("git push origin", yaml);
+        Assert.Contains("repository_dispatch", yaml);
+        Assert.Contains("forks_reconciled", yaml);
+        Assert.DoesNotContain("gh pr create", yaml);
+    }
+
+    [Fact]
+    public void ManagedSearchWorkflow_AcceptsForkReconciliationDispatch()
+    {
+        var path = FindRepositoryFile(".github/workflows/ecosystem-knowledge-search.yml");
+        Assert.True(File.Exists(path), $\"Expected managed search workflow at {path}.\");
+
+        var yaml = File.ReadAllText(path);
+        Assert.Contains("repository_dispatch:", yaml);
+        Assert.Contains("forks_reconciled", yaml);
+    }
+
+    [Fact]
     public void ManagedSearchWorkflow_Uses_ReadOnlyGitHub_And_AI_SearchSync()
     {
         var path = FindRepositoryFile(".github/workflows/ecosystem-knowledge-search.yml");
