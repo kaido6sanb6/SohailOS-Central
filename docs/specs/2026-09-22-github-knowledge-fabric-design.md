@@ -1,6 +1,6 @@
 ---
 spec_id: sohailos-central.github-knowledge-fabric
-version: 0.2.0-draft
+version: 0.2.0
 status: APPROVED
 approval: APPROVED
 implementation: GATE_0_COMPLETE_GATES_1_8_BLOCKED
@@ -18,10 +18,10 @@ consumers:
 
 > **Provenance of this revision.** This document was reconstructed from the
 > change request and the enumerated design constraints supplied by the owner.
-> It has now been reconciled against the existing 0.1.0 design file and current
-> repository architecture. Passages that intentionally formalize new normative
-> requirements are recorded below as specification changes. No implementation
-> of this 0.2.0 design is claimed.
+> It has now been reconciled against the existing 0.1.0 design file, current
+> repository architecture, and the implemented Gate-0 surface. The specification
+> records the normative contract; persistent external-provider gates remain
+> blocked until a real deployment target exists.
 
 ---
 
@@ -36,9 +36,9 @@ RECOMMENDED, MAY, and OPTIONAL are to be interpreted as described in RFC 2119.
 
 | Field | Value | Meaning |
 |-------|-------|---------|
-| \`status\` | DRAFT | Not approved; subject to change |
-| \`approval\` | NOT_APPROVED | Section 15 checklist incomplete |
-| \`implementation\` | NONE | No Knowledge-Fabric-specific migrations, indexers, jobs, endpoints, or MCP tools are enabled; the existing general SohailOS.Gateway MCP server remains an existing platform component |
+| \`status\` | APPROVED | Approved specification; major contract changes require a new major version where specified |
+| \`approval\` | APPROVED | Scope, contracts, behavior, operations, and open questions have been resolved |
+| \`implementation\` | GATE_0_COMPLETE_GATES_1_8_BLOCKED | Knowledge-Fabric contracts, Gate-0 data plane, ingestion/retrieval components, Gateway/MCP read-only tools, tests, workflow, and evaluation corpus are implemented; persistent external-provider gates remain blocked |
 
 ### 0.3 Change Protocol
 
@@ -140,8 +140,10 @@ The system MUST NOT:
   repository ID, which is stable across rename and transfer.
 - **ID3.** Path-based identifiers MUST be scoped by \`git_oid\` where the
   path's content is referenced.
-- **ID4.** All identifiers MUST be deterministic: identical inputs MUST
-  produce identical identifiers across runs, hosts, and providers.
+- **ID4.** All content-derived identifiers MUST be deterministic: identical
+  inputs MUST produce identical identifiers across runs, hosts, and providers.
+  Operational \\`run_id\\` values are an explicit exception and MUST instead be
+  globally unique for each indexing run.
 
 ### 3.2 Identifier Forms
 
@@ -151,7 +153,7 @@ doc_id             gh:doc:<github_numeric_id>:<normalized_path>
 revision_id        gh:rev:<git_oid>:<normalized_path>
 chunk_id           gh:chunk:<sha256(normalized_chunk_bytes)>:<ordinal>
 embedding_gen_id   emb:<provider>:<model>:<dim>:<norm_version>
-run_id             run:<ulid>
+run_id             run:<unique-run-id>
 \`\`\`
 
 \`normalized_path\` MUST be NFC-normalized, forward-slash separated, and
@@ -745,6 +747,7 @@ NOT begin before approval.**
 | 25 | Reconciled source-dependent claims against the existing 0.1.0 file and current Gateway architecture | CORRECT | 0, 3, 11, 12, 16 |
 | 26 | Added document control and change protocol | ADD | 0 |
 | 27 | Approved the specification, resolved OQ-1 through OQ-6, and recorded Gate-0 implementation status | MODIFY | 0, 12, 13, 14, 15, 16 |
+| 28 | Promoted v0.2.0 from draft to approved, reconciled the status table, and clarified deterministic-ID semantics for operational run IDs | MODIFY | 0, 3 |
 
 ---
 
