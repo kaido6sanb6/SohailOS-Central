@@ -40,6 +40,8 @@ public sealed class GitHubKnowledgeIndexer
         void Count(string key) =>
             counts[key] = counts.TryGetValue(key, out var value) ? value + 1 : 1;
 
+        void Stage(string stage) => Count($"pipeline:{stage}");
+
         var state = KnowledgeIndexState.Discovered;
         string? gitOid = null;
 
@@ -71,6 +73,7 @@ public sealed class GitHubKnowledgeIndexer
             await MoveAsync(KnowledgeIndexState.Authorized);
             await MoveAsync(KnowledgeIndexState.Queued);
             await MoveAsync(KnowledgeIndexState.Fetching);
+            Stage("fetch");
 
             await _provider.UpsertRepositoriesAsync(
                 [new RepositoryIdentity(
@@ -88,11 +91,15 @@ public sealed class GitHubKnowledgeIndexer
             gitOid = snapshot.GitOid;
 
             await MoveAsync(KnowledgeIndexState.Parsing);
+            Stage("inspect");
             var (entries, truncated) = await _source.GetTreeAsync(repository, snapshot.GitOid, cancellationToken);
             if (truncated)
                 degraded.Add("partial_index");
 
             await MoveAsync(KnowledgeIndexState.Chunking);
+            Stage("classify");
+            Stage("extract");
+            Stage("normalize");
 
             var seenPaths = new HashSet<string>(StringComparer.Ordinal);
             var repositoriesToUpsert = new List<DocumentRecord>();
@@ -145,6 +152,7 @@ public sealed class GitHubKnowledgeIndexer
                 }
 
                 var contentHash = Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
+                Stage("verify");
                 var text = Encoding.UTF8.GetString(bytes);
                 var language = DetectLanguage(path);
                 var revisionId = KnowledgeIdentity.RevisionId(snapshot.GitOid, path);
@@ -175,6 +183,7 @@ public sealed class GitHubKnowledgeIndexer
                     docId,
                     revisionId,
                     language);
+                Stage("synthesize");
 
                 repositoriesToUpsert.Add(document);
                 revisionsToUpsert.Add(revision);
@@ -184,6 +193,9 @@ public sealed class GitHubKnowledgeIndexer
                 if (chunks.Count == 0)
                     Count("empty");
             }
+
+            Stage("deduplicate");
+            Stage("compare");
 
             foreach (var document in repositoriesToUpsert)
             {
@@ -238,6 +250,7 @@ public sealed class GitHubKnowledgeIndexer
                 degraded.Add("semantic_degraded");
             }
 
+            Stage("index");
             await MoveAsync(KnowledgeIndexState.Upserting);
 
             foreach (var revision in revisionsToUpsert)
