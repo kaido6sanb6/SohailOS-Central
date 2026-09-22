@@ -38,7 +38,7 @@ public sealed class UniversalKnowledgeGraphTests
             x.To == "upstream/project" &&
             x.Type == "FORK_OF");
         Assert.Contains(graph.Edges, x =>
-            x.From == "repo:2" &&
+            x.From == "kaido6sanb6/fork" &&
             x.To == "kaido6sanb6/SohailOS-Central" &&
             x.Type == "KNOWLEDGE_SOURCE_FOR");
     }
