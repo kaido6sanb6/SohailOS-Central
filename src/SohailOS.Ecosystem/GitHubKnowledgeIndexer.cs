@@ -72,6 +72,18 @@ public sealed class GitHubKnowledgeIndexer
             await MoveAsync(KnowledgeIndexState.Queued);
             await MoveAsync(KnowledgeIndexState.Fetching);
 
+            await _provider.UpsertRepositoriesAsync(
+                [new RepositoryIdentity(
+                    KnowledgeIdentity.RepositoryId(repositoryId),
+                    repositoryId,
+                    repository.FullName,
+                    repository.DefaultBranch,
+                    repository.IsPrivate,
+                    trustTier,
+                    DateTimeOffset.UtcNow,
+                    DateTimeOffset.UtcNow)],
+                cancellationToken);
+
             var snapshot = await _source.GetRepositorySnapshotAsync(repository, cancellationToken);
             gitOid = snapshot.GitOid;
 
@@ -193,6 +205,15 @@ public sealed class GitHubKnowledgeIndexer
                 var vectors = new List<(string ChunkId, float[] Vector)>();
                 foreach (var chunk in chunksToUpsert)
                 {
+                    if (await _provider.EmbeddingExistsAsync(
+                            _embeddingProvider.Generation.Id,
+                            chunk.ChunkId,
+                            cancellationToken))
+                    {
+                        Count("embedding_reused");
+                        continue;
+                    }
+
                     var vector = await _embeddingProvider.EmbedAsync(chunk.Text, cancellationToken);
                     if (vector is null || vector.Length == 0)
                     {
@@ -225,6 +246,23 @@ public sealed class GitHubKnowledgeIndexer
                     revision.RevisionId,
                     KnowledgeIndexState.Committed,
                     cancellationToken: cancellationToken);
+            }
+
+            if (!truncated)
+            {
+                var repoId = KnowledgeIdentity.RepositoryId(repositoryId);
+                var existingDocuments = await _provider.ListDocumentsAsync(
+                    repoId,
+                    includeDeleted: false,
+                    cancellationToken);
+                foreach (var stale in existingDocuments.Where(x => !seenPaths.Contains(x.NormalizedPath)))
+                {
+                    await _provider.TombstoneAsync(
+                        [stale.DocId],
+                        "Path is absent from the indexed GitHub tree.",
+                        cancellationToken);
+                    Count("tombstoned");
+                }
             }
 
             if (truncated)
