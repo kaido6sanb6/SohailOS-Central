@@ -26,6 +26,7 @@ public sealed class JsonFileDataPlaneProvider : InMemoryDataPlaneProvider
     {
         var result = await base.UpsertRepositoriesAsync(repositories, cancellationToken);
         if (_autoSave)
+            if (_autoSave)
             await SaveAsync(cancellationToken);
         return result;
     }
@@ -33,42 +34,48 @@ public sealed class JsonFileDataPlaneProvider : InMemoryDataPlaneProvider
     public override async Task<KnowledgeWriteResult> UpsertRevisionsAsync(IEnumerable<SourceRevision> revisions, CancellationToken cancellationToken = default)
     {
         var result = await base.UpsertRevisionsAsync(revisions, cancellationToken);
-        await SaveAsync(cancellationToken);
+        if (_autoSave)
+            await SaveAsync(cancellationToken);
         return result;
     }
 
     public override async Task<KnowledgeWriteResult> UpsertDocumentsAsync(IEnumerable<DocumentRecord> documents, CancellationToken cancellationToken = default)
     {
         var result = await base.UpsertDocumentsAsync(documents, cancellationToken);
-        await SaveAsync(cancellationToken);
+        if (_autoSave)
+            await SaveAsync(cancellationToken);
         return result;
     }
 
     public override async Task<KnowledgeWriteResult> UpsertChunksAsync(IEnumerable<ChunkRecord> chunks, CancellationToken cancellationToken = default)
     {
         var result = await base.UpsertChunksAsync(chunks, cancellationToken);
-        await SaveAsync(cancellationToken);
+        if (_autoSave)
+            await SaveAsync(cancellationToken);
         return result;
     }
 
     public override async Task<KnowledgeWriteResult> UpsertEmbeddingsAsync(string generationId, IEnumerable<(string ChunkId, float[] Vector)> items, CancellationToken cancellationToken = default)
     {
         var result = await base.UpsertEmbeddingsAsync(generationId, items, cancellationToken);
-        await SaveAsync(cancellationToken);
+        if (_autoSave)
+            await SaveAsync(cancellationToken);
         return result;
     }
 
     public override async Task<KnowledgeWriteResult> TombstoneAsync(IEnumerable<string> ids, string reason, CancellationToken cancellationToken = default)
     {
         var result = await base.TombstoneAsync(ids, reason, cancellationToken);
-        await SaveAsync(cancellationToken);
+        if (_autoSave)
+            await SaveAsync(cancellationToken);
         return result;
     }
 
     public override async Task<KnowledgeWriteResult> RecordRunAsync(KnowledgeRunRecord run, CancellationToken cancellationToken = default)
     {
         var result = await base.RecordRunAsync(run, cancellationToken);
-        await SaveAsync(cancellationToken);
+        if (_autoSave)
+            await SaveAsync(cancellationToken);
         return result;
     }
 
@@ -76,6 +83,7 @@ public sealed class JsonFileDataPlaneProvider : InMemoryDataPlaneProvider
     {
         var result = await base.SetRevisionStateAsync(revisionId, state, reason, cancellationToken);
         if (result.Success && _autoSave)
+            if (_autoSave)
             await SaveAsync(cancellationToken);
         return result;
     }
