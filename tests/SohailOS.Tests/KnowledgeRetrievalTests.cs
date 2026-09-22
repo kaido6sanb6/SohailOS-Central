@@ -100,6 +100,7 @@ public sealed class KnowledgeRetrievalTests
         var result = await service.SearchAsync(new RetrievalRequest("credentials"));
 
         Assert.Empty(result.Results);
+        Assert.Contains("injection_suspected", result.DegradedFlags);
     }
 
     private static async Task AddDocumentAsync(
