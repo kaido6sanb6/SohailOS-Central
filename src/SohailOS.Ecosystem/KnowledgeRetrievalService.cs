@@ -75,7 +75,13 @@ public sealed class KnowledgeRetrievalService
             degraded.Add("lexical_only");
         }
 
-        var results = HybridRanker.Fuse(lexical, vector, limit);
+        var safeLexical = lexical.Where(x => !InstructionContainment.IsSuspected(x.Text)).ToArray();
+        var safeVector = vector.Where(x => !InstructionContainment.IsSuspected(x.Text)).ToArray();
+
+        if (safeLexical.Length != lexical.Count || safeVector.Length != vector.Count)
+            degraded.Add("injection_suspected");
+
+        var results = HybridRanker.Fuse(safeLexical, safeVector, limit);
 
         return new RetrievalResponse(
             results,
