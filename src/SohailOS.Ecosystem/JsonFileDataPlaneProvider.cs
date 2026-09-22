@@ -6,12 +6,14 @@ public sealed class JsonFileDataPlaneProvider : InMemoryDataPlaneProvider
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
     private readonly string _path;
+    private readonly bool _autoSave;
     private readonly SemaphoreSlim _saveGate = new(1, 1);
 
-    public JsonFileDataPlaneProvider(string path)
+    public JsonFileDataPlaneProvider(string path, bool autoSave = true)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         _path = Path.GetFullPath(path);
+        _autoSave = autoSave;
 
         var directory = Path.GetDirectoryName(_path);
         if (!string.IsNullOrWhiteSpace(directory))
@@ -23,7 +25,8 @@ public sealed class JsonFileDataPlaneProvider : InMemoryDataPlaneProvider
     public override async Task<KnowledgeWriteResult> UpsertRepositoriesAsync(IEnumerable<RepositoryIdentity> repositories, CancellationToken cancellationToken = default)
     {
         var result = await base.UpsertRepositoriesAsync(repositories, cancellationToken);
-        await SaveAsync(cancellationToken);
+        if (_autoSave)
+            await SaveAsync(cancellationToken);
         return result;
     }
 
@@ -72,7 +75,7 @@ public sealed class JsonFileDataPlaneProvider : InMemoryDataPlaneProvider
     public override async Task<KnowledgeWriteResult> SetRevisionStateAsync(string revisionId, KnowledgeIndexState state, string? reason = null, CancellationToken cancellationToken = default)
     {
         var result = await base.SetRevisionStateAsync(revisionId, state, reason, cancellationToken);
-        if (result.Success)
+        if (result.Success && _autoSave)
             await SaveAsync(cancellationToken);
         return result;
     }
@@ -90,6 +93,9 @@ public sealed class JsonFileDataPlaneProvider : InMemoryDataPlaneProvider
         if (snapshot is not null)
             ImportSnapshot(snapshot);
     }
+
+    public Task FlushAsync(CancellationToken cancellationToken = default)
+        => SaveAsync(cancellationToken);
 
     private async Task SaveAsync(CancellationToken cancellationToken)
     {
