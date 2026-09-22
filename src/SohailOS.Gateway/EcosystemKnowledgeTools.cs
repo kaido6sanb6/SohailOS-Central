@@ -117,7 +117,7 @@ public static class EcosystemKnowledgeTools
             "Search the authorized GitHub ecosystem knowledge index using lexical and semantic retrieval.",
             retrieval)
     {
-        public async Task<ToolResult> ExecuteAsync(
+        public override async Task<ToolResult> ExecuteAsync(
             IReadOnlyDictionary<string, object?> arguments,
             CancellationToken cancellationToken = default)
         {
@@ -164,7 +164,7 @@ public static class EcosystemKnowledgeTools
             "Retrieve one indexed ecosystem document in current or explicit historical mode.",
             retrieval)
     {
-        public async Task<ToolResult> ExecuteAsync(
+        public override async Task<ToolResult> ExecuteAsync(
             IReadOnlyDictionary<string, object?> arguments,
             CancellationToken cancellationToken = default)
         {
@@ -275,7 +275,7 @@ public static class EcosystemKnowledgeTools
             "Retrieve the immutable provenance pointer for a known indexed source revision.",
             retrieval)
     {
-        public async Task<ToolResult> ExecuteAsync(
+        public override async Task<ToolResult> ExecuteAsync(
             IReadOnlyDictionary<string, object?> arguments,
             CancellationToken cancellationToken = default)
         {
