@@ -112,7 +112,7 @@ public sealed class GitHubKnowledgeSourceClient
                 ? parsedSize
                 : 0;
 
-            entries.Add(new GitHubTreeEntry(path, sha, size, type));
+            entries.Add(new GitHubTreeEntry(path, sha, size, "blob"));
         }
 
         return (entries, truncated);
