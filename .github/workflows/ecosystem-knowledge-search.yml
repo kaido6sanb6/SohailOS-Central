@@ -1,0 +1,80 @@
+name: Sync GitHub Knowledge Fabric to Cloudflare AI Search
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/SohailOS.Ecosystem/**"
+      - "ecosystem/**"
+      - "docs/ECOSYSTEM_KNOWLEDGE_LAYER.md"
+      - ".github/workflows/ecosystem-knowledge-search.yml"
+      - "cloudflare/sohailos-gateway/scripts/sync-knowledge-ai-search.mjs"
+  schedule:
+    - cron: "17 4 * * *"
+
+concurrency:
+  group: ecosystem-knowledge-search
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      KNOWLEDGE_EXPORT_DIR: ${{ runner.temp }}\\sohailos-search-export
+      CLOUDFLARE_AI_SEARCH_NAMESPACE: default
+      CLOUDFLARE_AI_SEARCH_INSTANCE: sohailos-knowledge
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build knowledge index
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --index --index-path "${env:RUNNER_TEMP}\\sohailos-knowledge-index.json" --index-report "${env:RUNNER_TEMP}\\ecosystem-index-report.json"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Export provenance-rich AI Search documents
+        shell: pwsh
+        run: |
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --export-search --index-path "${env:RUNNER_TEMP}\\sohailos-knowledge-index.json" --search-export-path "${env:KNOWLEDGE_EXPORT_DIR}" --search-max-file-bytes 3500000
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Validate Cloudflare credentials
+        shell: pwsh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:CLOUDFLARE_API_TOKEN) -or [string]::IsNullOrWhiteSpace($env:CLOUDFLARE_ACCOUNT_ID)) { throw "CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are required. The token must include Cloudflare AI Search Edit/Run permissions." }
+
+      - name: Sync managed AI Search
+        working-directory: cloudflare/sohailos-gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          KNOWLEDGE_EXPORT_DIR: ${{ runner.temp }}\\sohailos-search-export
+        run: node scripts/sync-knowledge-ai-search.mjs
+
+      - name: Publish knowledge search report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-knowledge-search
+          path: |
+            ${{ runner.temp }}/ecosystem-index-report.json
+            ${{ runner.temp }}/sohailos-search-export/ai-search-deployment.json
+          if-no-files-found: error
+          retention-days: 30
