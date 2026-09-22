@@ -17,6 +17,9 @@ public static class Program
             if (options.ContainsKey("index"))
                 return await RunIndexAsync(options, manifestPath, owner);
 
+            if (options.ContainsKey("export-search"))
+                return await RunExportSearchAsync(options);
+
             return await RunReconciliationAsync(
                 options,
                 manifestPath,
@@ -178,6 +181,35 @@ public static class Program
 
         return runResults.Any(x =>
             x.State is KnowledgeIndexState.FailedPermanent) ? 2 : 0;
+    }
+
+
+    private static async Task<int> RunExportSearchAsync(
+        Dictionary<string, string> options)
+    {
+        var indexPath = GetOption(
+            options,
+            "index-path",
+            Path.Combine("App_Data", "sohailos-knowledge-index.json"));
+        var outputPath = GetOption(
+            options,
+            "search-export-path",
+            Path.Combine("App_Data", "sohailos-search-export"));
+        var maxFileBytes = GetPositiveInt(
+            options,
+            "search-max-file-bytes",
+            3_500_000);
+
+        var provider = new JsonFileDataPlaneProvider(indexPath);
+        var result = await KnowledgeSearchExportService.ExportAsync(
+            provider,
+            outputPath,
+            maxFileBytes);
+
+        Console.WriteLine(
+            $"Knowledge search export: files={result.Files.Count}, chunks={result.ChunkCount}, bytes={result.TotalBytes}, output={outputPath}");
+
+        return 0;
     }
 
     private static async Task<JsonObject> LoadManifestAsync(string path)
@@ -377,6 +409,14 @@ public static class Program
         => options.TryGetValue(key, out var value)
             ? value
             : defaultValue;
+
+    private static int GetPositiveInt(
+        Dictionary<string, string> options,
+        string key,
+        int fallback)
+        => options.TryGetValue(key, out var optionValue) && int.TryParse(optionValue, out var optionParsed) && optionParsed > 0
+            ? optionParsed
+            : fallback;
 
     private static int GetPositiveInt(
         string variableName,
