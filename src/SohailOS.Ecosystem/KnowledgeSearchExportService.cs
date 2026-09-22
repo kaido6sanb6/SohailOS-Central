@@ -112,9 +112,7 @@ public static class KnowledgeSearchExportService
 
             """;
 
-        return header + chunk.Text.TrimEnd() + "
-
-";
+        return header + chunk.Text.TrimEnd() + "\n\n";
     }
 
     private static string Sanitize(string value) =>
