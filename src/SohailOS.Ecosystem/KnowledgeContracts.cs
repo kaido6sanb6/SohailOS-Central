@@ -59,7 +59,8 @@ public sealed record DocumentRecord(
     string Language,
     bool IsBinary,
     bool Deleted,
-    DateTimeOffset? DeletedAt);
+    DateTimeOffset? DeletedAt,
+    string SourceType = "text");
 
 public sealed record ChunkRecord(
     string ChunkId,
@@ -183,6 +184,7 @@ public interface IEmbeddingProvider
 
 public interface DataPlaneProvider
 {
+    Task<KnowledgeWriteResult> UpsertRepositoriesAsync(IEnumerable<RepositoryIdentity> repositories, CancellationToken cancellationToken = default);
     Task<KnowledgeHealthStatus> HealthCheckAsync(CancellationToken cancellationToken = default);
     Task<KnowledgeProviderCapabilities> CapabilitiesAsync(CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> MigrateAsync(string targetVersion, CancellationToken cancellationToken = default);
