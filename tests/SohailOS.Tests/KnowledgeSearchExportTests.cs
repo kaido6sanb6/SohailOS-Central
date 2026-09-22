@@ -1,3 +1,4 @@
+using Xunit;
 using SohailOS.Ecosystem;
 
 namespace SohailOS.Tests;
