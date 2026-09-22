@@ -193,6 +193,7 @@ public interface DataPlaneProvider
     Task<KnowledgeWriteResult> UpsertDocumentsAsync(IEnumerable<DocumentRecord> documents, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> UpsertChunksAsync(IEnumerable<ChunkRecord> chunks, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> UpsertEmbeddingsAsync(string generationId, IEnumerable<(string ChunkId, float[] Vector)> items, CancellationToken cancellationToken = default);
+    Task<bool> EmbeddingExistsAsync(string generationId, string chunkId, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> TombstoneAsync(IEnumerable<string> ids, string reason, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> RecordRunAsync(KnowledgeRunRecord run, CancellationToken cancellationToken = default);
     Task<KnowledgeWriteResult> SetRevisionStateAsync(string revisionId, KnowledgeIndexState state, string? reason = null, CancellationToken cancellationToken = default);
