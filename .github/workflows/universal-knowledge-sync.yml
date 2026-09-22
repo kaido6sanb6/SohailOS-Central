@@ -9,6 +9,10 @@ on:
   schedule:
     - cron: "17 */6 * * *"
 
+concurrency:
+  group: universal-knowledge-sync
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
