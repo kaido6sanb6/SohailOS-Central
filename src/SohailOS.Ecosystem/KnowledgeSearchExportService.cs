@@ -30,7 +30,7 @@ public static class KnowledgeSearchExportService
 
         foreach (var repository in await provider.ListRepositoriesAsync(cancellationToken))
         {
-            if (repository.TrustTier == KnowledgeTrustTier.Tombstoned)
+            if (repository.TrustTier is KnowledgeTrustTier.Tombstoned or KnowledgeTrustTier.Unverified)
                 continue;
 
             var buffer = new StringBuilder();
