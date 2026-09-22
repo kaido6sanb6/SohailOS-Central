@@ -10,5 +10,6 @@
     <ProjectReference Include="..\SohailOS.AI\SohailOS.AI.csproj" />
     <ProjectReference Include="..\SohailOS.Memory\SohailOS.Memory.csproj" />
     <ProjectReference Include="..\SohailOS.Integrations\SohailOS.Integrations.csproj" />
+    <ProjectReference Include="..\SohailOS.Ecosystem\SohailOS.Ecosystem.csproj" />
   </ItemGroup>
 </Project>
