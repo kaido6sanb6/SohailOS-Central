@@ -28,7 +28,7 @@ public sealed class KnowledgeWorkflowContractTests
     public void EcosystemReconcileWorkflow_AutoCommitsInventoryChanges_AndDispatchesKnowledgeSync()
     {
         var path = FindRepositoryFile(".github/workflows/ecosystem-reconcile.yml");
-        Assert.True(File.Exists(path), $"Expected reconciliation workflow at {path}.\");
+        Assert.True(File.Exists(path), $"Expected reconciliation workflow at {path}.");
 
         var yaml = File.ReadAllText(path);
         Assert.Contains("schedule:", yaml);
@@ -44,7 +44,7 @@ public sealed class KnowledgeWorkflowContractTests
     public void ManagedSearchWorkflow_AcceptsForkReconciliationDispatch()
     {
         var path = FindRepositoryFile(".github/workflows/ecosystem-knowledge-search.yml");
-        Assert.True(File.Exists(path), $"Expected managed search workflow at {path}.\");
+        Assert.True(File.Exists(path), $"Expected managed search workflow at {path}.");
 
         var yaml = File.ReadAllText(path);
         Assert.Contains("repository_dispatch:", yaml);
