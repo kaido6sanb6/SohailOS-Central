@@ -17,3 +17,7 @@ secrets.json
 *.db-shm
 *.db-wal
 logs/
+
+# Local Gate-0 knowledge index
+App_Data/
+*.knowledge-index.json

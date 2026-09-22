@@ -5,6 +5,8 @@ using SohailOS.AI;
 using SohailOS.Core;
 using SohailOS.Integrations;
 using SohailOS.Memory;
+using SohailOS.Ecosystem;
+using SohailOS.Gateway;
 
 var builder = WebApplication.CreateBuilder(args);
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
@@ -33,9 +35,34 @@ bool Authorized(HttpRequest request) =>
 
 var registry = new ToolRegistry();
 var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+var knowledgeIndexPath = Environment.GetEnvironmentVariable("SOHAILOS_KNOWLEDGE_INDEX_PATH")
+    ?? Path.Combine(AppContext.BaseDirectory, "App_Data", "sohailos-knowledge-index.json");
+DataPlaneProvider knowledgeProvider = new JsonFileDataPlaneProvider(knowledgeIndexPath);
+IEmbeddingProvider knowledgeEmbeddingProvider;
+var embeddingsBaseUrl = Environment.GetEnvironmentVariable("SOHAILOS_EMBEDDINGS_BASE_URL");
+var embeddingsModel = Environment.GetEnvironmentVariable("SOHAILOS_EMBEDDINGS_MODEL");
+var embeddingsKey = Environment.GetEnvironmentVariable("SOHAILOS_EMBEDDINGS_API_KEY");
+var embeddingsDimensions = GetPositiveInt("SOHAILOS_EMBEDDINGS_DIMENSIONS", 1536);
+if (!string.IsNullOrWhiteSpace(embeddingsBaseUrl) && !string.IsNullOrWhiteSpace(embeddingsModel))
+{
+    knowledgeEmbeddingProvider = new OpenAICompatibleEmbeddingProvider(
+        httpClient,
+        embeddingsBaseUrl,
+        embeddingsModel,
+        embeddingsKey,
+        embeddingsDimensions);
+}
+else
+{
+    knowledgeEmbeddingProvider = new NullEmbeddingProvider();
+}
+var knowledgeRetrieval = new KnowledgeRetrievalService(
+    knowledgeProvider,
+    knowledgeEmbeddingProvider);
 var allowedHosts = (Environment.GetEnvironmentVariable("SOHAILOS_WEB_ALLOWLIST") ?? "")
     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 registry.Register(new WebFetchTool(httpClient, allowedHosts));
+EcosystemKnowledgeTools.Register(registry, knowledgeRetrieval);
 var executor = new ToolExecutor(registry, new DefaultPermissionPolicy());
 var (_, completionProvider) = AiProviderFactory.Create(httpClient);
 var memory = CreateMemoryStore(httpClient);
@@ -180,6 +207,10 @@ static object ToMcpTool(ToolDefinition definition)
             type = "object",
             properties,
             additionalProperties = false
+        },
+        annotations = new
+        {
+            readOnlyHint = definition.Permission == ToolPermission.ReadOnly
         }
     };
 }

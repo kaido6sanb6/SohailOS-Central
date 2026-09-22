@@ -97,6 +97,14 @@ Everything above can be validated without exposing the user's API keys in the re
 
 The repository now includes a live ecosystem knowledge/capability layer. `ecosystem/ecosystem.json` records the public owner inventory, capabilities, relationship edges, routing state, and verification state; `src/SohailOS.Ecosystem/` reconciles that registry against GitHub and safely records additive inventory/default-branch drift. New repositories remain `unclassified`, `unverified`, and `auto_route=false` until reviewed.
 
+## GitHub Knowledge Fabric status
+
+Gate-0 implementation is present on the knowledge-fabric branch and includes provider-neutral contracts, deterministic identities/chunking, GitHub source ingestion, an incremental index state machine, in-memory/JSON-file derived data planes, lexical retrieval, optional OpenAI-compatible embedding integration, hybrid ranking, and three read-only Gateway/MCP knowledge tools.
+
+The continuous index workflow uses the live `kaido6sanb6` public repository inventory, so a future public repository can enter the ingestion set without hard-coding a new repository name in the workflow. New or otherwise unverified repositories remain reference-only and are not eligible for automatic execution routing.
+
+Persistent external vector search remains deployment-gated because there is no connected Supabase project or other selected PostgreSQL/pgvector target in the current environment. No live external semantic-search deployment is claimed.
+
 ## V1.1 / post-V1
 
 - Full MCP Streamable HTTP/SSE compatibility where required by target clients
