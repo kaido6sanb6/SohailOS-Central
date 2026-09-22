@@ -751,6 +751,7 @@ NOT begin before approval.**
 | 26 | Added document control and change protocol | ADD | 0 |
 | 27 | Approved the specification, resolved OQ-1 through OQ-6, and recorded Gate-0 implementation status | MODIFY | 0, 12, 13, 14, 15, 16 |
 | 28 | Promoted v0.2.0 from draft to approved, reconciled the status table, and clarified deterministic-ID semantics for operational run IDs | MODIFY | 0, 3 |
+| 29 | Added a managed Cloudflare AI Search deployment path and scoped the three-tool allowlist explicitly to the Knowledge-Fabric surface | MODIFY | 1, 11, 12 |
 
 ---
 
