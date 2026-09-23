@@ -2,6 +2,9 @@ name: fork-sync-and-knowledge-refresh
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/fork-sync.yml"
   schedule:
     - cron: "*/15 * * * *"
 
@@ -151,6 +154,22 @@ jobs:
           print(json.dumps(report["summary"], indent=2))
           PY
 
+      - name: Validate fork inventory
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          data = json.load(open("ecosystem/generated/forks.json", encoding="utf-8"))
+          forks = data.get("forks", [])
+          if data.get("fork_count") != len(forks):
+              raise SystemExit("fork inventory count mismatch")
+          for fork in forks:
+              for key in ("full_name", "default_branch", "upstream", "source"):
+                  if key not in fork:
+                      raise SystemExit(f"fork record missing required field: {key}")
+          print(f"validated {len(forks)} fork records")
+          PY
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -173,6 +192,26 @@ jobs:
           git add ecosystem/ecosystem.json ecosystem/generated/forks.json ecosystem/generated/fork-sync-report.json
           git diff --cached --quiet || git commit -m "chore: refresh fork inventory and sync report"
           git push
+
+      - name: Enforce synchronization gate
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          path = "ecosystem/generated/fork-sync-report.json"
+          data = json.load(open(path, encoding="utf-8"))
+          summary = data.get("summary", {})
+          blocked = int(summary.get("blocked", 0))
+          errors = int(summary.get("error", 0))
+          conflicts = int(summary.get("conflict", 0))
+          if blocked or errors or conflicts:
+              raise SystemExit(
+                  f"fork synchronization incomplete: blocked={blocked}, "
+                  f"errors={errors}, conflicts={conflicts}"
+              )
+          print("fork synchronization gate passed")
+          PY
 
       - name: Publish synchronization report
         if: always()
