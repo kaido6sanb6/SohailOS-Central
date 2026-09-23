@@ -57,7 +57,7 @@ See `docs/ARCHITECTURE.md` for the complete model.
 
 All owner forks are discovered from GitHub automatically. `.github/workflows/fork-sync.yml` runs every 15 minutes, resolves upstream/source metadata, and attempts a non-destructive default-branch upstream synchronization. Conflicts are recorded instead of force-pushed.
 
-After synchronization, the control plane reconciles repository metadata and refreshes the knowledge layer. Cross-repository fork writes require the `SOHAILOS_GITHUB_SYNC_TOKEN` GitHub Actions secret with the minimum required permissions.
+After synchronization, the control plane reconciles repository metadata and refreshes the knowledge layer. Cross-repository fork writes use a GitHub App installation token generated at runtime from the `SOHAILOS_GITHUB_APP_ID` Actions variable and `SOHAILOS_GITHUB_APP_PRIVATE_KEY` Actions secret.
 
 GitHub scheduled workflows use UTC by default and can run at intervals as short as five minutes; this project deliberately uses a 15-minute schedule.
 
