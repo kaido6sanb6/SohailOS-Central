@@ -29,10 +29,11 @@ public sealed class ForkSyncWorkflowContractTests
         var yaml = File.ReadAllText(path);
 
         Assert.Contains("actions/create-github-app-token@v3", yaml);
-        Assert.Contains("SOHAILOS_GITHUB_APP_CLIENT_ID", yaml);
+        Assert.Contains("SOHAILOS_GITHUB_APP_ID", yaml);
         Assert.Contains("SOHAILOS_GITHUB_APP_PRIVATE_KEY", yaml);
         Assert.Contains("steps.app-token.outputs.token", yaml);
         Assert.Contains("owner: ${{ github.repository_owner }}", yaml);
+        Assert.Contains("permission-contents: write", yaml);
         Assert.DoesNotContain("SOHAILOS_GITHUB_SYNC_TOKEN", yaml);
     }
 
