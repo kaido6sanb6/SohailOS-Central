@@ -5,10 +5,88 @@ on:
   push:
     paths:
       - ".github/workflows/ecosystem-knowledge-search.yml"
+  repository_dispatch:
+    types:
+      - forks_reconciled
+  schedule:
+    - cron: "17 4 * * *"
+
+concurrency:
+  group: ecosystem-knowledge-search
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
-  syntax-check:
+  sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      KNOWLEDGE_EXPORT_DIR: ${{ runner.temp }}/sohailos-search-export
+      CLOUDFLARE_AI_SEARCH_NAMESPACE: default
+      CLOUDFLARE_AI_SEARCH_INSTANCE: sohailos-knowledge
+
     steps:
-      - uses: actions/checkout@v4
-      - run: echo "ecosystem knowledge workflow is valid"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build knowledge index
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj
+          --configuration Release --
+          --owner kaido6sanb6
+          --manifest ecosystem/ecosystem.json
+          --index
+          --index-path "${{ runner.temp }}/sohailos-knowledge-index.json"
+          --index-report "${{ runner.temp }}/ecosystem-index-report.json"
+
+      - name: Export provenance-rich AI Search documents
+        run: >
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj
+          --configuration Release --
+          --export-search
+          --index-path "${{ runner.temp }}/sohailos-knowledge-index.json"
+          --search-export-path "${{ runner.temp }}/sohailos-search-export"
+          --search-max-file-bytes 3500000
+
+      - name: Detect Cloudflare credentials
+        id: cloudflare
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [[ -n "${CLOUDFLARE_API_TOKEN}" && -n "${CLOUDFLARE_ACCOUNT_ID}" ]]; then
+            echo "configured=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "configured=false" >> "${GITHUB_OUTPUT}"
+            echo "Cloudflare credentials are not configured; export-only mode."
+          fi
+
+      - name: Sync managed AI Search
+        if: ${{ steps.cloudflare.outputs.configured == 'true' }}
+        working-directory: cloudflare/sohailos-gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          KNOWLEDGE_EXPORT_DIR: ${{ runner.temp }}/sohailos-search-export
+        run: node scripts/sync-knowledge-ai-search.mjs
+
+      - name: Publish knowledge search report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-knowledge-search
+          path: |
+            ${{ runner.temp }}/ecosystem-index-report.json
+            ${{ runner.temp }}/sohailos-search-export
+          if-no-files-found: error
+          retention-days: 30
