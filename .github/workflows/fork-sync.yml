@@ -120,13 +120,27 @@ jobs:
 
       - name: Enforce synchronization gate
         id: sync-gate
-        if: always() && steps['app-token'].outcome == 'success' && steps.sync.outcome == 'success' && steps.reconcile.outcome == 'success'
+        if: always()
         run: |
+          set -euo pipefail
+          if [ "${{ steps['app-token'].outcome }}" != "success" ]; then
+            echo "Synchronization gate failed: GitHub App token step did not succeed."
+            exit 1
+          fi
+          if [ "${{ steps.sync.outcome }}" != "success" ]; then
+            echo "Synchronization gate failed: fork synchronization step did not succeed."
+            exit 1
+          fi
+          if [ "${{ steps.reconcile.outcome }}" != "success" ]; then
+            echo "Synchronization gate failed: central registry reconciliation did not succeed."
+            exit 1
+          fi
           python - <<'PY'
           import json
           s=json.load(open("ecosystem/generated/fork-sync-report.json",encoding="utf-8")).get("summary",{})
           b,e,c=(int(s.get(k,0)) for k in ("blocked","error","conflict"))
-          if b or e or c: raise SystemExit(f"fork synchronization incomplete: blocked={b}, errors={e}, conflicts={c}")
+          if b or e or c:
+              raise SystemExit(f"fork synchronization incomplete: blocked={b}, errors={e}, conflicts={c}")
           print("fork synchronization gate passed")
           PY
 
