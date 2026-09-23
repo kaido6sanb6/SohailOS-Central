@@ -118,7 +118,8 @@ jobs:
           git push
 
       - name: Enforce synchronization gate
-        if: always() && steps['app-token'].outcome == 'success' && steps.sync.outcome == 'success'
+        id: sync-gate
+        if: always() && steps['app-token'].outcome == 'success' && steps.sync.outcome == 'success' && steps.reconcile.outcome == 'success'
         run: |
           python - <<'PY'
           import json
@@ -139,7 +140,7 @@ jobs:
           if-no-files-found: error
 
       - name: Trigger ecosystem reconciliation and knowledge refresh
-        if: always() && steps['app-token'].outcome == 'success' && steps.sync.outcome == 'success'
+        if: steps.sync-gate.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh api --method POST "repos/${{ github.repository }}/dispatches" -f event_type=forks_reconciled
