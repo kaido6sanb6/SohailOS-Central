@@ -63,9 +63,9 @@ public sealed class KnowledgeWorkflowContractTests
         Assert.Contains("contents: read", yaml);
         Assert.DoesNotContain("contents: write", yaml);
         Assert.Contains("--export-search", yaml);
-        Assert.Contains("sync-knowledge-ai-search.mjs", yaml);
-        Assert.Contains("CLOUDFLARE_API_TOKEN", yaml);
-        Assert.Contains("CLOUDFLARE_ACCOUNT_ID", yaml);
+        Assert.Contains("sohailos-search-export", yaml);
+        Assert.Contains("actions/upload-artifact@v4", yaml);
+        Assert.Contains("ecosystem-knowledge-fabric", yaml);
     }
 
     [Fact]
