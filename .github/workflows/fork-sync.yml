@@ -1,3 +1,4 @@
+# Verification trigger: contract-test repair completed.
 # Fail-closed gate: credential, sync, and reconciliation failures must stop downstream refresh.
 # Continuous fork synchronization and verification
 # Verification marker: GitHub App PEM normalization and validation.
