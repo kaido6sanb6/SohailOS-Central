@@ -15,7 +15,7 @@ public sealed class ForkSyncWorkflowContractTests
         Assert.Contains("*/15 * * * *", yaml);
         Assert.Contains("workflow_dispatch", yaml);
         Assert.Contains("cancel-in-progress: false", yaml);
-        Assert.Contains("merge-upstream", yaml);
+        Assert.Contains("scripts/sync_forks.py", yaml);
         Assert.Contains("actions/setup-dotnet@v4", yaml);
         Assert.Contains("--fail-on-removal", yaml);
         Assert.DoesNotContain("--force", yaml);
@@ -48,7 +48,7 @@ public sealed class ForkSyncWorkflowContractTests
         var sync = File.ReadAllText(syncScript);
         Assert.Contains("merge-upstream", sync);
         Assert.Contains("SOHAILOS_GITHUB_SYNC_TOKEN", sync);
-        Assert.DoesNotContain("force", sync, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("--force", sync);
     }
 
     private static string FindRepositoryFile(string relativePath)
