@@ -1,5 +1,5 @@
 # Continuous fork synchronization and verification
-# Verification marker: force a real CI execution when this workflow definition changes.
+# Verification marker: GitHub App PEM normalization and validation.
 name: fork-sync-and-knowledge-refresh
 
 on:
@@ -29,21 +29,73 @@ jobs:
 
       - name: Build fork inventory
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: \${{ github.token }}
         run: python scripts/build_fork_inventory.py
+
+      - name: Normalize and validate GitHub App private key
+        id: normalized-app-key
+        shell: bash
+        env:
+          RAW_PRIVATE_KEY: \${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$RAW_PRIVATE_KEY" ]; then
+            echo "SOHAILOS_GITHUB_APP_PRIVATE_KEY is unavailable to this workflow."
+            exit 1
+          fi
+
+          work_key="$RUNNER_TEMP/sohailos-github-app.pem"
+          normalized="$RAW_PRIVATE_KEY"
+          normalized="\${normalized//$'\r'/}"
+          normalized="\${normalized//\\\\n/$'\n'}"
+
+          if [[ "$normalized" != *"-----BEGIN "* ]]; then
+            if printf '%s' "$normalized" | base64 --decode > "$work_key" 2>/dev/null \
+              && grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key"; then
+              normalized="$(cat "$work_key")"
+            else
+              echo "GitHub App private key is neither PEM nor a supported base64-encoded PEM."
+              exit 1
+            fi
+          else
+            printf '%s' "$normalized" > "$work_key"
+          fi
+
+          if ! grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key"; then
+            echo "GitHub App private key does not have a supported PEM private-key header."
+            exit 1
+          fi
+
+          if ! openssl pkey -in "$work_key" -noout >/dev/null 2>&1; then
+            echo "GitHub App private key failed OpenSSL PEM parsing."
+            exit 1
+          fi
+
+          key_mask="$(cat "$work_key")"
+          echo "::add-mask::$key_mask"
+
+          delimiter="SOHAILOS_APP_KEY_$(openssl rand -hex 12)"
+          {
+            echo "private-key<<$delimiter"
+            cat "$work_key"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "GitHub App private key format validation passed."
 
       - name: Generate GitHub App installation token
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
-          private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
+          client-id: \${{ vars.SOHAILOS_GITHUB_APP_ID }}
+          private-key: \${{ steps.normalized-app-key.outputs.private-key }}
+          owner: \${{ github.repository_owner }}
           permission-contents: write
 
       - name: Verify GitHub App installation scope
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: \${{ steps.app-token.outputs.token }}
         shell: bash
         run: |
           count="$(gh api "/installation/repositories?per_page=1" --jq '.total_count')"
@@ -57,7 +109,7 @@ jobs:
         id: sync
         continue-on-error: true
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: \${{ steps.app-token.outputs.token }}
         shell: bash
         run: python scripts/sync_forks.py
 
@@ -86,10 +138,10 @@ jobs:
         id: reconcile
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: \${{ github.token }}
         shell: bash
         run: |
-          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "${{ runner.temp }}/ecosystem-reconciliation.json" --write --fail-on-removal
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "\${{ runner.temp }}/ecosystem-reconciliation.json" --write --fail-on-removal
 
       - name: Commit fork inventory and sync report
         shell: bash
@@ -133,6 +185,6 @@ jobs:
       - name: Trigger ecosystem reconciliation and knowledge refresh
         if: always() && steps.sync.outcome != 'failure'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: \${{ github.token }}
         run: |
-          gh api --method POST "repos/${{ github.repository }}/dispatches" -f event_type=forks_reconciled
+          gh api --method POST "repos/\${{ github.repository }}/dispatches" -f event_type=forks_reconciled
