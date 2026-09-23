@@ -168,17 +168,27 @@ public static class Program
                 graph,
                 new JsonSerializerOptions { WriteIndented = true }));
 
+        var statistics = provider.GetStatistics();
+        var retryableFailureCount = runResults.Count(x => x.State == KnowledgeIndexState.FailedRetryable);
+        var permanentFailureCount = runResults.Count(x => x.State == KnowledgeIndexState.FailedPermanent);
+        var partialCount = runResults.Count(x => x.State == KnowledgeIndexState.Partial);
         var report = new
         {
-            schema_version = "1.0",
+            schema_version = "1.1",
             generated_at = DateTimeOffset.UtcNow,
             owner,
             live_repository_count = liveRepositories.Count,
             indexed_repository_count = runResults.Count,
             committed_count = runResults.Count(x => x.State == KnowledgeIndexState.Committed),
-            partial_count = runResults.Count(x => x.State == KnowledgeIndexState.Partial),
-            retryable_failure_count = runResults.Count(x => x.State == KnowledgeIndexState.FailedRetryable),
-            permanent_failure_count = runResults.Count(x => x.State == KnowledgeIndexState.FailedPermanent),
+            partial_count = partialCount,
+            retryable_failure_count = retryableFailureCount,
+            permanent_failure_count = permanentFailureCount,
+            complete = retryableFailureCount == 0 && permanentFailureCount == 0 && partialCount == 0,
+            stored_repository_count = statistics.Repositories,
+            stored_revision_count = statistics.Revisions,
+            stored_document_count = statistics.Documents,
+            stored_chunk_count = statistics.Chunks,
+            stored_embedding_count = statistics.Embeddings,
             degraded_flags = runResults
                 .SelectMany(x => x.DegradedFlags)
                 .Distinct(StringComparer.Ordinal)
@@ -199,7 +209,7 @@ public static class Program
                 new JsonSerializerOptions { WriteIndented = true }));
 
         return runResults.Any(x =>
-            x.State is KnowledgeIndexState.FailedPermanent) ? 2 : 0;
+            x.State is KnowledgeIndexState.FailedPermanent or KnowledgeIndexState.FailedRetryable or KnowledgeIndexState.Partial) ? 2 : 0;
     }
 
 
