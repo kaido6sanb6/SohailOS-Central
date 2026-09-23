@@ -31,11 +31,32 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/build_fork_inventory.py
 
+      - name: Generate GitHub App installation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.SOHAILOS_GITHUB_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          permission-contents: write
+
+      - name: Verify GitHub App installation scope
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        shell: bash
+        run: |
+          count="$(gh api "/installation/repositories?per_page=1" --jq '.total_count')"
+          if [ -z "$count" ] || [ "$count" -lt 1 ]; then
+            echo "GitHub App installation exposes no repositories."
+            exit 1
+          fi
+          echo "GitHub App installation exposes $count repositories."
+
       - name: Sync forks with upstream
         id: sync
         continue-on-error: true
         env:
-          GH_TOKEN: ${{ secrets.SOHAILOS_GITHUB_SYNC_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         shell: bash
         run: python scripts/sync_forks.py
 
