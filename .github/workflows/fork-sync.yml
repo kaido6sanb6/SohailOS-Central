@@ -1,6 +1,7 @@
 # Continuous fork synchronization and verification
 # Verification marker: GitHub App PEM normalization and validation.
 # Operational probe: live credential rotation verification.
+# Gate policy: knowledge refresh only after App auth, fork sync, and registry reconciliation succeed.
 name: fork-sync-and-knowledge-refresh
 
 on:
