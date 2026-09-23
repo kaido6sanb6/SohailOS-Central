@@ -83,7 +83,7 @@ def main():
                 "branch": fork.get("default_branch"),
                 "upstream": fork.get("upstream"),
                 "status": "blocked",
-                "reason": "SOHAILOS_GITHUB_SYNC_TOKEN is not configured",
+                "reason": "GH_TOKEN is not available for cross-repository synchronization",
             }
             for fork in forks
         ]
