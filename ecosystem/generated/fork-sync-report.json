@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "generated_at": "2026-09-23T19:46:31.167309+00:00",
+  "generated_at": "2026-09-23T20:27:19.325243+00:00",
   "owner": "kaido6sanb6",
   "fork_count": 121,
   "results": [
@@ -104,8 +104,8 @@
       "repo": "kaido6sanb6/awesome-nano-banana-pro-prompts",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream YouMind-OpenLab:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream YouMind-OpenLab:main.",
+      "merge_type": "fast-forward",
       "upstream": "YouMind-OpenLab/awesome-nano-banana-pro-prompts"
     },
     {
@@ -224,8 +224,8 @@
       "repo": "kaido6sanb6/DeepSeek-Reasonix",
       "branch": "main-v2",
       "status": "synced",
-      "message": "This branch is not behind the upstream esengine:main-v2.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream esengine:main-v2.",
+      "merge_type": "fast-forward",
       "upstream": "esengine/DeepSeek-Reasonix"
     },
     {
@@ -368,8 +368,8 @@
       "repo": "kaido6sanb6/hermes-agent",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream NousResearch:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream NousResearch:main.",
+      "merge_type": "fast-forward",
       "upstream": "NousResearch/hermes-agent"
     },
     {
@@ -616,8 +616,8 @@
       "repo": "kaido6sanb6/OpenMetadata",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream open-metadata:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream open-metadata:main.",
+      "merge_type": "fast-forward",
       "upstream": "open-metadata/OpenMetadata"
     },
     {
@@ -640,8 +640,8 @@
       "repo": "kaido6sanb6/paseo",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream getpaseo:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream getpaseo:main.",
+      "merge_type": "fast-forward",
       "upstream": "getpaseo/paseo"
     },
     {
@@ -784,8 +784,8 @@
       "repo": "kaido6sanb6/screenpipe",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream screenpipe:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream screenpipe:main.",
+      "merge_type": "fast-forward",
       "upstream": "screenpipe/screenpipe"
     },
     {
@@ -912,8 +912,8 @@
       "repo": "kaido6sanb6/v",
       "branch": "master",
       "status": "synced",
-      "message": "This branch is not behind the upstream vlang:master.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream vlang:master.",
+      "merge_type": "fast-forward",
       "upstream": "vlang/v"
     },
     {
@@ -936,8 +936,8 @@
       "repo": "kaido6sanb6/vllm",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream vllm-project:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream vllm-project:main.",
+      "merge_type": "fast-forward",
       "upstream": "vllm-project/vllm"
     },
     {
