@@ -120,24 +120,42 @@ public sealed class GitHubKnowledgeSourceClient
 
     public async Task<byte[]> GetBlobAsync(
         LiveRepository repository,
-        string sha,
+        string gitOid,
+        string path,
         CancellationToken cancellationToken = default)
     {
         var (owner, name) = SplitRepositoryName(repository.FullName);
-        using var response = await SendAsync(
-            $"/repos/{Uri.EscapeDataString(owner)}/{Uri.EscapeDataString(name)}/git/blobs/{Uri.EscapeDataString(sha)}",
-            cancellationToken);
+        var encodedPath = string.Join(
+            "/",
+            path.Split("/", StringSplitOptions.RemoveEmptyEntries)
+                .Select(Uri.EscapeDataString));
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"https://raw.githubusercontent.com/{Uri.EscapeDataString(owner)}/{Uri.EscapeDataString(name)}/{Uri.EscapeDataString(gitOid)}/{encodedPath}");
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream"));
 
-        using var json = await JsonDocument.ParseAsync(
-            await response.Content.ReadAsStreamAsync(cancellationToken),
-            cancellationToken: cancellationToken);
+        if (!string.IsNullOrWhiteSpace(_token))
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
-        var encoding = json.RootElement.GetProperty("encoding").GetString();
-        if (!string.Equals(encoding, "base64", StringComparison.OrdinalIgnoreCase))
-            throw new InvalidDataException($"GitHub blob {sha} used unsupported encoding '{encoding}'.");
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
-        var content = json.RootElement.GetProperty("content").GetString() ?? string.Empty;
-        return Convert.FromBase64String(content);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        if ((int)response.StatusCode == 429 ||
+            ((int)response.StatusCode == 403 &&
+             body.Contains("rate limit", StringComparison.OrdinalIgnoreCase)))
+            throw new GitHubRateLimitException(body);
+
+        if ((int)response.StatusCode is 401 or 403)
+            throw new GitHubAuthorizationException(body);
+
+        if ((int)response.StatusCode == 404)
+            throw new FileNotFoundException(
+                $"GitHub raw resource was not found: {repository.FullName}/{gitOid}/{path}");
+
+        throw new HttpRequestException(
+            $"GitHub raw source request failed with {(int)response.StatusCode}: {body}");
     }
 
     private async Task<HttpResponseMessage> SendAsync(string relativePath, CancellationToken cancellationToken)
