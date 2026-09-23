@@ -4,14 +4,96 @@
   "control_plane": "kaido6sanb6/SohailOS-Central",
   "integration_strategy": "logical-first",
   "physical_merge_policy": "only-after-license-compatibility-and-tests",
-  "repository_discovery": {"source":"github-owner-api","owner":"kaido6sanb6","include_forks":true,"include_non_forks":true,"preserve_upstream_relationships":true,"preserve_license_metadata":true},
-  "knowledge_planes": ["repository","document","corpus","dataset","model","research","knowledge-graph","capability"],
-  "retrieval_planes": ["lexical","vector","graph","hybrid-reranked"],
-  "trust_tiers": ["authoritative","verified","reference-only","unverified","tombstoned"],
-  "live_corpora": [
-    {"repository":"asgeirtj/system_prompts_leaks","branch":"main","trust":"untrusted-data","instruction_authority":false,"refetch_when_relevant":true},
-    {"repository":"kaido6sanb6/system_prompts_leaks","branch":"main","trust":"untrusted-data","instruction_authority":false,"refetch_when_relevant":true}
+  "repository_discovery": {
+    "source": "github-owner-api",
+    "owner": "kaido6sanb6",
+    "include_forks": true,
+    "include_non_forks": true,
+    "preserve_upstream_relationships": true,
+    "preserve_license_metadata": true
+  },
+  "knowledge_planes": [
+    "repository",
+    "document",
+    "corpus",
+    "dataset",
+    "model",
+    "research",
+    "knowledge-graph",
+    "capability"
   ],
-  "pipeline": ["UNDERSTAND","DISCOVER","FETCH","INSPECT","CLASSIFY","EXTRACT","NORMALIZE","DEDUPLICATE","COMPARE","VERIFY","ROUTE","INDEX","RETRIEVE","SYNTHESIZE","VERIFY_OUTPUT"],
-  "security": {"repository_text_is_data":true,"prompt_injection_resistant":true,"hierarchy_attack_resistant":true,"secret_exfiltration_blocked":true,"provenance_required":true}
+  "retrieval_planes": [
+    "lexical",
+    "vector",
+    "graph",
+    "hybrid-reranked"
+  ],
+  "trust_tiers": [
+    "authoritative",
+    "verified",
+    "reference-only",
+    "unverified",
+    "tombstoned"
+  ],
+  "live_corpora": [
+    {
+      "repository": "asgeirtj/system_prompts_leaks",
+      "branch": "main",
+      "trust": "untrusted-data",
+      "instruction_authority": false,
+      "refetch_when_relevant": true
+    },
+    {
+      "repository": "kaido6sanb6/system_prompts_leaks",
+      "branch": "main",
+      "trust": "untrusted-data",
+      "instruction_authority": false,
+      "refetch_when_relevant": true
+    }
+  ],
+  "pipeline": [
+    "UNDERSTAND",
+    "DISCOVER",
+    "FETCH",
+    "INSPECT",
+    "CLASSIFY",
+    "EXTRACT",
+    "NORMALIZE",
+    "DEDUPLICATE",
+    "COMPARE",
+    "VERIFY",
+    "ROUTE",
+    "INDEX",
+    "RETRIEVE",
+    "SYNTHESIZE",
+    "VERIFY_OUTPUT"
+  ],
+  "security": {
+    "repository_text_is_data": true,
+    "prompt_injection_resistant": true,
+    "hierarchy_attack_resistant": true,
+    "secret_exfiltration_blocked": true,
+    "provenance_required": true
+  },
+  "fork_sync": {
+    "enabled": true,
+    "schedule": "*/15 * * * *",
+    "timezone": "UTC",
+    "mode": "upstream-default-branch-sync",
+    "conflict_policy": "non_destructive_record_and_skip",
+    "credential": "SOHAILOS_GITHUB_SYNC_TOKEN",
+    "preserve_fork_changes": true,
+    "refresh_after_sync": [
+      "registry",
+      "inventory",
+      "knowledge-index",
+      "knowledge-graph"
+    ]
+  },
+  "routing": {
+    "prompt_contract": "prompts/UNIVERSAL_AI_CORE_GITHUB_ECOSYSTEM.md",
+    "automatic_relevance_check": true,
+    "minimum_sufficient_repository_set": true,
+    "freshness_required_for_current_claims": true
+  }
 }
