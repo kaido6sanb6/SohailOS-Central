@@ -1774,6 +1774,330 @@
         "fork": true,
         "last_seen_at": "2026-09-22T19:45:33.7235953Z"
       }
+    },
+    {
+      "repo": "kaido6sanb6/academic-ai-prompt",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/academic-ai-prompt"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383379738,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/awesome-nano-banana-pro-prompts",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/awesome-nano-banana-pro-prompts"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383379048,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/BlackFriday-GPTs-Prompts",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/BlackFriday-GPTs-Prompts"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383363410,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/ChatGPT_DAN",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/ChatGPT_DAN"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383359473,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/CKClaw",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/CKClaw"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383358458,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/gpt-advance-prompt-library",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/gpt-advance-prompt-library"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383370521,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/gpt-instruct",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/gpt-instruct"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383364956,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/happy-prompts",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/happy-prompts"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383374177,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/JailbreakRadar_Backup",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/JailbreakRadar_Backup"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383380621,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/jailbreak_llms",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/jailbreak_llms"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383360142,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/L1B3RT4S",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/L1B3RT4S"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383361891,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/last30days-skill",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/last30days-skill"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383377780,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/prompt-optimizer",
+      "default_branch": "develop",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/prompt-optimizer"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383378282,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/prompt-sanctuary",
+      "default_branch": "development",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/prompt-sanctuary"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383371269,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/SuperPrompt",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/SuperPrompt"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383345062,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/SuperPrompt-0.1.5-Holographic-Catalyst",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/SuperPrompt-0.1.5-Holographic-Catalyst"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383347844,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/superprompter",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/superprompter"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383352926,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/V0-system-prompt",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/V0-system-prompt"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1383369173,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-23T12:52:06.0882248Z"
+      }
     }
   ],
   "edges": [
@@ -3062,13 +3386,121 @@
       "upstream": null,
       "status": "unverified",
       "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/academic-ai-prompt",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/awesome-nano-banana-pro-prompts",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/BlackFriday-GPTs-Prompts",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/ChatGPT_DAN",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/CKClaw",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/gpt-advance-prompt-library",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/gpt-instruct",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/happy-prompts",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/JailbreakRadar_Backup",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/jailbreak_llms",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/L1B3RT4S",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/last30days-skill",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/prompt-optimizer",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/prompt-sanctuary",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/SuperPrompt",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/SuperPrompt-0.1.5-Holographic-Catalyst",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/superprompter",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/V0-system-prompt",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
     }
   ],
   "sync": {
     "owner": "kaido6sanb6",
     "scope": "public-owner-inventory",
-    "last_reconciled_at": "2026-09-22T19:45:33.7235953Z",
-    "live_repository_count": 106,
-    "registry_repository_count": 106
+    "last_reconciled_at": "2026-09-23T12:52:06.0882248Z",
+    "live_repository_count": 124,
+    "registry_repository_count": 124
   }
 }
