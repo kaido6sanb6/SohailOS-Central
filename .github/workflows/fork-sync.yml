@@ -44,7 +44,8 @@ jobs:
           work_key="$RUNNER_TEMP/sohailos-github-app.pem"
           normalized="${RAW_PRIVATE_KEY//$'\r'/}"
           normalized="${normalized//\\n/$'\n'}"
-          normalized="${normalized#\"}"; normalized="${normalized%\"}"; normalized="${normalized#\'}"; normalized="${normalized%\'}"\n          if [[ "$normalized" != *"-----BEGIN "* ]]; then
+          normalized="${normalized#\"}"; normalized="${normalized%\"}"; normalized="${normalized#\'}"; normalized="${normalized%\'}"
+          if [[ "$normalized" != *"-----BEGIN "* ]]; then
             if printf '%s' "$normalized" | base64 --decode > "$work_key" 2>/dev/null && grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key"; then
               normalized="$(cat "$work_key")"
             else
