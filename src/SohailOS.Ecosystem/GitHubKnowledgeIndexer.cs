@@ -144,7 +144,7 @@ public sealed class GitHubKnowledgeIndexer
                     }
                 }
 
-                var bytes = await _source.GetBlobAsync(repository, entry.Sha, cancellationToken);
+                var bytes = await _source.GetBlobAsync(repository, snapshot.GitOid, path, cancellationToken);
                 if (LooksBinary(bytes))
                 {
                     Count("binary_skipped");
