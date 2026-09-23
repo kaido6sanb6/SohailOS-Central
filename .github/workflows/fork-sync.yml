@@ -1,4 +1,5 @@
 # Continuous fork synchronization and verification
+# Verification marker: force a real CI execution when this workflow definition changes.
 name: fork-sync-and-knowledge-refresh
 
 on:
