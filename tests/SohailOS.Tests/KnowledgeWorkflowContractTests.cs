@@ -79,7 +79,9 @@ public sealed class KnowledgeWorkflowContractTests
         Assert.Contains("branches: [ main ]", yaml);
         Assert.Contains("paths-ignore:", yaml);
         Assert.Contains("concurrency:", yaml);
-        Assert.Contains("cancel-in-progress: true", yaml);
+        Assert.Contains("cancel-in-progress: false", yaml);
+        Assert.Contains("repository_dispatch:", yaml);
+        Assert.Contains("forks_reconciled", yaml);
         Assert.Contains("ecosystem/generated/**", yaml);
         Assert.DoesNotContain("branches: [ feat/universal-knowledge-os ]", yaml);
     }
