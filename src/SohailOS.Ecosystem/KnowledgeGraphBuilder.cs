@@ -66,6 +66,24 @@ public static class KnowledgeGraphBuilder
             }
         }
 
+        foreach (var corpus in LiveCorpus.OrderBy(x => x, StringComparer.OrdinalIgnoreCase))
+        {
+            var externalId = $"repo:external:{corpus}";
+            if (!nodes.ContainsKey(externalId))
+            {
+                nodes[externalId] = new(
+                    externalId,
+                    "Repository",
+                    corpus,
+                    "untrusted-data");
+            }
+
+            if (!string.Equals(corpus, Central, StringComparison.OrdinalIgnoreCase))
+            {
+                edges.Add(new(corpus, Central, "RESEARCH_CORPUS_FOR"));
+            }
+        }
+
         foreach (var item in inventory?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>())
         {
             var fullName = item["full_name"]?.GetValue<string>();
