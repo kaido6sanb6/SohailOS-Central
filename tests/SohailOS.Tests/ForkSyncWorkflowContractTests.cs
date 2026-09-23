@@ -32,7 +32,7 @@ public sealed class ForkSyncWorkflowContractTests
         Assert.Contains("SOHAILOS_GITHUB_APP_ID", yaml);
         Assert.Contains("SOHAILOS_GITHUB_APP_PRIVATE_KEY", yaml);
         Assert.Contains("steps.app-token.outputs.token", yaml);
-        Assert.Contains("owner: \${{ github.repository_owner }}", yaml);
+        Assert.Contains("owner: ${{ github.repository_owner }}", yaml);
         Assert.Contains("permission-contents: write", yaml);
         Assert.Contains("permission-workflows: write", yaml);
         Assert.DoesNotContain("SOHAILOS_GITHUB_SYNC_TOKEN", yaml);
