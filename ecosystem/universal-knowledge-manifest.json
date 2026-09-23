@@ -81,7 +81,7 @@
     "timezone": "UTC",
     "mode": "upstream-default-branch-sync",
     "conflict_policy": "non_destructive_record_and_skip",
-    "credential": "SOHAILOS_GITHUB_SYNC_TOKEN",
+    "credential": "SOHAILOS_GITHUB_APP_PRIVATE_KEY",
     "preserve_fork_changes": true,
     "refresh_after_sync": [
       "registry",
