@@ -12,6 +12,19 @@ public class InMemoryDataPlaneProvider : DataPlaneProvider
     private readonly List<KnowledgeRunRecord> _runs = [];
     private readonly HashSet<string> _tombstones = new(StringComparer.Ordinal);
 
+    public KnowledgeIndexStatistics GetStatistics()
+    {
+        lock (_gate)
+        {
+            return new KnowledgeIndexStatistics(
+                _repositories.Count,
+                _revisions.Count,
+                _documents.Count,
+                _chunks.Count,
+                _embeddings.Count);
+        }
+    }
+
     public virtual Task<KnowledgeHealthStatus> HealthCheckAsync(CancellationToken cancellationToken = default) =>
         Task.FromResult(new KnowledgeHealthStatus(true, GetType().Name));
 
