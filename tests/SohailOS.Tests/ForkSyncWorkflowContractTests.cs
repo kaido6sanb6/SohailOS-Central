@@ -28,8 +28,12 @@ public sealed class ForkSyncWorkflowContractTests
         var path = FindRepositoryFile(".github/workflows/fork-sync.yml");
         var yaml = File.ReadAllText(path);
 
-        Assert.Contains("SOHAILOS_GITHUB_SYNC_TOKEN", yaml);
-        Assert.Contains("GITHUB_TOKEN", yaml);
+        Assert.Contains("actions/create-github-app-token@v3", yaml);
+        Assert.Contains("SOHAILOS_GITHUB_APP_CLIENT_ID", yaml);
+        Assert.Contains("SOHAILOS_GITHUB_APP_PRIVATE_KEY", yaml);
+        Assert.Contains("steps.app-token.outputs.token", yaml);
+        Assert.Contains("owner: ${{ github.repository_owner }}", yaml);
+        Assert.DoesNotContain("SOHAILOS_GITHUB_SYNC_TOKEN", yaml);
     }
 
     [Fact]
@@ -47,7 +51,7 @@ public sealed class ForkSyncWorkflowContractTests
         Assert.True(File.Exists(syncScript));
         var sync = File.ReadAllText(syncScript);
         Assert.Contains("merge-upstream", sync);
-        Assert.Contains("SOHAILOS_GITHUB_SYNC_TOKEN", sync);
+        Assert.Contains("GH_TOKEN", sync);
         Assert.DoesNotContain("--force", sync);
     }
 
