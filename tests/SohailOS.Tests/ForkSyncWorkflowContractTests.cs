@@ -38,10 +38,10 @@ public sealed class ForkSyncWorkflowContractTests
         var path = FindRepositoryFile("scripts/build_fork_inventory.py");
         var source = File.ReadAllText(path);
 
-        Assert.Contains(""upstream"", source);
-        Assert.Contains(""source"", source);
-        Assert.Contains(""fork_count"", source);
-        Assert.Contains(""fork"", source);
+        Assert.Contains("\"upstream\"", source);
+        Assert.Contains("\"source\"", source);
+        Assert.Contains("\"fork_count\"", source);
+        Assert.Contains("\"fork\"", source);
     }
 
     private static string FindRepositoryFile(string relativePath)
