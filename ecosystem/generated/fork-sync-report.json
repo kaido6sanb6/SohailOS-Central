@@ -1,861 +1,961 @@
 {
   "schema_version": "1.1",
-  "generated_at": "2026-09-23T17:25:46.780802+00:00",
+  "generated_at": "2026-09-23T18:47:52.677877+00:00",
   "owner": "kaido6sanb6",
   "fork_count": 121,
   "results": [
     {
       "repo": "kaido6sanb6/academic-ai-prompt",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream bohyy:main.",
+      "merge_type": "none",
       "upstream": "bohyy/academic-ai-prompt"
     },
     {
       "repo": "kaido6sanb6/AIClient2API",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream justlovemaki:main.",
+      "merge_type": "fast-forward",
       "upstream": "justlovemaki/AIClient2API"
     },
     {
       "repo": "kaido6sanb6/andrej-karpathy-skills",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream multica-ai:main.",
+      "merge_type": "none",
       "upstream": "multica-ai/andrej-karpathy-skills"
     },
     {
       "repo": "kaido6sanb6/api",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream IIIF:main.",
+      "merge_type": "none",
       "upstream": "IIIF/api"
     },
     {
       "repo": "kaido6sanb6/AraMS-28k-Dataset",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream ArchaText:main.",
+      "merge_type": "none",
       "upstream": "ArchaText/AraMS-28k-Dataset"
     },
     {
       "repo": "kaido6sanb6/argo-pass",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream Emadxx5:main.",
+      "merge_type": "none",
       "upstream": "Emadxx5/argo-passED"
     },
     {
       "repo": "kaido6sanb6/Auto-Empirical-Research-Skills",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream brycewang-stanford:main.",
+      "merge_type": "fast-forward",
       "upstream": "brycewang-stanford/Auto-Empirical-Research-Skills"
     },
     {
       "repo": "kaido6sanb6/AutoGPT",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream Significant-Gravitas:master.",
+      "merge_type": "fast-forward",
       "upstream": "Significant-Gravitas/AutoGPT"
     },
     {
       "repo": "kaido6sanb6/awesome-GLAM-semweb",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream ncarboni:master.",
+      "merge_type": "none",
       "upstream": "ncarboni/awesome-GLAM-semweb"
     },
     {
       "repo": "kaido6sanb6/awesome-gpt-image-2",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream freestylefly:main.",
+      "merge_type": "none",
       "upstream": "freestylefly/awesome-gpt-image-2"
     },
     {
       "repo": "kaido6sanb6/awesome-gpt-image-2-API-and-Prompts",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream EvoLinkAI:main.",
+      "merge_type": "none",
       "upstream": "EvoLinkAI/awesome-gpt-image-2-API-and-Prompts"
     },
     {
       "repo": "kaido6sanb6/awesome-iiif",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream IIIF:main.",
+      "merge_type": "none",
       "upstream": "IIIF/awesome-iiif"
     },
     {
       "repo": "kaido6sanb6/awesome-nano-banana-pro-prompts",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream YouMind-OpenLab:main.",
+      "merge_type": "fast-forward",
       "upstream": "YouMind-OpenLab/awesome-nano-banana-pro-prompts"
     },
     {
       "repo": "kaido6sanb6/BlackFriday-GPTs-Prompts",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream friuns2:main.",
+      "merge_type": "none",
       "upstream": "friuns2/BlackFriday-GPTs-Prompts"
     },
     {
       "repo": "kaido6sanb6/cc-switch",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/ci.yml` without `workflows` permission (HTTP 422)",
       "upstream": "farion1231/cc-switch"
     },
     {
       "repo": "kaido6sanb6/chat-ui",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/build-image.yml` without `workflows` permission (HTTP 422)",
       "upstream": "huggingface/chat-ui"
     },
     {
       "repo": "kaido6sanb6/ChatGLM-6B",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream zai-org:main.",
+      "merge_type": "none",
       "upstream": "zai-org/ChatGLM-6B"
     },
     {
       "repo": "kaido6sanb6/chatgpt-prompts-for-academic-writing",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream ahmetbersoz:main.",
+      "merge_type": "none",
       "upstream": "ahmetbersoz/chatgpt-prompts-for-academic-writing"
     },
     {
       "repo": "kaido6sanb6/ChatGPT-Shortcut",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream rockbenben:main.",
+      "merge_type": "none",
       "upstream": "rockbenben/ChatGPT-Shortcut"
     },
     {
       "repo": "kaido6sanb6/ChatGPT_DAN",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream 0xk1h0:main.",
+      "merge_type": "none",
       "upstream": "0xk1h0/ChatGPT_DAN"
     },
     {
       "repo": "kaido6sanb6/CKClaw",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream cimengror3:main.",
+      "merge_type": "none",
       "upstream": "cimengror3/CKClaw"
     },
     {
       "repo": "kaido6sanb6/claude-code",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream anthropics:main.",
+      "merge_type": "fast-forward",
       "upstream": "anthropics/claude-code"
     },
     {
       "repo": "kaido6sanb6/claude-codee",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream claude-code-best:main.",
+      "merge_type": "none",
       "upstream": "claude-code-best/claude-code"
     },
     {
       "repo": "kaido6sanb6/datahub",
       "branch": "master",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/airflow-plugin.yml` without `workflows` permission (HTTP 422)",
       "upstream": "datahub-project/datahub"
     },
     {
       "repo": "kaido6sanb6/datatrove",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/datatrove"
     },
     {
       "repo": "kaido6sanb6/deep-rl-class",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/deep-rl-class"
     },
     {
       "repo": "kaido6sanb6/deepseek-harness",
       "branch": "master",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/build-exe-for-python-sdk.yml` without `workflows` permission (HTTP 422)",
       "upstream": "deepseek-ai/deepseek-harness"
     },
     {
       "repo": "kaido6sanb6/DeepSeek-Reasonix",
       "branch": "main-v2",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream esengine:main-v2.",
+      "merge_type": "fast-forward",
       "upstream": "esengine/DeepSeek-Reasonix"
     },
     {
       "repo": "kaido6sanb6/dsh-desktop",
       "branch": "master",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/ci.yml` without `workflows` permission (HTTP 422)",
       "upstream": "anywhere-labs/dsh-desktop"
     },
     {
       "repo": "kaido6sanb6/ECCO-TCP",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream Text-Creation-Partnership:master.",
+      "merge_type": "none",
       "upstream": "Text-Creation-Partnership/ECCO-TCP"
     },
     {
       "repo": "kaido6sanb6/EEBO-TCP-Collections-Navigations",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream Text-Creation-Partnership:master.",
+      "merge_type": "none",
       "upstream": "Text-Creation-Partnership/EEBO-TCP-Collections-Navigations"
     },
     {
       "repo": "kaido6sanb6/Evans-TCP",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream Text-Creation-Partnership:master.",
+      "merge_type": "none",
       "upstream": "Text-Creation-Partnership/Evans-TCP"
     },
     {
       "repo": "kaido6sanb6/Gaddel",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream srophe:main.",
+      "merge_type": "none",
       "upstream": "srophe/Gaddel"
     },
     {
       "repo": "kaido6sanb6/generative-ai-for-beginners",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream microsoft:main.",
+      "merge_type": "none",
       "upstream": "microsoft/generative-ai-for-beginners"
     },
     {
       "repo": "kaido6sanb6/go-openai",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream sashabaranov:master.",
+      "merge_type": "fast-forward",
       "upstream": "sashabaranov/go-openai"
     },
     {
       "repo": "kaido6sanb6/gpt-advance-prompt-library",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream 1999AZZAR:master.",
+      "merge_type": "none",
       "upstream": "1999AZZAR/gpt-advance-prompt-library"
     },
     {
       "repo": "kaido6sanb6/gpt-instruct",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream MDX-Tom:main.",
+      "merge_type": "none",
       "upstream": "MDX-Tom/gpt-instruct"
     },
     {
       "repo": "kaido6sanb6/gpt4free",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream xtekky:main.",
+      "merge_type": "fast-forward",
       "upstream": "xtekky/gpt4free"
     },
     {
       "repo": "kaido6sanb6/graph-theory",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream je-suis-tm:master.",
+      "merge_type": "none",
       "upstream": "je-suis-tm/graph-theory"
     },
     {
       "repo": "kaido6sanb6/graph_skills",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream ArthurSrz:main.",
+      "merge_type": "none",
       "upstream": "ArthurSrz/graph_skills"
     },
     {
       "repo": "kaido6sanb6/grobid",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream grobidOrg:master.",
+      "merge_type": "none",
       "upstream": "grobidOrg/grobid"
     },
     {
       "repo": "kaido6sanb6/gstack",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/evals-periodic.yml` without `workflows` permission (HTTP 422)",
       "upstream": "garrytan/gstack"
     },
     {
       "repo": "kaido6sanb6/hamuleite",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream hoochanlon:master.",
+      "merge_type": "none",
       "upstream": "hoochanlon/hamuleite"
     },
     {
       "repo": "kaido6sanb6/happy-prompts",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream davidegat:main.",
+      "merge_type": "none",
       "upstream": "davidegat/happy-prompts"
     },
     {
       "repo": "kaido6sanb6/hazm",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream roshan-research:master.",
+      "merge_type": "none",
       "upstream": "roshan-research/hazm"
     },
     {
       "repo": "kaido6sanb6/hermes-agent",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/lint.yml` without `workflows` permission (HTTP 422)",
       "upstream": "NousResearch/hermes-agent"
     },
     {
       "repo": "kaido6sanb6/hermes-webui",
       "branch": "master",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/conversation-lifecycle.yml` without `workflows` permission (HTTP 422)",
       "upstream": "nesquena/hermes-webui"
     },
     {
       "repo": "kaido6sanb6/how-to-scrape-google-scholar",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream oxylabs:main.",
+      "merge_type": "none",
       "upstream": "oxylabs/how-to-scrape-google-scholar"
     },
     {
       "repo": "kaido6sanb6/htr-united",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream HTR-United:master.",
+      "merge_type": "none",
       "upstream": "HTR-United/htr-united"
     },
     {
       "repo": "kaido6sanb6/huggingface_hub",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/check-installers.yml` without `workflows` permission (HTTP 422)",
       "upstream": "huggingface/huggingface_hub"
     },
     {
       "repo": "kaido6sanb6/humanities_data_benchmark",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream RISE-UNIBAS:main.",
+      "merge_type": "fast-forward",
       "upstream": "RISE-UNIBAS/humanities_data_benchmark"
     },
     {
       "repo": "kaido6sanb6/iiif-stories",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream IIIF:master.",
+      "merge_type": "none",
       "upstream": "IIIF/iiif-stories"
     },
     {
       "repo": "kaido6sanb6/iiifc-theme",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream IIIF:main.",
+      "merge_type": "none",
       "upstream": "IIIF/iiifc-theme"
     },
     {
       "repo": "kaido6sanb6/impresso-frontend",
       "branch": "develop",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream impresso:develop.",
+      "merge_type": "none",
       "upstream": "impresso/impresso-frontend"
     },
     {
       "repo": "kaido6sanb6/jailbreak_llms",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream verazuo:main.",
+      "merge_type": "none",
       "upstream": "verazuo/jailbreak_llms"
     },
     {
       "repo": "kaido6sanb6/JailbreakRadar_Backup",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream Junjie-Chu:main.",
+      "merge_type": "none",
       "upstream": "Junjie-Chu/JailbreakRadar_Backup"
     },
     {
       "repo": "kaido6sanb6/jasp-desktop",
       "branch": "development",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream jasp-stats:development.",
+      "merge_type": "none",
       "upstream": "jasp-stats/jasp-desktop"
     },
     {
       "repo": "kaido6sanb6/JavaGuide",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream Snailclimb:main.",
+      "merge_type": "fast-forward",
       "upstream": "Snailclimb/JavaGuide"
     },
     {
       "repo": "kaido6sanb6/Ketaba-OCR-LoRA",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream HasanBGit:main.",
+      "merge_type": "none",
       "upstream": "HasanBGit/Ketaba-OCR-LoRA"
     },
     {
       "repo": "kaido6sanb6/kraken",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream mittagessen:main.",
+      "merge_type": "none",
       "upstream": "mittagessen/kraken"
     },
     {
       "repo": "kaido6sanb6/L1B3RT4S",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream elder-plinius:main.",
+      "merge_type": "none",
       "upstream": "elder-plinius/L1B3RT4S"
     },
     {
       "repo": "kaido6sanb6/last30days-skill",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream mvanhorn:main.",
+      "merge_type": "none",
       "upstream": "mvanhorn/last30days-skill"
     },
     {
       "repo": "kaido6sanb6/lobehub",
       "branch": "canary",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/e2e.yml` without `workflows` permission (HTTP 422)",
       "upstream": "lobehub/lobehub"
     },
     {
       "repo": "kaido6sanb6/Mastodon-Sociologists",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream trutzig89182:main.",
+      "merge_type": "none",
       "upstream": "trutzig89182/Mastodon-Sociologists"
     },
     {
       "repo": "kaido6sanb6/MemOS",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream MemTensor:main.",
+      "merge_type": "none",
       "upstream": "MemTensor/MemOS"
     },
     {
       "repo": "kaido6sanb6/mindshub",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream mindsdb:main.",
+      "merge_type": "none",
       "upstream": "mindsdb/mindshub"
     },
     {
       "repo": "kaido6sanb6/NemoClaw",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/base-image.yaml` without `workflows` permission (HTTP 422)",
       "upstream": "NVIDIA/NemoClaw"
     },
     {
       "repo": "kaido6sanb6/NextChat",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream ChatGPTNextWeb:main.",
+      "merge_type": "none",
       "upstream": "ChatGPTNextWeb/NextChat"
     },
     {
       "repo": "kaido6sanb6/notebooks",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/notebooks"
     },
     {
       "repo": "kaido6sanb6/Notebooks4Historical_Newspapers",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream soberbichler:main.",
+      "merge_type": "none",
       "upstream": "soberbichler/Notebooks4Historical_Newspapers"
     },
     {
       "repo": "kaido6sanb6/ollama",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/test-xgrammar.yaml` without `workflows` permission (HTTP 422)",
       "upstream": "ollama/ollama"
     },
     {
       "repo": "kaido6sanb6/OmniRoute",
       "branch": "release/v3.8.51",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/ci.yml` without `workflows` permission (HTTP 422)",
       "upstream": "diegosouzapw/OmniRoute"
     },
     {
       "repo": "kaido6sanb6/ontology",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream FAIR-epigraphy:main.",
+      "merge_type": "none",
       "upstream": "FAIR-epigraphy/ontology"
     },
     {
       "repo": "kaido6sanb6/Open-AutoGLM",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream zai-org:main.",
+      "merge_type": "none",
       "upstream": "zai-org/Open-AutoGLM"
     },
     {
       "repo": "kaido6sanb6/open-design",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream nexu-io:main.",
+      "merge_type": "fast-forward",
       "upstream": "nexu-io/open-design"
     },
     {
       "repo": "kaido6sanb6/openinterpreter",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream openinterpreter:main.",
+      "merge_type": "none",
       "upstream": "openinterpreter/openinterpreter"
     },
     {
       "repo": "kaido6sanb6/OpenMetadata",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/playwright-e2e-reusable.yml` without `workflows` permission (HTTP 422)",
       "upstream": "open-metadata/OpenMetadata"
     },
     {
       "repo": "kaido6sanb6/OpenNMT-py",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream OpenNMT:master.",
+      "merge_type": "none",
       "upstream": "OpenNMT/OpenNMT-py"
     },
     {
       "repo": "kaido6sanb6/parsbert",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream hooshvare:master.",
+      "merge_type": "none",
       "upstream": "hooshvare/parsbert"
     },
     {
       "repo": "kaido6sanb6/paseo",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream getpaseo:main.",
+      "merge_type": "fast-forward",
       "upstream": "getpaseo/paseo"
     },
     {
       "repo": "kaido6sanb6/persian-nlp-benchmark",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream Mofid-AI:main.",
+      "merge_type": "none",
       "upstream": "Mofid-AI/persian-nlp-benchmark"
     },
     {
       "repo": "kaido6sanb6/prompt-optimizer",
       "branch": "develop",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream linshenkx:develop.",
+      "merge_type": "none",
       "upstream": "linshenkx/prompt-optimizer"
     },
     {
       "repo": "kaido6sanb6/prompt-sanctuary",
       "branch": "development",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream 1999AZZAR:development.",
+      "merge_type": "none",
       "upstream": "1999AZZAR/prompt-sanctuary"
     },
     {
       "repo": "kaido6sanb6/prompts.chat",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream f:main.",
+      "merge_type": "none",
       "upstream": "f/prompts.chat"
     },
     {
       "repo": "kaido6sanb6/PyPaperBot",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream ferru97:master.",
+      "merge_type": "none",
       "upstream": "ferru97/PyPaperBot"
     },
     {
       "repo": "kaido6sanb6/pytorch-image-models",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
+      "merge_type": "fast-forward",
       "upstream": "huggingface/pytorch-image-models"
     },
     {
       "repo": "kaido6sanb6/rasam-dataset",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream calfa-co:main.",
+      "merge_type": "none",
       "upstream": "calfa-co/rasam-dataset"
     },
     {
       "repo": "kaido6sanb6/research-agent",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream aghababaeiali:main.",
+      "merge_type": "none",
       "upstream": "aghababaeiali/research-agent"
     },
     {
       "repo": "kaido6sanb6/Research-RAG",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream pranavraikote:main.",
+      "merge_type": "none",
       "upstream": "pranavraikote/Research-RAG"
     },
     {
       "repo": "kaido6sanb6/rio",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream gesistsa:main.",
+      "merge_type": "none",
       "upstream": "gesistsa/rio"
     },
     {
       "repo": "kaido6sanb6/ruflo",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream ruvnet:main.",
+      "merge_type": "fast-forward",
       "upstream": "ruvnet/ruflo"
     },
     {
       "repo": "kaido6sanb6/scholar.py",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream ckreibich:master.",
+      "merge_type": "none",
       "upstream": "ckreibich/scholar.py"
     },
     {
       "repo": "kaido6sanb6/scholarly",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream scholarly-python-package:main.",
+      "merge_type": "none",
       "upstream": "scholarly-python-package/scholarly"
     },
     {
       "repo": "kaido6sanb6/SciDownl",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream Tishacy:main.",
+      "merge_type": "none",
       "upstream": "Tishacy/SciDownl"
     },
     {
       "repo": "kaido6sanb6/scihub",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream greenelab:master.",
+      "merge_type": "none",
       "upstream": "greenelab/scihub"
     },
     {
       "repo": "kaido6sanb6/scihub.py",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream zaytoun:master.",
+      "merge_type": "none",
       "upstream": "zaytoun/scihub.py"
     },
     {
       "repo": "kaido6sanb6/SciHubEVA",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream leovan:main.",
+      "merge_type": "none",
       "upstream": "leovan/SciHubEVA"
     },
     {
       "repo": "kaido6sanb6/screenpipe",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/gateway-e2e.yml` without `workflows` permission (HTTP 422)",
       "upstream": "screenpipe/screenpipe"
     },
     {
       "repo": "kaido6sanb6/Side-Auto_Sci-Hub",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream RoiArthurB:master.",
+      "merge_type": "none",
       "upstream": "RoiArthurB/Side-Auto_Sci-Hub"
     },
     {
       "repo": "kaido6sanb6/skills",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/generate-agents.yml` without `workflows` permission (HTTP 422)",
       "upstream": "huggingface/skills"
     },
     {
       "repo": "kaido6sanb6/social-data-analysis",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream nealcaren:main.",
+      "merge_type": "none",
       "upstream": "nealcaren/social-data-analysis"
     },
     {
       "repo": "kaido6sanb6/Some-Many-Books",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream Dujltqzv:main.",
+      "merge_type": "none",
       "upstream": "Dujltqzv/Some-Many-Books"
     },
     {
       "repo": "kaido6sanb6/SuperPrompt",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream NeoVertex1:main.",
+      "merge_type": "none",
       "upstream": "NeoVertex1/SuperPrompt"
     },
     {
       "repo": "kaido6sanb6/SuperPrompt-0.1.5-Holographic-Catalyst",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream NeoVertex1:main.",
+      "merge_type": "none",
       "upstream": "NeoVertex1/SuperPrompt-0.1.5-Holographic-Catalyst"
     },
     {
       "repo": "kaido6sanb6/superprompter",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream sammcj:main.",
+      "merge_type": "none",
       "upstream": "sammcj/superprompter"
     },
     {
       "repo": "kaido6sanb6/system_prompts_leaks",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and merged from upstream asgeirtj:main.",
+      "merge_type": "merge",
       "upstream": "asgeirtj/system_prompts_leaks"
     },
     {
       "repo": "kaido6sanb6/tarima",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream calfa-co:main.",
+      "merge_type": "none",
       "upstream": "calfa-co/tarima"
     },
     {
       "repo": "kaido6sanb6/text-embeddings-inference",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/build.yaml` without `workflows` permission (HTTP 422)",
       "upstream": "huggingface/text-embeddings-inference"
     },
     {
       "repo": "kaido6sanb6/text-generation-inference",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/text-generation-inference"
     },
     {
       "repo": "kaido6sanb6/textnets",
       "branch": "trunk",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream jboynyc:trunk.",
+      "merge_type": "none",
       "upstream": "jboynyc/textnets"
     },
     {
       "repo": "kaido6sanb6/tokenizers",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/node-release.yml` without `workflows` permission (HTTP 422)",
       "upstream": "huggingface/tokenizers"
     },
     {
       "repo": "kaido6sanb6/training",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream IIIF:main.",
+      "merge_type": "none",
       "upstream": "IIIF/training"
     },
     {
       "repo": "kaido6sanb6/transformerss",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/add-model-like.yml` without `workflows` permission (HTTP 422)",
       "upstream": "huggingface/transformers"
     },
     {
       "repo": "kaido6sanb6/v",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream vlang:master.",
+      "merge_type": "fast-forward",
       "upstream": "vlang/v"
     },
     {
       "repo": "kaido6sanb6/V0-system-prompt",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream 2-fly-4-ai:main.",
+      "merge_type": "none",
       "upstream": "2-fly-4-ai/V0-system-prompt"
     },
     {
       "repo": "kaido6sanb6/V2ray-for-Doprax",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream hiifeng:main.",
+      "merge_type": "fast-forward",
       "upstream": "hiifeng/V2ray-for-Doprax"
     },
     {
       "repo": "kaido6sanb6/vllm",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream vllm-project:main.",
+      "merge_type": "fast-forward",
       "upstream": "vllm-project/vllm"
     },
     {
       "repo": "kaido6sanb6/voyager",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/release.yml` without `workflows` permission (HTTP 422)",
       "upstream": "Nagi-ovo/voyager"
     },
     {
       "repo": "kaido6sanb6/WeKnora",
       "branch": "main",
       "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/app.yml` without `workflows` permission (HTTP 422)",
       "upstream": "Tencent/WeKnora"
     },
     {
       "repo": "kaido6sanb6/yao",
       "branch": "main",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream YaoApp:main.",
+      "merge_type": "fast-forward",
       "upstream": "YaoApp/yao"
     },
     {
       "repo": "kaido6sanb6/zotero-scihub",
       "branch": "master",
-      "status": "error",
-      "error": "gh: Bad credentials (HTTP 401)",
+      "status": "synced",
+      "message": "This branch is not behind the upstream ethanwillis:master.",
+      "merge_type": "none",
       "upstream": "ethanwillis/zotero-scihub"
     }
   ],
   "summary": {
-    "synced": 0,
+    "synced": 100,
     "conflict": 0,
-    "error": 121,
+    "error": 21,
     "skipped": 0,
     "blocked": 0
   }
