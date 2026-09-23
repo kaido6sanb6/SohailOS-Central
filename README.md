@@ -24,27 +24,42 @@ The repository now contains the first executable .NET foundation:
 
 ## Architecture
 
+The architecture now uses a layered control-plane model that keeps forks and upstream repositories independent while making them continuously discoverable and retrievable.
+
 ```text
-User
+Clients
   |
   v
-Desktop App / future clients
+Orchestration + Policy
+  |
+  +--> Knowledge Fabric
+  |      lexical / vector / graph / hybrid retrieval
+  |
+  +--> Execution Fabric
+  |      GitHub / MCP / APIs / cloud / local runtime
   |
   v
-Master Orchestrator
+SohailOS-Central Control Plane
   |
-  +--> Module Agents
-  |      THINK / SOCIOLOGY / CINEMA / RESEARCH / STATS / AI
-  |      CODE / PRODUCT / OFFICE / OPERATIONS / STRATEGY / LEARNING
+  +--> registry / trust / provenance / prompts / workflows
   |
-  +--> Memory
+  v
+GitHub Source Mesh
   |
-  +--> AI Provider Layer
-  |      OpenAI / Anthropic / Gemini
-  |
-  +--> Integrations
-         GitHub / Notion / Todoist / Supabase / Airtable / Research
+  +--> owned repositories
+  +--> personal forks
+  +--> upstream relationships
 ```
+
+See `docs/ARCHITECTURE.md` for the complete model.
+
+### Continuous fork synchronization
+
+All owner forks are discovered from GitHub automatically. `.github/workflows/fork-sync.yml` runs every 15 minutes, resolves upstream/source metadata, and attempts a non-destructive default-branch upstream synchronization. Conflicts are recorded instead of force-pushed.
+
+After synchronization, the control plane reconciles repository metadata and refreshes the knowledge layer. Cross-repository fork writes require the `SOHAILOS_GITHUB_SYNC_TOKEN` GitHub Actions secret with the minimum required permissions.
+
+GitHub scheduled workflows use UTC by default and can run at intervals as short as five minutes; this project deliberately uses a 15-minute schedule.
 
 ## Design principle
 
