@@ -8,12 +8,10 @@ on:
     branches: [ main ]
     paths-ignore:
       - "ecosystem/generated/**"
-  schedule:
-    - cron: "*/15 * * * *"
 
 concurrency:
   group: universal-knowledge-sync
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: write
