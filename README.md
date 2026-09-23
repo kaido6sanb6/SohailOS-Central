@@ -24,27 +24,39 @@ The repository now contains the first executable .NET foundation:
 
 ## Architecture
 
+SohailOS-Central is a federated, model-agnostic AI operating-system control plane.
+
 ```text
-User
-  |
-  v
-Desktop App / future clients
-  |
-  v
+User / Events / Schedules
+          |
+          v
+Experience Layer (Desktop / Web / Mobile / CLI / API / MCP)
+          |
+          v
+Authenticated Gateway
+          |
+          v
+Policy + Consent + Trust + Security
+          |
+          v
 Master Orchestrator
-  |
-  +--> Module Agents
-  |      THINK / SOCIOLOGY / CINEMA / RESEARCH / STATS / AI
-  |      CODE / PRODUCT / OFFICE / OPERATIONS / STRATEGY / LEARNING
-  |
-  +--> Memory
-  |
-  +--> AI Provider Layer
-  |      OpenAI / Anthropic / Gemini
-  |
-  +--> Integrations
-         GitHub / Notion / Todoist / Supabase / Airtable / Research
+          |
+          +--> Task Graph / Workflow Engine
+          +--> Capability Registry
+          +--> Specialist Agents
+          +--> Tool + Integration Broker
+          +--> AI Provider Fabric
+          +--> Knowledge Fabric
+          +--> Memory Fabric
+          +--> Verification + Observability
+          |
+          v
+Verified Response / Verified Side Effect
 ```
+
+The full architecture is documented in `docs/ARCHITECTURE_V2.md`. The canonical model is:
+
+Client → Gateway → Policy → Orchestrator → Task Graph → Capabilities → Knowledge/Memory/Providers/Tools → Verification → Delivery.
 
 ## Design principle
 
