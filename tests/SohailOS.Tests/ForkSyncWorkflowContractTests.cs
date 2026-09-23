@@ -48,8 +48,8 @@ public sealed class ForkSyncWorkflowContractTests
         Assert.Contains("base64 --decode", yaml);
         Assert.Contains("openssl pkey -in", yaml);
         Assert.Contains("private-key<<", yaml);
-        Assert.Contains("client-id: \${{ vars.SOHAILOS_GITHUB_APP_ID }}", yaml);
-        Assert.DoesNotContain("app-id: \${{ vars.SOHAILOS_GITHUB_APP_ID }}", yaml);
+        Assert.Contains("app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}", yaml);
+        Assert.DoesNotContain("client-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}", yaml);
     }
 
     [Fact]
