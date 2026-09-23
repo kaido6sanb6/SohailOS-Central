@@ -16,6 +16,8 @@ public sealed class ForkSyncWorkflowContractTests
         Assert.Contains("workflow_dispatch", yaml);
         Assert.Contains("cancel-in-progress: false", yaml);
         Assert.Contains("merge-upstream", yaml);
+        Assert.Contains("actions/setup-dotnet@v4", yaml);
+        Assert.Contains("--fail-on-removal", yaml);
         Assert.DoesNotContain("--force", yaml);
         Assert.DoesNotContain("git push --force", yaml);
     }
