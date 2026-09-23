@@ -2,12 +2,14 @@ name: universal-knowledge-sync
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [forks_reconciled]
   push:
     branches: [ main ]
     paths-ignore:
       - "ecosystem/generated/**"
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "*/15 * * * *"
 
 concurrency:
   group: universal-knowledge-sync
