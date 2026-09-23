@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "generated_at": "2026-09-23T18:52:12.834568+00:00",
+  "generated_at": "2026-09-23T19:10:38.877738+00:00",
   "owner": "kaido6sanb6",
   "fork_count": 121,
   "results": [
@@ -120,16 +120,16 @@
       "repo": "kaido6sanb6/cc-switch",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream farion1231:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream farion1231:main.",
+      "merge_type": "none",
       "upstream": "farion1231/cc-switch"
     },
     {
       "repo": "kaido6sanb6/chat-ui",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/chat-ui"
     },
     {
@@ -192,8 +192,8 @@
       "repo": "kaido6sanb6/datahub",
       "branch": "master",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream datahub-project:master.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream datahub-project:master.",
+      "merge_type": "none",
       "upstream": "datahub-project/datahub"
     },
     {
@@ -216,16 +216,16 @@
       "repo": "kaido6sanb6/deepseek-harness",
       "branch": "master",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream deepseek-ai:master.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream deepseek-ai:master.",
+      "merge_type": "none",
       "upstream": "deepseek-ai/deepseek-harness"
     },
     {
       "repo": "kaido6sanb6/DeepSeek-Reasonix",
       "branch": "main-v2",
       "status": "synced",
-      "message": "This branch is not behind the upstream esengine:main-v2.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream esengine:main-v2.",
+      "merge_type": "fast-forward",
       "upstream": "esengine/DeepSeek-Reasonix"
     },
     {
@@ -336,8 +336,8 @@
       "repo": "kaido6sanb6/gstack",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream garrytan:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream garrytan:main.",
+      "merge_type": "none",
       "upstream": "garrytan/gstack"
     },
     {
@@ -368,16 +368,16 @@
       "repo": "kaido6sanb6/hermes-agent",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream NousResearch:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream NousResearch:main.",
+      "merge_type": "none",
       "upstream": "NousResearch/hermes-agent"
     },
     {
       "repo": "kaido6sanb6/hermes-webui",
       "branch": "master",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream nesquena:master.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream nesquena:master.",
+      "merge_type": "none",
       "upstream": "nesquena/hermes-webui"
     },
     {
@@ -400,8 +400,8 @@
       "repo": "kaido6sanb6/huggingface_hub",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/huggingface_hub"
     },
     {
@@ -504,8 +504,8 @@
       "repo": "kaido6sanb6/lobehub",
       "branch": "canary",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream lobehub:canary.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream lobehub:canary.",
+      "merge_type": "none",
       "upstream": "lobehub/lobehub"
     },
     {
@@ -568,16 +568,16 @@
       "repo": "kaido6sanb6/ollama",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream ollama:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream ollama:main.",
+      "merge_type": "none",
       "upstream": "ollama/ollama"
     },
     {
       "repo": "kaido6sanb6/OmniRoute",
       "branch": "release/v3.8.51",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream diegosouzapw:release/v3.8.51.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream diegosouzapw:release/v3.8.51.",
+      "merge_type": "none",
       "upstream": "diegosouzapw/OmniRoute"
     },
     {
@@ -616,8 +616,8 @@
       "repo": "kaido6sanb6/OpenMetadata",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream open-metadata:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream open-metadata:main.",
+      "merge_type": "none",
       "upstream": "open-metadata/OpenMetadata"
     },
     {
@@ -640,8 +640,8 @@
       "repo": "kaido6sanb6/paseo",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream getpaseo:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream getpaseo:main.",
+      "merge_type": "fast-forward",
       "upstream": "getpaseo/paseo"
     },
     {
@@ -784,8 +784,8 @@
       "repo": "kaido6sanb6/screenpipe",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream screenpipe:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream screenpipe:main.",
+      "merge_type": "none",
       "upstream": "screenpipe/screenpipe"
     },
     {
@@ -800,8 +800,8 @@
       "repo": "kaido6sanb6/skills",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/skills"
     },
     {
@@ -864,8 +864,8 @@
       "repo": "kaido6sanb6/text-embeddings-inference",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/text-embeddings-inference"
     },
     {
@@ -888,8 +888,8 @@
       "repo": "kaido6sanb6/tokenizers",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/tokenizers"
     },
     {
@@ -944,16 +944,16 @@
       "repo": "kaido6sanb6/voyager",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream Nagi-ovo:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream Nagi-ovo:main.",
+      "merge_type": "none",
       "upstream": "Nagi-ovo/voyager"
     },
     {
       "repo": "kaido6sanb6/WeKnora",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream Tencent:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream Tencent:main.",
+      "merge_type": "none",
       "upstream": "Tencent/WeKnora"
     },
     {
