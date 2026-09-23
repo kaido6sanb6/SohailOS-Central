@@ -70,10 +70,10 @@ jobs:
           test -n "$count" && test "$count" -ge 1
           echo "GitHub App installation exposes $count repositories."
           gh api --paginate "/installation/repositories?per_page=100" --jq '.repositories[].full_name' | sort -u > "$RUNNER_TEMP/installed-repositories.txt"
-          python - <<'PY'
-          import json
+          INSTALLED_REPOSITORIES_FILE="$RUNNER_TEMP/installed-repositories.txt" python - <<'PY'
+          import json, os
           inventory={x["full_name"] for x in json.load(open("ecosystem/generated/forks.json",encoding="utf-8"))["forks"]}
-          installed={x.strip() for x in open("$RUNNER_TEMP/installed-repositories.txt",encoding="utf-8") if x.strip()}
+          installed={x.strip() for x in open(os.environ["INSTALLED_REPOSITORIES_FILE"],encoding="utf-8") if x.strip()}
           missing=sorted(inventory-installed)
           if missing:
               raise SystemExit("GitHub App installation is missing target repositories: " + ", ".join(missing))
