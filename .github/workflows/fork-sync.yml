@@ -60,6 +60,7 @@ jobs:
           private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           permission-contents: write
+          permission-workflows: write
 
       - name: Verify GitHub App installation scope
         env:
@@ -68,6 +69,16 @@ jobs:
           count="$(gh api "/installation/repositories?per_page=1" --jq '.total_count')"
           test -n "$count" && test "$count" -ge 1
           echo "GitHub App installation exposes $count repositories."
+          gh api --paginate "/installation/repositories?per_page=100" --jq '.repositories[].full_name' | sort -u > "$RUNNER_TEMP/installed-repositories.txt"
+          python - <<'PY'
+          import json
+          inventory={x["full_name"] for x in json.load(open("ecosystem/generated/forks.json",encoding="utf-8"))["forks"]}
+          installed={x.strip() for x in open("$RUNNER_TEMP/installed-repositories.txt",encoding="utf-8") if x.strip()}
+          missing=sorted(inventory-installed)
+          if missing:
+              raise SystemExit("GitHub App installation is missing target repositories: " + ", ".join(missing))
+          print(f"GitHub App installation covers all {len(inventory)} target forks.")
+          PY
 
       - name: Sync forks with upstream
         id: sync
@@ -107,7 +118,7 @@ jobs:
           git push
 
       - name: Enforce synchronization gate
-        if: always() && steps['normalized-app-key'].outcome == 'success' && steps['app-token'].outcome == 'success' && steps.sync.outcome == 'success'
+        if: always() && steps['app-token'].outcome == 'success' && steps.sync.outcome == 'success'
         run: |
           python - <<'PY'
           import json
