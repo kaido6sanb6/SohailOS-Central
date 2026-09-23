@@ -21,9 +21,9 @@ public sealed class GitHubKnowledgeSourceClientTests
             false,
             false);
 
-        var bytes = await client.GetBlobAsync(repository, "abc123");
+        var bytes = await client.GetBlobAsync(repository, "commit123", "docs/readme.md");
 
-        Assert.Equal("https://raw.githubusercontent.com/octocat/sample/abc123", handler.RequestUri!.ToString());
+        Assert.Equal("https://raw.githubusercontent.com/octocat/sample/commit123/docs/readme.md", handler.RequestUri!.ToString());
         Assert.Equal("hello", Encoding.UTF8.GetString(bytes));
     }
 
