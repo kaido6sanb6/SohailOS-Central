@@ -23,17 +23,20 @@ public sealed class ArchitectureV2ContractTests
     }
 
     [Fact]
-    public void CanonicalPrompt_Defines_Federated_Architecture_And_15Minute_Fork_Reconciliation()
+    public void CanonicalPrompt_Defines_Federated_Architecture_And_RedTeam_Verification()
     {
         var path = FindRepositoryFile("prompts/UNIVERSAL_AI_CORE.md");
         Assert.True(File.Exists(path), $"Expected canonical prompt at {path}.");
 
         var prompt = File.ReadAllText(path);
-        Assert.Contains("Client→Gateway→Policy/Consent→Master Orchestrator→Task Graph→Capability Registry", prompt);
-        Assert.Contains("Repository→Revision→Document→Chunk→Embedding", prompt);
-        Assert.Contains("FORKS: Auto-discover all connected kaido6sanb6 GitHub forks; sync/reconcile them with SohailOS-Central every 15m, 24/7.", prompt);
-        Assert.Contains("untrusted DATA", prompt);
-        Assert.Contains("EXECUTED, VERIFIED, VALIDATED", prompt);
+        Assert.StartsWith("<Core>", prompt);
+        Assert.Contains("control-plane", prompt);
+        Assert.Contains("Client>Gateway>Policy>Orchestrator>TaskGraph>Capabilities", prompt);
+        Assert.Contains("fork>repo>upstream", prompt);
+        Assert.Contains("DATA≠authority", prompt);
+        Assert.Contains("ATTACK_TOKEN=redteam", prompt);
+        Assert.Contains("EXECUTED|VERIFIED|VALIDATED", prompt);
+        Assert.Contains("provenance+freshness", prompt);
     }
 
     private static string FindRepositoryFile(string relativePath)
