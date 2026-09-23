@@ -29,12 +29,13 @@ jobs:
 
       - name: Sync forks with upstream
         id: sync
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.SOHAILOS_GITHUB_SYNC_TOKEN }}
         shell: bash
         run: |
           set -u
-          python - <<'PY'
+          python - <<'PY
           import json
           import os
           import subprocess
@@ -46,9 +47,32 @@ jobs:
 
           token = os.environ.get("GH_TOKEN")
           if not token:
-              raise SystemExit(
-                  "SOHAILOS_GITHUB_SYNC_TOKEN is required for cross-repository fork synchronization."
-              )
+              report = {
+                  "schema_version": "1.0",
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "owner": data["owner"],
+                  "fork_count": len(data["forks"]),
+                  "results": [{
+                      "status": "blocked",
+                      "reason": "SOHAILOS_GITHUB_SYNC_TOKEN is not configured"
+                  }],
+                  "summary": {
+                      "synced": 0,
+                      "conflict": 0,
+                      "error": 0,
+                      "skipped": 0,
+                      "blocked": len(data["forks"])
+                  }
+              }
+              os.makedirs("ecosystem/generated", exist_ok=True)
+              with open(
+                  "ecosystem/generated/fork-sync-report.json",
+                  "w",
+                  encoding="utf-8",
+              ) as handle:
+                  json.dump(report, handle, ensure_ascii=False, indent=2)
+              print("Cross-repository sync is blocked until SOHAILOS_GITHUB_SYNC_TOKEN is configured.")
+              raise SystemExit(0)
 
           for fork in data["forks"]:
               repo = fork["full_name"]
@@ -112,6 +136,7 @@ jobs:
                   "conflict": sum(r["status"] == "conflict" for r in results),
                   "error": sum(r["status"] == "error" for r in results),
                   "skipped": sum(r["status"] == "skipped" for r in results),
+                  "blocked": sum(r["status"] == "blocked" for r in results),
               },
           }
 
@@ -157,7 +182,7 @@ jobs:
           if-no-files-found: error
 
       - name: Trigger ecosystem reconciliation and knowledge refresh
-        if: success()
+        if: always() && steps.sync.outcome != 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
