@@ -34,7 +34,11 @@ public sealed class ForkSyncWorkflowContractTests
         Assert.Contains("steps.app-token.outputs.token", yaml);
         Assert.Contains("owner: \${{ github.repository_owner }}", yaml);
         Assert.Contains("permission-contents: write", yaml);
+        Assert.Contains("permission-workflows: write", yaml);
         Assert.DoesNotContain("SOHAILOS_GITHUB_SYNC_TOKEN", yaml);
+        Assert.Contains("id: sync-gate", yaml);
+        Assert.Contains("steps.reconcile.outcome == 'success'", yaml);
+        Assert.Contains("if: steps.sync-gate.outcome == 'success'", yaml);
     }
 
     [Fact]
@@ -43,11 +47,11 @@ public sealed class ForkSyncWorkflowContractTests
         var path = FindRepositoryFile(".github/workflows/fork-sync.yml");
         var yaml = File.ReadAllText(path);
 
-        Assert.Contains("Normalize and validate GitHub App private key", yaml);
+        Assert.Contains("Validate GitHub App private key", yaml);
         Assert.Contains("RAW_PRIVATE_KEY", yaml);
         Assert.Contains("base64 --decode", yaml);
         Assert.Contains("openssl pkey -in", yaml);
-        Assert.Contains("private-key<<", yaml);
+        Assert.Contains("private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}", yaml);
         Assert.Contains("app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}", yaml);
         Assert.DoesNotContain("client-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}", yaml);
     }
