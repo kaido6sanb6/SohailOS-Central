@@ -44,7 +44,7 @@ jobs:
           work_key="$RUNNER_TEMP/sohailos-github-app.pem"
           normalized="${RAW_PRIVATE_KEY//$'\r'/}"
           normalized="${normalized//\\n/$'\n'}"
-          if [[ "$normalized" != *"-----BEGIN "* ]]; then
+          normalized="${normalized#\"}"; normalized="${normalized%\"}"; normalized="${normalized#\'}"; normalized="${normalized%\'}"\n          if [[ "$normalized" != *"-----BEGIN "* ]]; then
             if printf '%s' "$normalized" | base64 --decode > "$work_key" 2>/dev/null && grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key"; then
               normalized="$(cat "$work_key")"
             else
@@ -58,7 +58,7 @@ jobs:
           key_mask="$(cat "$work_key")"; echo "::add-mask::$key_mask"
           delimiter="SOHAILOS_APP_KEY_$(openssl rand -hex 12)"
           { echo "private-key<<$delimiter"; cat "$work_key"; echo "$delimiter"; } >> "$GITHUB_OUTPUT"
-          echo "GitHub App private key format validation passed."
+          echo "GitHub App private key validation passed."
 
       - name: Generate GitHub App installation token
         id: app-token
