@@ -33,32 +33,23 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/build_fork_inventory.py
 
-      - name: Normalize and validate GitHub App private key
-        id: normalized-app-key
+      - name: Validate GitHub App private key
         shell: bash
         env:
           RAW_PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
         run: |
           set -euo pipefail
-          if [ -z "$RAW_PRIVATE_KEY" ]; then exit 1; fi
-          work_key="$RUNNER_TEMP/sohailos-github-app.pem"
+          if [ -z "$RAW_PRIVATE_KEY" ]; then echo "SOHAILOS_GITHUB_APP_PRIVATE_KEY is empty or unavailable."; exit 1; fi
           normalized="${RAW_PRIVATE_KEY//$'\r'/}"
           normalized="${normalized//\\n/$'\n'}"
           normalized="${normalized#\"}"; normalized="${normalized%\"}"; normalized="${normalized#\'}"; normalized="${normalized%\'}"
-          if [[ "$normalized" != *"-----BEGIN "* ]]; then
-            if printf '%s' "$normalized" | base64 --decode > "$work_key" 2>/dev/null && grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key"; then
-              normalized="$(cat "$work_key")"
-            else
-              echo "GitHub App private key is neither PEM nor a supported base64-encoded PEM."; exit 1
-            fi
-          else
-            printf '%s' "$normalized" > "$work_key"
+          work_key="$RUNNER_TEMP/sohailos-github-app.pem"
+          printf '%s' "$normalized" > "$work_key"
+          if ! grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key"; then
+            printf '%s' "$normalized" | base64 --decode > "$work_key" 2>/dev/null || { echo "GitHub App private key is not PEM or base64-encoded PEM."; exit 1; }
           fi
-          grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key"
-          openssl pkey -in "$work_key" -noout >/dev/null
-          key_mask="$(cat "$work_key")"; echo "::add-mask::$key_mask"
-          delimiter="SOHAILOS_APP_KEY_$(openssl rand -hex 12)"
-          { echo "private-key<<$delimiter"; cat "$work_key"; echo "$delimiter"; } >> "$GITHUB_OUTPUT"
+          grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key" || { echo "Unsupported private-key format."; exit 1; }
+          openssl pkey -in "$work_key" -noout >/dev/null || { echo "OpenSSL could not parse the private key."; exit 1; }
           echo "GitHub App private key validation passed."
 
       - name: Generate GitHub App installation token
@@ -66,7 +57,7 @@ jobs:
         uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
-          private-key: ${{ steps.normalized-app-key.outputs.private-key }}
+          private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           permission-contents: write
 
