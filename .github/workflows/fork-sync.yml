@@ -1,5 +1,6 @@
 # Continuous fork synchronization and verification
 # Verification marker: GitHub App PEM normalization and validation.
+# Operational probe: run after credential rotation to verify the live installation.
 name: fork-sync-and-knowledge-refresh
 
 on:
