@@ -153,7 +153,7 @@ jobs:
           git push
 
       - name: Enforce synchronization gate
-        if: always()
+        if: always() && steps['normalized-app-key'].outcome == 'success' && steps['app-token'].outcome == 'success' && steps.sync.outcome == 'success'
         shell: bash
         run: |
           python - <<'PY'
@@ -183,7 +183,7 @@ jobs:
           if-no-files-found: error
 
       - name: Trigger ecosystem reconciliation and knowledge refresh
-        if: always() && steps.sync.outcome != 'failure'
+        if: always() && steps['app-token'].outcome == 'success' && steps.sync.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
