@@ -37,7 +37,8 @@ public sealed class ForkSyncWorkflowContractTests
         Assert.Contains("permission-workflows: write", yaml);
         Assert.DoesNotContain("SOHAILOS_GITHUB_SYNC_TOKEN", yaml);
         Assert.Contains("id: sync-gate", yaml);
-        Assert.Contains("steps.reconcile.outcome == 'success'", yaml);
+        Assert.Contains("if: always()", yaml);
+        Assert.Contains("steps.reconcile.outcome", yaml);
         Assert.Contains("if: steps.sync-gate.outcome == 'success'", yaml);
     }
 
