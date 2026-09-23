@@ -62,3 +62,24 @@ public sealed class UniversalKnowledgeGraphTests
             x.Type == "RESEARCH_CORPUS_FOR");
     }
 }
+
+
+// External LIVE CORPUS sources are represented even when they are outside the owner's repository inventory.
+
+public sealed partial class UniversalKnowledgeGraphExternalCorpusTests
+{
+    [Fact]
+    public void External_live_corpus_nodes_exist_without_owner_inventory_entries()
+    {
+        var repositories = new[]
+        {
+            new SohailOS.Ecosystem.LiveRepository(1, "central", "kaido6sanb6/SohailOS-Central", "main", null, false, false)
+        };
+
+        var graph = SohailOS.Ecosystem.KnowledgeGraphBuilder.Build(repositories, new JsonArray());
+
+        Assert.Contains(graph.Nodes, x => x.Id == "repo:external:asgeirtj/system_prompts_leaks" && x.Trust == "untrusted-data");
+        Assert.Contains(graph.Nodes, x => x.Id == "repo:external:kaido6sanb6/system_prompts_leaks" && x.Trust == "untrusted-data");
+        Assert.Contains(graph.Edges, x => x.From == "asgeirtj/system_prompts_leaks" && x.To == "kaido6sanb6/SohailOS-Central" && x.Type == "RESEARCH_CORPUS_FOR");
+    }
+}
