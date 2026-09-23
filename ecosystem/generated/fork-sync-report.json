@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "generated_at": "2026-09-23T19:26:56.774960+00:00",
+  "generated_at": "2026-09-23T19:38:35.974298+00:00",
   "owner": "kaido6sanb6",
   "fork_count": 121,
   "results": [
@@ -224,8 +224,8 @@
       "repo": "kaido6sanb6/DeepSeek-Reasonix",
       "branch": "main-v2",
       "status": "synced",
-      "message": "This branch is not behind the upstream esengine:main-v2.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream esengine:main-v2.",
+      "merge_type": "fast-forward",
       "upstream": "esengine/DeepSeek-Reasonix"
     },
     {
@@ -640,8 +640,8 @@
       "repo": "kaido6sanb6/paseo",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream getpaseo:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream getpaseo:main.",
+      "merge_type": "none",
       "upstream": "getpaseo/paseo"
     },
     {
