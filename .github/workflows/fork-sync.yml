@@ -151,23 +151,26 @@ jobs:
           print(json.dumps(report["summary"], indent=2))
           PY
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
       - name: Reconcile central registry
         id: reconcile
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          dotnet --info >/dev/null 2>&1 || true
-          if [ -f "SohailOS.sln" ]; then
-            echo "The dedicated reconcile workflow owns .NET registry writes."
-          fi
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "${{ runner.temp }}/ecosystem-reconciliation.json" --write --fail-on-removal
 
       - name: Commit fork inventory and sync report
         shell: bash
         run: |
           git config user.name "SohailOS Fork Sync Bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ecosystem/generated/forks.json ecosystem/generated/fork-sync-report.json
+          git add ecosystem/ecosystem.json ecosystem/generated/forks.json ecosystem/generated/fork-sync-report.json
           git diff --cached --quiet || git commit -m "chore: refresh fork inventory and sync report"
           git push
 
