@@ -29,14 +29,14 @@ jobs:
 
       - name: Build fork inventory
         env:
-          GITHUB_TOKEN: \${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/build_fork_inventory.py
 
       - name: Normalize and validate GitHub App private key
         id: normalized-app-key
         shell: bash
         env:
-          RAW_PRIVATE_KEY: \${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+          RAW_PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
         run: |
           set -euo pipefail
 
@@ -47,8 +47,8 @@ jobs:
 
           work_key="$RUNNER_TEMP/sohailos-github-app.pem"
           normalized="$RAW_PRIVATE_KEY"
-          normalized="\${normalized//$'\r'/}"
-          normalized="\${normalized//\\\\n/$'\n'}"
+          normalized="${normalized//$'\r'/}"
+          normalized="${normalized//\\n/$'\n'}"
 
           if [[ "$normalized" != *"-----BEGIN "* ]]; then
             if printf '%s' "$normalized" | base64 --decode > "$work_key" 2>/dev/null \
@@ -88,14 +88,14 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          client-id: \${{ vars.SOHAILOS_GITHUB_APP_ID }}
-          private-key: \${{ steps.normalized-app-key.outputs.private-key }}
-          owner: \${{ github.repository_owner }}
+          client-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
+          private-key: ${{ steps.normalized-app-key.outputs.private-key }}
+          owner: ${{ github.repository_owner }}
           permission-contents: write
 
       - name: Verify GitHub App installation scope
         env:
-          GH_TOKEN: \${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         shell: bash
         run: |
           count="$(gh api "/installation/repositories?per_page=1" --jq '.total_count')"
@@ -109,7 +109,7 @@ jobs:
         id: sync
         continue-on-error: true
         env:
-          GH_TOKEN: \${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         shell: bash
         run: python scripts/sync_forks.py
 
@@ -138,10 +138,10 @@ jobs:
         id: reconcile
         continue-on-error: true
         env:
-          GITHUB_TOKEN: \${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "\${{ runner.temp }}/ecosystem-reconciliation.json" --write --fail-on-removal
+          dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "${{ runner.temp }}/ecosystem-reconciliation.json" --write --fail-on-removal
 
       - name: Commit fork inventory and sync report
         shell: bash
@@ -185,6 +185,6 @@ jobs:
       - name: Trigger ecosystem reconciliation and knowledge refresh
         if: always() && steps.sync.outcome != 'failure'
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          gh api --method POST "repos/\${{ github.repository }}/dispatches" -f event_type=forks_reconciled
+          gh api --method POST "repos/${{ github.repository }}/dispatches" -f event_type=forks_reconciled
