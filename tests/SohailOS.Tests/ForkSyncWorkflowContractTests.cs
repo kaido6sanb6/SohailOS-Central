@@ -42,6 +42,13 @@ public sealed class ForkSyncWorkflowContractTests
         Assert.Contains("\"source\"", source);
         Assert.Contains("\"fork_count\"", source);
         Assert.Contains("\"fork\"", source);
+
+        var syncScript = FindRepositoryFile("scripts/sync_forks.py");
+        Assert.True(File.Exists(syncScript));
+        var sync = File.ReadAllText(syncScript);
+        Assert.Contains("merge-upstream", sync);
+        Assert.Contains("SOHAILOS_GITHUB_SYNC_TOKEN", sync);
+        Assert.DoesNotContain("force", sync, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string FindRepositoryFile(string relativePath)
