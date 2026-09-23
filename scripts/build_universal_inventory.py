@@ -26,6 +26,10 @@ now = datetime.now(timezone.utc).isoformat()
 items = []
 for r in repos:
     parent = r.get("parent") or {}
+    if bool(r.get("fork")) and not parent.get("full_name"):
+        details = request(f"https://api.github.com/repos/{r.get('full_name')}")
+        parent = details.get("parent") or {}
+        r["license"] = details.get("license") or r.get("license")
     items.append({
         "id": r.get("id"),
         "name": r.get("name"),
