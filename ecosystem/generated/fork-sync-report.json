@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "generated_at": "2026-09-23T18:47:52.677877+00:00",
+  "generated_at": "2026-09-23T18:52:12.834568+00:00",
   "owner": "kaido6sanb6",
   "fork_count": 121,
   "results": [
@@ -16,8 +16,8 @@
       "repo": "kaido6sanb6/AIClient2API",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream justlovemaki:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream justlovemaki:main.",
+      "merge_type": "none",
       "upstream": "justlovemaki/AIClient2API"
     },
     {
@@ -56,16 +56,16 @@
       "repo": "kaido6sanb6/Auto-Empirical-Research-Skills",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream brycewang-stanford:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream brycewang-stanford:main.",
+      "merge_type": "none",
       "upstream": "brycewang-stanford/Auto-Empirical-Research-Skills"
     },
     {
       "repo": "kaido6sanb6/AutoGPT",
       "branch": "master",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream Significant-Gravitas:master.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream Significant-Gravitas:master.",
+      "merge_type": "none",
       "upstream": "Significant-Gravitas/AutoGPT"
     },
     {
@@ -104,8 +104,8 @@
       "repo": "kaido6sanb6/awesome-nano-banana-pro-prompts",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream YouMind-OpenLab:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream YouMind-OpenLab:main.",
+      "merge_type": "none",
       "upstream": "YouMind-OpenLab/awesome-nano-banana-pro-prompts"
     },
     {
@@ -119,15 +119,17 @@
     {
       "repo": "kaido6sanb6/cc-switch",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/ci.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream farion1231:main.",
+      "merge_type": "fast-forward",
       "upstream": "farion1231/cc-switch"
     },
     {
       "repo": "kaido6sanb6/chat-ui",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/build-image.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
+      "merge_type": "fast-forward",
       "upstream": "huggingface/chat-ui"
     },
     {
@@ -174,8 +176,8 @@
       "repo": "kaido6sanb6/claude-code",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream anthropics:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream anthropics:main.",
+      "merge_type": "none",
       "upstream": "anthropics/claude-code"
     },
     {
@@ -189,8 +191,9 @@
     {
       "repo": "kaido6sanb6/datahub",
       "branch": "master",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/airflow-plugin.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream datahub-project:master.",
+      "merge_type": "fast-forward",
       "upstream": "datahub-project/datahub"
     },
     {
@@ -212,23 +215,25 @@
     {
       "repo": "kaido6sanb6/deepseek-harness",
       "branch": "master",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/build-exe-for-python-sdk.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream deepseek-ai:master.",
+      "merge_type": "fast-forward",
       "upstream": "deepseek-ai/deepseek-harness"
     },
     {
       "repo": "kaido6sanb6/DeepSeek-Reasonix",
       "branch": "main-v2",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream esengine:main-v2.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream esengine:main-v2.",
+      "merge_type": "none",
       "upstream": "esengine/DeepSeek-Reasonix"
     },
     {
       "repo": "kaido6sanb6/dsh-desktop",
       "branch": "master",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/ci.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream anywhere-labs:master.",
+      "merge_type": "fast-forward",
       "upstream": "anywhere-labs/dsh-desktop"
     },
     {
@@ -275,8 +280,8 @@
       "repo": "kaido6sanb6/go-openai",
       "branch": "master",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream sashabaranov:master.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream sashabaranov:master.",
+      "merge_type": "none",
       "upstream": "sashabaranov/go-openai"
     },
     {
@@ -299,8 +304,8 @@
       "repo": "kaido6sanb6/gpt4free",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream xtekky:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream xtekky:main.",
+      "merge_type": "none",
       "upstream": "xtekky/gpt4free"
     },
     {
@@ -330,8 +335,9 @@
     {
       "repo": "kaido6sanb6/gstack",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/evals-periodic.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream garrytan:main.",
+      "merge_type": "fast-forward",
       "upstream": "garrytan/gstack"
     },
     {
@@ -361,15 +367,17 @@
     {
       "repo": "kaido6sanb6/hermes-agent",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/lint.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream NousResearch:main.",
+      "merge_type": "fast-forward",
       "upstream": "NousResearch/hermes-agent"
     },
     {
       "repo": "kaido6sanb6/hermes-webui",
       "branch": "master",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/conversation-lifecycle.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream nesquena:master.",
+      "merge_type": "fast-forward",
       "upstream": "nesquena/hermes-webui"
     },
     {
@@ -391,16 +399,17 @@
     {
       "repo": "kaido6sanb6/huggingface_hub",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/check-installers.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
+      "merge_type": "fast-forward",
       "upstream": "huggingface/huggingface_hub"
     },
     {
       "repo": "kaido6sanb6/humanities_data_benchmark",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream RISE-UNIBAS:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream RISE-UNIBAS:main.",
+      "merge_type": "none",
       "upstream": "RISE-UNIBAS/humanities_data_benchmark"
     },
     {
@@ -455,8 +464,8 @@
       "repo": "kaido6sanb6/JavaGuide",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream Snailclimb:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream Snailclimb:main.",
+      "merge_type": "none",
       "upstream": "Snailclimb/JavaGuide"
     },
     {
@@ -494,8 +503,9 @@
     {
       "repo": "kaido6sanb6/lobehub",
       "branch": "canary",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/e2e.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream lobehub:canary.",
+      "merge_type": "fast-forward",
       "upstream": "lobehub/lobehub"
     },
     {
@@ -525,8 +535,9 @@
     {
       "repo": "kaido6sanb6/NemoClaw",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/base-image.yaml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream NVIDIA:main.",
+      "merge_type": "fast-forward",
       "upstream": "NVIDIA/NemoClaw"
     },
     {
@@ -556,15 +567,17 @@
     {
       "repo": "kaido6sanb6/ollama",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/test-xgrammar.yaml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream ollama:main.",
+      "merge_type": "fast-forward",
       "upstream": "ollama/ollama"
     },
     {
       "repo": "kaido6sanb6/OmniRoute",
       "branch": "release/v3.8.51",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/ci.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream diegosouzapw:release/v3.8.51.",
+      "merge_type": "fast-forward",
       "upstream": "diegosouzapw/OmniRoute"
     },
     {
@@ -587,8 +600,8 @@
       "repo": "kaido6sanb6/open-design",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream nexu-io:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream nexu-io:main.",
+      "merge_type": "none",
       "upstream": "nexu-io/open-design"
     },
     {
@@ -602,8 +615,9 @@
     {
       "repo": "kaido6sanb6/OpenMetadata",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/playwright-e2e-reusable.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream open-metadata:main.",
+      "merge_type": "fast-forward",
       "upstream": "open-metadata/OpenMetadata"
     },
     {
@@ -626,8 +640,8 @@
       "repo": "kaido6sanb6/paseo",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream getpaseo:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream getpaseo:main.",
+      "merge_type": "none",
       "upstream": "getpaseo/paseo"
     },
     {
@@ -674,8 +688,8 @@
       "repo": "kaido6sanb6/pytorch-image-models",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/pytorch-image-models"
     },
     {
@@ -714,8 +728,8 @@
       "repo": "kaido6sanb6/ruflo",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream ruvnet:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream ruvnet:main.",
+      "merge_type": "none",
       "upstream": "ruvnet/ruflo"
     },
     {
@@ -769,8 +783,9 @@
     {
       "repo": "kaido6sanb6/screenpipe",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/gateway-e2e.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream screenpipe:main.",
+      "merge_type": "fast-forward",
       "upstream": "screenpipe/screenpipe"
     },
     {
@@ -784,8 +799,9 @@
     {
       "repo": "kaido6sanb6/skills",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/generate-agents.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
+      "merge_type": "fast-forward",
       "upstream": "huggingface/skills"
     },
     {
@@ -832,8 +848,8 @@
       "repo": "kaido6sanb6/system_prompts_leaks",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and merged from upstream asgeirtj:main.",
-      "merge_type": "merge",
+      "message": "This branch is not behind the upstream asgeirtj:main.",
+      "merge_type": "none",
       "upstream": "asgeirtj/system_prompts_leaks"
     },
     {
@@ -847,8 +863,9 @@
     {
       "repo": "kaido6sanb6/text-embeddings-inference",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/build.yaml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
+      "merge_type": "fast-forward",
       "upstream": "huggingface/text-embeddings-inference"
     },
     {
@@ -870,8 +887,9 @@
     {
       "repo": "kaido6sanb6/tokenizers",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/node-release.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
+      "merge_type": "fast-forward",
       "upstream": "huggingface/tokenizers"
     },
     {
@@ -885,16 +903,17 @@
     {
       "repo": "kaido6sanb6/transformerss",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/add-model-like.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
+      "merge_type": "fast-forward",
       "upstream": "huggingface/transformers"
     },
     {
       "repo": "kaido6sanb6/v",
       "branch": "master",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream vlang:master.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream vlang:master.",
+      "merge_type": "none",
       "upstream": "vlang/v"
     },
     {
@@ -909,38 +928,40 @@
       "repo": "kaido6sanb6/V2ray-for-Doprax",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream hiifeng:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream hiifeng:main.",
+      "merge_type": "none",
       "upstream": "hiifeng/V2ray-for-Doprax"
     },
     {
       "repo": "kaido6sanb6/vllm",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream vllm-project:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream vllm-project:main.",
+      "merge_type": "none",
       "upstream": "vllm-project/vllm"
     },
     {
       "repo": "kaido6sanb6/voyager",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/release.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream Nagi-ovo:main.",
+      "merge_type": "fast-forward",
       "upstream": "Nagi-ovo/voyager"
     },
     {
       "repo": "kaido6sanb6/WeKnora",
       "branch": "main",
-      "status": "error",
-      "error": "gh: refusing to allow a GitHub App to create or update workflow `.github/workflows/app.yml` without `workflows` permission (HTTP 422)",
+      "status": "synced",
+      "message": "Successfully fetched and fast-forwarded from upstream Tencent:main.",
+      "merge_type": "fast-forward",
       "upstream": "Tencent/WeKnora"
     },
     {
       "repo": "kaido6sanb6/yao",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream YaoApp:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream YaoApp:main.",
+      "merge_type": "none",
       "upstream": "YaoApp/yao"
     },
     {
@@ -953,9 +974,9 @@
     }
   ],
   "summary": {
-    "synced": 100,
+    "synced": 121,
     "conflict": 0,
-    "error": 21,
+    "error": 0,
     "skipped": 0,
     "blocked": 0
   }
