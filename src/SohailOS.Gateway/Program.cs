@@ -35,6 +35,7 @@ bool Authorized(HttpRequest request) =>
 
 var registry = new ToolRegistry();
 var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+var researchEngine = new ResearchEngine(httpClient);
 var knowledgeIndexPath = Environment.GetEnvironmentVariable("SOHAILOS_KNOWLEDGE_INDEX_PATH")
     ?? Path.Combine(AppContext.BaseDirectory, "App_Data", "sohailos-knowledge-index.json");
 DataPlaneProvider knowledgeProvider = new JsonFileDataPlaneProvider(knowledgeIndexPath);
@@ -68,6 +69,15 @@ var (_, completionProvider) = AiProviderFactory.Create(httpClient);
 var memory = CreateMemoryStore(httpClient);
 var runtime = new AgentRuntime(completionProvider, registry, executor, memory);
 var sessions = new ConcurrentDictionary<string, DateTimeOffset>();
+
+app.MapPost("/v1/research/search", async (HttpRequest request, ResearchSearchRequest input, CancellationToken cancellationToken) =>
+{
+    if (!Authorized(request)) return Results.Unauthorized();
+    if (string.IsNullOrWhiteSpace(input.Query))
+        return Results.BadRequest(new { error = "query is required" });
+    var result = await researchEngine.SearchAsync(input, cancellationToken);
+    return Results.Ok(result);
+});
 
 app.MapGet("/health", () => Results.Ok(new
 {
