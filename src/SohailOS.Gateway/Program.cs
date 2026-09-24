@@ -88,8 +88,9 @@ app.MapPost("/v1/agent/run", async (HttpRequest request, AgentRunRequest input, 
     var answer = await runtime.RunAsync(
         input.SystemPrompt ?? "You are SohailOS, a personal AI operating system. Use tools only when useful and never claim an action occurred without a successful tool result.",
         input.Prompt,
-        input.ConfirmWrites,
+        input.Approval,
         input.MemoryKey ?? "global",
+        input.PersistMemory,
         cancellationToken);
     return Results.Ok(new { output = answer, provider = completionProvider.Name, memoryKey = input.MemoryKey ?? "global" });
 });
@@ -234,5 +235,10 @@ static async Task<object> CallToolAsync(JsonElement parameters, IToolExecutor ex
     };
 }
 
-public sealed record AgentRunRequest(string Prompt, string? SystemPrompt, bool ConfirmWrites = false, string? MemoryKey = "global");
+public sealed record AgentRunRequest(
+    string Prompt,
+    string? SystemPrompt,
+    ApprovalBinding? Approval = null,
+    string? MemoryKey = "global",
+    bool PersistMemory = false);
 public sealed record JsonRpcRequest(string Jsonrpc, JsonElement Id, string Method, JsonElement Params);
