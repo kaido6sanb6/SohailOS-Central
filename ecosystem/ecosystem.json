@@ -2368,6 +2368,492 @@
         "fork": true,
         "last_seen_at": "2026-09-24T19:25:45.4817709Z"
       }
+    },
+    {
+      "repo": "kaido6sanb6/agent-browser",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/agent-browser"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359526,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/agentdojo",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/agentdojo"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359459,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/agenttrafficcontrol",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/agenttrafficcontrol"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359586,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/DSpace",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/DSpace"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386377033,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/europepmc-mcp-server",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/europepmc-mcp-server"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386385702,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/garak",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/garak"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359494,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/hyku",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/hyku"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386380638,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/hyrax",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/hyrax"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386377384,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/knowledge-work-plugins",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/knowledge-work-plugins"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359585,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/LifeOS",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/LifeOS"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359534,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/linXiv",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/linXiv"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386382147,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/oadoi",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/oadoi"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386374444,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/OpenAlex",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/OpenAlex"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386373864,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/OpenCitationsCorpus",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/OpenCitationsCorpus"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386375869,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/openlibrary",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/openlibrary"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386376669,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/open_deep_research",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/open_deep_research"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359530,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/PhilLit",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/PhilLit"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386381637,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/promptfoo",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/promptfoo"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359462,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/rest-api-doc",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/rest-api-doc"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386379972,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/semantic-scholar",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/semantic-scholar"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386385187,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/semanticscholar",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/semanticscholar"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386384783,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/serena",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/serena"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359537,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/SkillSpector",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/SkillSpector"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359478,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/taste-skill",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/taste-skill"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386359582,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/valkyrie",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/valkyrie"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386381024,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/wisp-science",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/wisp-science"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386384003,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/zotero-openalex",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/zotero-openalex"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386377701,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T22:39:33.3642669Z"
+      }
     }
   ],
   "edges": [
@@ -3854,13 +4340,175 @@
       "upstream": null,
       "status": "unverified",
       "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/agent-browser",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/agentdojo",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/agenttrafficcontrol",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/DSpace",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/europepmc-mcp-server",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/garak",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/hyku",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/hyrax",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/knowledge-work-plugins",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/LifeOS",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/linXiv",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/oadoi",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/OpenAlex",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/OpenCitationsCorpus",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/openlibrary",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/open_deep_research",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/PhilLit",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/promptfoo",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/rest-api-doc",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/semantic-scholar",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/semanticscholar",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/serena",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/SkillSpector",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/taste-skill",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/valkyrie",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/wisp-science",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/zotero-openalex",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
     }
   ],
   "sync": {
     "owner": "kaido6sanb6",
     "scope": "public-owner-inventory",
-    "last_reconciled_at": "2026-09-24T19:25:45.4817709Z",
-    "live_repository_count": 139,
-    "registry_repository_count": 139
+    "last_reconciled_at": "2026-09-24T22:39:33.3642669Z",
+    "live_repository_count": 166,
+    "registry_repository_count": 166
   }
 }
