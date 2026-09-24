@@ -29,7 +29,7 @@ class VercelLandingContractTests(unittest.TestCase):
         html = INDEX.read_text(encoding="utf-8")
         self.assertIn("Architecture source", html)
         self.assertIn("Architecture chart", html)
-        self.assertIn("data-mermaid", html)
+        self.assertIn('id="mermaid"', html)
         self.assertIn("<svg", html)
 
 if __name__ == "__main__":
