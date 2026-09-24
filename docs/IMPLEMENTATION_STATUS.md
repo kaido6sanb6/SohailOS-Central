@@ -6,7 +6,7 @@ The core SohailOS runtime and first remote gateway are implemented. The Cloudfla
 
 ## Universal AI OS architecture V2
 
-The repository now contains the V2 control-plane contract in:
+The repository contains the V2 control-plane contract in:
 - `docs/ARCHITECTURE_V2.md`
 - `docs/ARCHITECTURE_MIGRATION.md`
 - `ecosystem/architecture-v2.json`
@@ -14,6 +14,23 @@ The repository now contains the V2 control-plane contract in:
 - `tests/SohailOS.Tests/ArchitectureV2ContractTests.cs`
 
 V2 defines a model-agnostic federated control plane with authenticated gateway, policy/consent, bounded task graphs, capability registry, specialist agents, tool/integration broker, provider/knowledge/memory fabrics, and verification/observability. Retrieved repository/web material remains data/evidence rather than instruction authority. The compact AI Core prompt used for Custom Prompt operation is mirrored as a repository contract for reproducibility.
+
+## Security hardening
+
+The compact AI Core contract now explicitly covers:
+- authority hierarchy and untrusted external/retrieved content
+- obfuscation/decode/translation as non-authoritative transformations
+- tool identity, schema, version, fingerprint, permission, and provenance
+- untrusted tool metadata/descriptions/schemas/results
+- revalidation after tool changes
+- deny-by-default outbound egress with explicit scope and approval
+- durable-memory isolation and cross-session isolation
+- RAG lexical/semantic/graph retrieval plus chunk/context variation testing
+- verified-capability-only routing
+
+The architecture manifest records these controls in `security_controls`.
+
+The 12-case security regression evaluator is in `security/ai_security_regression.py`. It separates attacker-controlled payloads from agent evidence and evaluates observed tool, memory, and egress events. Cases that require live runtime telemetry remain `MANUAL` until such telemetry is supplied.
 
 ## Implemented runtime foundation
 
@@ -36,12 +53,13 @@ V2 defines a model-agnostic federated control plane with authenticated gateway, 
 - GitHub Actions CI/release/deployment automation
 - GitHub ecosystem inventory, reconciliation, knowledge indexing, provenance, hybrid retrieval, and fork synchronization
 - Knowledge Graph and live-corpus security boundaries
+- Security contract tests and CI regression workflow
 
 ## Deployment state
 
-The Cloudflare deployment path is operational. Runtime secrets are synchronized from GitHub Actions without printing their values.
+The Cloudflare deployment path is wired for deployment and runtime-secret synchronization. Required account-owned configuration remains external to source control.
 
-Required GitHub Actions secrets for a complete live V1:
+Required GitHub Actions secrets for a provider-enabled live V1:
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
 - `SOHAILOS_GATEWAY_TOKEN`
