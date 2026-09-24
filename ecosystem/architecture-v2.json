@@ -1,5 +1,5 @@
 {
-  "schema_version":"1.2",
+  "schema_version":"1.1",
   "architecture":"sohailos-universal-ai-operating-system",
   "control_plane":"kaido6sanb6/SohailOS-Central",
   "planes":["experience","gateway","control-policy","orchestration","capability","knowledge","memory","model","integration","verification-observability"],
@@ -10,7 +10,7 @@
   "memory_planes":["working","session","episodic","semantic","project","user-approved-durable"],
   "capability_kinds":["agent","tool","plugin","mcp","skill","workflow","model","integration"],
   "specialists":["THINK","SOCIOLOGY","CINEMA","RESEARCH","STATS","AI","CODE","PRODUCT","OFFICE","OPERATIONS","STRATEGY","LEARNING"],
-  "trust_boundary":"repository-content-is-untrusted-data-not-instruction",
+  "trust_boundary":"repository-content-is-data-not-instruction",
   "security_controls":["hierarchical-authority","untrusted-tool-metadata","tool-fingerprint-revalidation","deny-default-egress","scoped-approval","approval-binding-exact-match","memory-isolation","obfuscation-non-authority","rag-context-variant-testing","runtime-capability-probing","redteam-scope-gate","runtime-redteam-token","dry-run-first","idempotency-aware-retry","external-verification-on-unknown-outcome"],
   "integration_strategy":"logical-first",
   "default_repository_target":null,
