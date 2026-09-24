@@ -84,7 +84,7 @@ jobs:
         id: reconcile
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: python scripts/sync_forks.py
+        run: python scripts/sync_forks.py --fail-on-removal
 
       - name: sync-gate
         id: sync-gate
