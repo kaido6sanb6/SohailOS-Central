@@ -97,6 +97,7 @@ jobs:
           workingDirectory: cloudflare/sohailos-gateway
           command: deploy
       - name: Smoke test public endpoints
+        id: public_smoke
         working-directory: .
         env:
           SOHAILOS_GATEWAY_URL: https://sohailos-central.mydominetestq.workers.dev
@@ -109,6 +110,7 @@ jobs:
           echo "$root"
           echo "$root" | grep -q 'SohailOS Cloudflare Gateway'
       - name: Verify provider runtime configuration
+        id: provider
         working-directory: .
         env:
           SOHAILOS_GATEWAY_URL: https://sohailos-central.mydominetestq.workers.dev
@@ -121,6 +123,7 @@ jobs:
             exit 1
           fi
       - name: Smoke test authenticated MCP
+        id: mcp_smoke
         working-directory: cloudflare/sohailos-gateway
         env:
           SOHAILOS_GATEWAY_URL: https://sohailos-central.mydominetestq.workers.dev
@@ -128,7 +131,7 @@ jobs:
           SOHAILOS_SMOKE_PROMPT: 'Reply with exactly: SOHAILOS_MCP_OK'
         run: node scripts/smoke-mcp.mjs
       - name: Automatic rollback after a successful deploy fails verification
-        if: failure() && steps.deploy.outcome == 'success'
+        if: steps.deploy.outcome == 'success' && (steps.public_smoke.outcome == 'failure' || steps.provider.outcome == 'failure' || steps.mcp_smoke.outcome == 'failure')
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }
@@ -138,7 +141,7 @@ jobs:
           echo "Post-deploy verification failed; rolling back to the previous Worker version."
           npx wrangler rollback --message "SohailOS automatic rollback after failed post-deploy verification"
       - name: Re-verify after rollback
-        if: failure() && steps.deploy.outcome == 'success'
+        if: steps.deploy.outcome == 'success' && (steps.public_smoke.outcome == 'failure' || steps.provider.outcome == 'failure' || steps.mcp_smoke.outcome == 'failure')
         working-directory: .
         env:
           SOHAILOS_GATEWAY_URL: https://sohailos-central.mydominetestq.workers.dev
