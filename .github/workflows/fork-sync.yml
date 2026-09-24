@@ -48,6 +48,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
 
       - name: Validate GitHub App private key
         id: key-check
@@ -78,11 +81,20 @@ jobs:
         run: python scripts/build_fork_inventory.py
 
       - name: Detect upstream divergence (read-only)
+        id: reconcile
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: python scripts/sync_forks.py
 
+      - name: sync-gate
+        id: sync-gate
+        if: always()
+        run: |
+          echo "reconcile=${{ steps.reconcile.outcome }}"
+          test "${{ steps.reconcile.outcome }}" = "success"
+
       - name: Validate read-only report
+        if: steps.sync-gate.outcome == 'success'
         run: |
           python - <<'PY'
           import json
