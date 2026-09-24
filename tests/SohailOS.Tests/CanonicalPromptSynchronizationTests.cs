@@ -10,6 +10,8 @@ public sealed class CanonicalPromptSynchronizationTests
         var root = FindRepositoryRoot();
         var canonical = File.ReadAllText(Path.Combine(root, "prompts", "SohailOS-SuperPrompt.xlm")).Trim();
         Assert.Equal(canonical, SohailOS.Core.CanonicalPrompt.Compact);
+        var expectedHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(canonical))).ToLowerInvariant();
+        Assert.Equal(expectedHash, SohailOS.Core.CanonicalPrompt.Sha256);
     }
 
     [Fact]
