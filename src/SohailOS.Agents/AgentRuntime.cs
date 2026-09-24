@@ -63,15 +63,26 @@ public sealed class AgentRuntime
             {
                 if (persistMemory && _memory is not null && !string.IsNullOrWhiteSpace(memoryKey))
                 {
-                    var snapshot = JsonSerializer.Serialize(new
+                    if (CanPersistDurableMemory(approval, requestId, memoryKey))
                     {
-                        updatedAt = DateTimeOffset.UtcNow,
-                        user = userPrompt,
-                        assistant = completion.Content,
-                        provenance = "agent-runtime",
-                        approval = approval?.Nonce
-                    });
-                    await _memory.SaveAsync(memoryKey, snapshot, cancellationToken);
+                        var snapshot = JsonSerializer.Serialize(new
+                        {
+                            updatedAt = DateTimeOffset.UtcNow,
+                            user = userPrompt,
+                            assistant = completion.Content,
+                            provenance = "agent-runtime",
+                            approval = approval?.Nonce
+                        });
+                        await _memory.SaveAsync(memoryKey, snapshot, cancellationToken);
+                    }
+                    else
+                    {
+                        _telemetry?.Record(new(
+                            requestId, null, ExecutionEventType.Blocked, DateTimeOffset.UtcNow,
+                            "MEMORY_APPROVAL_REQUIRED",
+                            "Durable memory write was blocked because an exact, non-expired approval binding was not supplied.",
+                            new Dictionary<string, object?> { ["memoryKey"] = memoryKey }));
+                    }
                 }
 
                 return completion.Content;
@@ -133,4 +144,30 @@ public sealed class AgentRuntime
         _telemetry?.Record(new(requestId, null, ExecutionEventType.Blocked, DateTimeOffset.UtcNow, "ITERATION_LIMIT", "Maximum tool-execution iterations reached.", new Dictionary<string, object?>()));
         return "The agent stopped after reaching the maximum bounded tool-execution iterations; outcome remains unverified.";
     }
+    private static bool CanPersistDurableMemory(
+        ApprovalBinding? approval,
+        string requestId,
+        string memoryKey)
+    {
+        if (approval is null ||
+            !string.Equals(approval.Operation, "memory_write", StringComparison.Ordinal) ||
+            !string.Equals(approval.Target, "SohailOS.Memory", StringComparison.Ordinal) ||
+            !string.Equals(approval.Scope, memoryKey, StringComparison.Ordinal) ||
+            !string.Equals(approval.IntendedEffect, "persist memory", StringComparison.Ordinal) ||
+            string.IsNullOrWhiteSpace(approval.Nonce) ||
+            approval.IssuedAt is null ||
+            approval.ExpiresAt is null ||
+            approval.IssuedAt > DateTimeOffset.UtcNow ||
+            approval.ExpiresAt <= DateTimeOffset.UtcNow ||
+            (!string.IsNullOrWhiteSpace(approval.RequestId) &&
+             !string.Equals(approval.RequestId, requestId, StringComparison.Ordinal)))
+            return false;
+
+        return string.IsNullOrWhiteSpace(approval.ScopeHash) ||
+               string.Equals(
+                   approval.ScopeHash,
+                   ApprovalBinding.ScopeFingerprint(memoryKey),
+                   StringComparison.Ordinal);
+    }
+
 }

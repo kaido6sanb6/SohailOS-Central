@@ -25,6 +25,6 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: cloudflare/sohailos-gateway/package.json
-      - run: npm install
+      - run: npm ci --no-audit --no-fund
       - run: npm run typecheck
       - run: npx wrangler deploy --dry-run

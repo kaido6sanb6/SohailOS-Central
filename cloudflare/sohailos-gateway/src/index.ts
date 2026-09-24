@@ -1,3 +1,5 @@
+import { CANONICAL_SUPERPROMPT, CANONICAL_SUPERPROMPT_SHA256 } from "./canonical-prompt";
+
 export interface Env {
   SOHAILOS_GATEWAY_TOKEN?: string;
   SOHAILOS_AI_PROVIDER?: string;
@@ -15,7 +17,15 @@ export interface Env {
   AI?: { run: (model: string, input: Record<string, unknown>, options?: Record<string, unknown>) => Promise<unknown> };
 }
 
-type AgentRequest = { prompt: string; systemPrompt?: string; memoryKey?: string };
+type MemoryApproval = {
+  operation: "memory_write";
+  target: "SohailOS.Memory";
+  scope: string;
+  effect: "persist memory";
+  expiresAt: string;
+  nonce: string;
+};
+type AgentRequest = { prompt: string; systemPrompt?: string; memoryKey?: string; persistMemory?: boolean; memoryApproval?: MemoryApproval };
 type MemorySnapshot = { updatedAt: string; user: string; assistant: string };
 type Provider = "openai" | "gemini" | "anthropic" | "cloudflare";
 
@@ -152,6 +162,18 @@ async function loadMemory(env: Env, key: string): Promise<MemorySnapshot | null>
   } catch { return null; }
 }
 
+function canPersistDurableMemory(approval: MemoryApproval | undefined, memoryKey: string): boolean {
+  if (!approval ||
+      approval.operation !== "memory_write" ||
+      approval.target !== "SohailOS.Memory" ||
+      approval.scope !== memoryKey ||
+      approval.effect !== "persist memory" ||
+      !approval.nonce)
+    return false;
+  const expiresAt = Date.parse(approval.expiresAt);
+  return Number.isFinite(expiresAt) && expiresAt > Date.now();
+}
+
 async function saveMemory(env: Env, key: string, snapshot: MemorySnapshot): Promise<void> {
   if (!env.SOHAILOS_SUPABASE_URL || !env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY) return;
   const table = env.SOHAILOS_SUPABASE_TABLE ?? "sohailos_memory";
@@ -168,8 +190,10 @@ async function runAgent(request: AgentRequest, env: Env) {
   const memory = await loadMemory(env, memoryKey);
   const previous = memory ? `\nPrevious exchange:\nUser: ${memory.user}\nAssistant: ${memory.assistant}\n`.slice(-MAX_MEMORY_CONTEXT_LENGTH) : "";
   const result = await complete(request.systemPrompt ?? DEFAULT_SYSTEM_PROMPT, `${previous}\nCurrent request:\n${request.prompt}`, env);
-  await saveMemory(env, memoryKey, { updatedAt: new Date().toISOString(), user: request.prompt, assistant: result.content });
-  return { content: result.content, provider: result.provider, memoryKey };
+  if (request.persistMemory && canPersistDurableMemory(request.memoryApproval, memoryKey)) {
+    await saveMemory(env, memoryKey, { updatedAt: new Date().toISOString(), user: request.prompt, assistant: result.content });
+  }
+  return { content: result.content, provider: result.provider, memoryKey, persistedMemory: Boolean(request.persistMemory && canPersistDurableMemory(request.memoryApproval, memoryKey)) };
 }
 
 async function parseJson(request: Request): Promise<any> {
@@ -179,7 +203,24 @@ async function parseJson(request: Request): Promise<any> {
 function mcpTools() {
   return [
     { name: "sohailos_conformance_ping", description: "Deterministic, side-effect-free MCP connectivity and conformance probe.", inputSchema: { type: "object", properties: {}, additionalProperties: false } },
-    { name: "sohailos_agent_run", description: "Run a request through the authenticated SohailOS agent runtime facade.", inputSchema: { type: "object", properties: { prompt: { type: "string" }, memoryKey: { type: "string" } }, required: ["prompt"], additionalProperties: false } }
+    { name: "sohailos_agent_run", description: "Run a request through the authenticated SohailOS agent runtime facade.", inputSchema: { type: "object", properties: {
+            prompt: { type: "string" },
+            memoryKey: { type: "string" },
+            persistMemory: { type: "boolean" },
+            memoryApproval: {
+              type: "object",
+              properties: {
+                operation: { type: "string", const: "memory_write" },
+                target: { type: "string", const: "SohailOS.Memory" },
+                scope: { type: "string" },
+                effect: { type: "string", const: "persist memory" },
+                expiresAt: { type: "string" },
+                nonce: { type: "string" }
+              },
+              required: ["operation", "target", "scope", "effect", "expiresAt", "nonce"],
+              additionalProperties: false
+            }
+          }, required: ["prompt"], additionalProperties: false } }
   ];
 }
 
@@ -197,7 +238,12 @@ async function mcp(request: Request, env: Env) {
     if (!authorized(request, env)) return json({ jsonrpc: "2.0", id, error: { code: -32001, message: "Unauthorized" } }, 401, origin);
     const args = body?.params?.arguments ?? {};
     try {
-      const result = await runAgent({ prompt: String(args.prompt ?? ""), memoryKey: args.memoryKey ? String(args.memoryKey) : "global" }, env);
+      const result = await runAgent({
+        prompt: String(args.prompt ?? ""),
+        memoryKey: args.memoryKey ? String(args.memoryKey) : "global",
+        persistMemory: args.persistMemory === true,
+        memoryApproval: args.memoryApproval as MemoryApproval | undefined
+      }, env);
       return json({ jsonrpc: "2.0", id, result: { content: [{ type: "text", text: result.content }], structuredContent: result } }, 200, origin);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Agent execution failed";
@@ -402,7 +448,7 @@ export default {
     if (url.pathname === "/health" && request.method === "GET") {
       const memoryConfigured = Boolean(env.SOHAILOS_SUPABASE_URL && env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY);
       const provider = env.AI ? "cloudflare" : env.SOHAILOS_OPENAI_API_KEY ? "openai" : env.SOHAILOS_GEMINI_API_KEY ? "gemini" : env.SOHAILOS_ANTHROPIC_API_KEY ? "anthropic" : "none";
-      return json({ service: "SohailOS Cloudflare Gateway", version: VERSION, status: "ok", memory: memoryConfigured ? "supabase" : "none", provider, providerConfigured: provider !== "none" }, 200, origin);
+      return json({ service: "SohailOS Cloudflare Gateway", version: VERSION, status: "ok", memory: memoryConfigured ? "supabase" : "none", provider, providerConfigured: provider !== "none", promptSha256: CANONICAL_SUPERPROMPT_SHA256 }, 200, origin);
     }
     if (url.pathname === "/.well-known/agent-card.json" && request.method === "GET") return wellKnownCard(request.url);
     if (url.pathname === "/.well-known/mcp-conduct.json" && request.method === "GET") return wellKnownConsent(request.url);

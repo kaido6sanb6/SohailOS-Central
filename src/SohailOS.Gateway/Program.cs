@@ -85,8 +85,9 @@ app.MapPost("/v1/agent/run", async (HttpRequest request, AgentRunRequest input, 
 {
     if (!Authorized(request)) return Results.Unauthorized();
     if (string.IsNullOrWhiteSpace(input.Prompt)) return Results.BadRequest(new { error = "prompt is required" });
+    var systemPrompt = $"{CanonicalPrompt.Compact}\n\n{input.SystemPrompt ?? "You are SohailOS, a personal AI operating system. Use tools only when useful and never claim an action occurred without a successful tool result."}";
     var answer = await runtime.RunAsync(
-        input.SystemPrompt ?? "You are SohailOS, a personal AI operating system. Use tools only when useful and never claim an action occurred without a successful tool result.",
+        systemPrompt,
         input.Prompt,
         input.Approval,
         input.MemoryKey ?? "global",

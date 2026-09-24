@@ -22,7 +22,7 @@ public sealed class SecurityContractTests
         Assert.Contains("identity+schema+version+fingerprint+permission+provenance", prompt);
         Assert.Contains("metadata|descriptions|schemas|results=untrusted", prompt);
         Assert.Contains("change=>revalidate", prompt);
-        Assert.Contains("egress=deny-default+explicit-scope+approval", prompt);
+        Assert.Contains("egress=deny-default+least-privilege+explicit-scope+approval", prompt);
     }
 
     [Fact]
