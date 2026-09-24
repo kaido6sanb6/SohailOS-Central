@@ -9,6 +9,9 @@ public sealed class AgentRuntime
     private readonly IToolRegistry _registry;
     private readonly IToolExecutor _executor;
     private readonly IMemoryStore? _memory;
+    private readonly IExecutionVerifier _verifier;
+    private readonly IExecutionValidator _validator;
+    private readonly IExecutionTelemetry? _telemetry;
     private readonly int _maxIterations;
 
     public AgentRuntime(
@@ -16,22 +19,30 @@ public sealed class AgentRuntime
         IToolRegistry registry,
         IToolExecutor executor,
         IMemoryStore? memory = null,
-        int maxIterations = 6)
+        int maxIterations = 6,
+        IExecutionVerifier? verifier = null,
+        IExecutionValidator? validator = null,
+        IExecutionTelemetry? telemetry = null)
     {
         _provider = provider;
         _registry = registry;
         _executor = executor;
         _memory = memory;
+        _verifier = verifier ?? new BasicExecutionVerifier();
+        _validator = validator ?? new InvariantValidator();
+        _telemetry = telemetry;
         _maxIterations = Math.Clamp(maxIterations, 1, 12);
     }
 
     public async Task<string> RunAsync(
         string systemPrompt,
         string userPrompt,
-        bool confirmWrites = false,
+        ApprovalBinding? approval = null,
         string memoryKey = "global",
+        bool persistMemory = false,
         CancellationToken cancellationToken = default)
     {
+        var requestId = approval?.RequestId ?? Guid.NewGuid().ToString("N");
         var prompt = userPrompt;
 
         if (_memory is not null && !string.IsNullOrWhiteSpace(memoryKey))
@@ -41,6 +52,8 @@ public sealed class AgentRuntime
                 prompt = $"Persistent memory for this conversation:\n{prior}\n\nCurrent user request:\n{userPrompt}";
         }
 
+        _telemetry?.Record(new(requestId, null, ExecutionEventType.Requested, DateTimeOffset.UtcNow, "REQUESTED", "Agent run started.", new Dictionary<string, object?>()));
+
         for (var iteration = 0; iteration < _maxIterations; iteration++)
         {
             var completion = await _provider.CompleteAsync(
@@ -48,13 +61,15 @@ public sealed class AgentRuntime
 
             if (completion.ToolCalls.Count == 0)
             {
-                if (_memory is not null && !string.IsNullOrWhiteSpace(memoryKey))
+                if (persistMemory && _memory is not null && !string.IsNullOrWhiteSpace(memoryKey))
                 {
                     var snapshot = JsonSerializer.Serialize(new
                     {
                         updatedAt = DateTimeOffset.UtcNow,
                         user = userPrompt,
-                        assistant = completion.Content
+                        assistant = completion.Content,
+                        provenance = "agent-runtime",
+                        approval = approval?.Nonce
                     });
                     await _memory.SaveAsync(memoryKey, snapshot, cancellationToken);
                 }
@@ -65,20 +80,57 @@ public sealed class AgentRuntime
             var results = new List<string>();
             foreach (var call in completion.ToolCalls)
             {
-                var result = await _executor.ExecuteAsync(call, confirmWrites, cancellationToken);
+                var result = await _executor.ExecuteAsync(call, approval ?? new ApprovalBinding(
+                    call.Name,
+                    call.Target ?? call.Name,
+                    call.Scope ?? "unspecified",
+                    call.IntendedEffect ?? "tool execution",
+                    RequestId: requestId,
+                    Nonce: Guid.NewGuid().ToString("N"),
+                    IssuedAt: DateTimeOffset.UtcNow,
+                    ExpiresAt: DateTimeOffset.UtcNow.AddMinutes(5),
+                    ScopeHash: ApprovalBinding.ScopeFingerprint(call.Scope ?? "unspecified")),
+                    cancellationToken);
+
+                var request = new ExecutionRequest(
+                    call.Arguments.Count == 0 ? ActionClass.Read : ActionClass.Read,
+                    call.Name,
+                    call.Target ?? call.Name,
+                    call.Scope ?? "unspecified",
+                    call.IntendedEffect ?? "tool execution",
+                    RequestId: requestId);
+
+                var evidence = result.Evidence is null
+                    ? Array.Empty<EvidenceItem>()
+                    : new[] { result.Evidence };
+                var verification = _verifier.Verify(request, result, evidence);
+                var validation = _validator.Validate(request, verification, evidence);
+
+                _telemetry?.Record(new(requestId, null,
+                    verification.Status == VerificationStatus.Verified ? ExecutionEventType.Verified : ExecutionEventType.Failed,
+                    DateTimeOffset.UtcNow, verification.Code, verification.Reason,
+                    new Dictionary<string, object?> { ["evidenceIds"] = verification.EvidenceIds }));
+
+                if (validation.Status == ValidationStatus.Validated)
+                    _telemetry?.Record(new(requestId, null, ExecutionEventType.Validated, DateTimeOffset.UtcNow, validation.Code, validation.Reason, new Dictionary<string, object?>()));
+
                 results.Add(JsonSerializer.Serialize(new
                 {
                     tool = call.Name,
                     executed = result.Executed,
                     requiresConfirmation = result.RequiresConfirmation,
                     success = result.Result.Success,
-                    content = result.Result.Content
+                    content = result.Result.Content,
+                    evidenceId = result.Evidence?.Id,
+                    verification = verification.Status.ToString(),
+                    validation = validation.Status.ToString()
                 }));
             }
 
-            prompt = $"{prompt}\n\nTool results from the previous step:\n{string.Join("\n", results)}\n\nContinue the task. Do not claim a tool action succeeded unless the tool result says success=true.";
+            prompt = $"{prompt}\n\nTool results from the previous step:\n{string.Join("\n", results)}\n\nContinue the task. Execution success is not equivalent to verified outcome; do not claim a requested side effect is complete unless verification and validation evidence support it.";
         }
 
-        return "The agent stopped after reaching the maximum tool-execution iterations. Review the tool results and continue with a narrower request if necessary.";
+        _telemetry?.Record(new(requestId, null, ExecutionEventType.Blocked, DateTimeOffset.UtcNow, "ITERATION_LIMIT", "Maximum tool-execution iterations reached.", new Dictionary<string, object?>()));
+        return "The agent stopped after reaching the maximum bounded tool-execution iterations; outcome remains unverified.";
     }
 }
