@@ -32,7 +32,7 @@ assert start >= 0, "Cloudflare canonical prompt constant missing"
 start += len(prefix)
 end = ts.find('" as const;', start)
 assert end > start, "Cloudflare canonical prompt terminator missing"
-ts_prompt = json.loads(ts[start:end])
+ts_prompt = json.loads(ts[start:end+1])
 assert ts_prompt == canonical, "Cloudflare prompt text drift"
 
 worker = (ROOT / "cloudflare" / "sohailos-gateway" / "src" / "index.ts").read_text(encoding="utf-8")
