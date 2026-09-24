@@ -2260,6 +2260,114 @@
         "fork": true,
         "last_seen_at": "2026-09-24T15:26:55.6444131Z"
       }
+    },
+    {
+      "repo": "kaido6sanb6/jev-curate",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/jev-curate"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386227081,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T19:25:45.4817709Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/jev-doom-agent",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/jev-doom-agent"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386223969,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T19:25:45.4817709Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/jev-trader",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/jev-trader"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386217292,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T19:25:45.4817709Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/jev-ultrafast",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/jev-ultrafast"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386222957,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T19:25:45.4817709Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/pg-jev",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/pg-jev"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386228692,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T19:25:45.4817709Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/tax-doc-classifier",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/tax-doc-classifier"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1386226130,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T19:25:45.4817709Z"
+      }
     }
   ],
   "edges": [
@@ -3710,13 +3818,49 @@
       "upstream": null,
       "status": "unverified",
       "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/jev-curate",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/jev-doom-agent",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/jev-trader",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/jev-ultrafast",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/pg-jev",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/tax-doc-classifier",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
     }
   ],
   "sync": {
     "owner": "kaido6sanb6",
     "scope": "public-owner-inventory",
-    "last_reconciled_at": "2026-09-24T15:26:55.6444131Z",
-    "live_repository_count": 133,
-    "registry_repository_count": 133
+    "last_reconciled_at": "2026-09-24T19:25:45.4817709Z",
+    "live_repository_count": 139,
+    "registry_repository_count": 139
   }
 }
