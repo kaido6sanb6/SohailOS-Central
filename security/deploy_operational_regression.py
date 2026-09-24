@@ -37,7 +37,7 @@ def main():
     )
     assert rollback_gate in s, "rollback is not scoped to post-deploy verification failures"
 
-    assert "npm install --no-audit --no-fund" in s
+    assert "npm ci --no-audit --no-fund" in s
     assert "npx wrangler --version" in s
     assert "secret put" in s
     secret_names = [
