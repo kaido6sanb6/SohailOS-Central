@@ -129,6 +129,7 @@ jobs:
           SOHAILOS_GATEWAY_URL: https://sohailos-central.mydominetestq.workers.dev
           SOHAILOS_GATEWAY_TOKEN: ${{ secrets.SOHAILOS_GATEWAY_TOKEN }}
           SOHAILOS_SMOKE_PROMPT: 'Reply with exactly: SOHAILOS_MCP_OK'
+          SOHAILOS_EXPECTED_PROMPT_SHA256: 'b502149a6956c302fc561b61364bccca8d4cfb42099fc8e094e1f81f12b030a2'
         run: node scripts/smoke-mcp.mjs
       - name: Automatic rollback after a successful deploy fails verification
         if: steps.deploy.outcome == 'success' && (steps.public_smoke.outcome == 'failure' || steps.provider.outcome == 'failure' || steps.mcp_smoke.outcome == 'failure')
