@@ -35,7 +35,28 @@ bool Authorized(HttpRequest request) =>
 
 var registry = new ToolRegistry();
 var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-var researchEngine = new ResearchEngine(httpClient);
+
+var semanticScholarKey = Environment.GetEnvironmentVariable("SOHAILOS_SEMANTIC_SCHOLAR_API_KEY");
+var unpaywallEmail = Environment.GetEnvironmentVariable("SOHAILOS_UNPAYWALL_EMAIL");
+var scholarlyOpenAlex = new OpenAlexProvider(httpClient);
+var scholarlyCrossref = new CrossrefProvider(httpClient);
+var scholarlySemanticScholar = new SemanticScholarProvider(httpClient, semanticScholarKey);
+var scholarlyEuropePmc = new EuropePmcProvider(httpClient);
+var scholarlyOpenCitations = new OpenCitationsProvider(httpClient);
+IOpenAccessResolver? scholarlyOpenAccess = string.IsNullOrWhiteSpace(unpaywallEmail)
+    ? new UnpaywallProvider(httpClient, null)
+    : new UnpaywallProvider(httpClient, unpaywallEmail);
+
+var researchIntelligence = new ResearchIntelligenceEngine(
+    [
+        scholarlyOpenAlex,
+        scholarlyCrossref,
+        scholarlySemanticScholar,
+        scholarlyEuropePmc,
+        scholarlyOpenCitations
+    ],
+    scholarlyOpenAccess,
+    scholarlyOpenCitations);
 var knowledgeIndexPath = Environment.GetEnvironmentVariable("SOHAILOS_KNOWLEDGE_INDEX_PATH")
     ?? Path.Combine(AppContext.BaseDirectory, "App_Data", "sohailos-knowledge-index.json");
 DataPlaneProvider knowledgeProvider = new JsonFileDataPlaneProvider(knowledgeIndexPath);
@@ -75,8 +96,24 @@ app.MapPost("/v1/research/search", async (HttpRequest request, ResearchSearchReq
     if (!Authorized(request)) return Results.Unauthorized();
     if (string.IsNullOrWhiteSpace(input.Query))
         return Results.BadRequest(new { error = "query is required" });
-    var result = await researchEngine.SearchAsync(input, cancellationToken);
-    return Results.Ok(result);
+
+    var result = await researchIntelligence.SearchAsync(input, cancellationToken);
+    return Results.Ok(new
+    {
+        result.Query,
+        discipline = result.Discipline.ToString(),
+        records = result.Records,
+        graph = result.Graph,
+        plan = result.Plan,
+        audit_trail = result.AuditTrail,
+        degraded_flags = result.DegradedFlags,
+        evidence_policy = new
+        {
+            lawful_open_access_only = true,
+            no_paywall_bypass = true,
+            provenance_required = result.Plan.RequiresProvenance
+        }
+    });
 });
 
 app.MapGet("/health", () => Results.Ok(new
