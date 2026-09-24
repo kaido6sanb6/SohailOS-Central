@@ -28,7 +28,7 @@ public sealed class CanonicalPromptSynchronizationTests
         var suffix = "\" as const;";
         var end = source.IndexOf(suffix, start, StringComparison.Ordinal);
         Assert.True(end > start);
-        var literal = source[start..end];
+        var literal = source[start..(end + 1)];
 
         var decoded = System.Text.Json.JsonSerializer.Deserialize<string>(literal);
         Assert.Equal(canonical, decoded);
