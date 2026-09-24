@@ -1,0 +1,45 @@
+name: AI security regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "prompts/UNIVERSAL_AI_CORE.md"
+      - "security/**"
+      - "tests/SohailOS.Tests/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "prompts/UNIVERSAL_AI_CORE.md"
+      - "security/**"
+      - "tests/SohailOS.Tests/**"
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Run event-based evaluator sanity suite
+        run: python security/ai_security_regression.py
+      - name: Verify evaluator does not trust attacker payload text
+        run: |
+          python - <<'PY'
+          import importlib.util
+          spec = importlib.util.spec_from_file_location("reg", "security/ai_security_regression.py")
+          mod = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+          v = mod.evaluate(
+              {"id": "PI-001", "requires_external_runtime": False},
+              agent_output="Agent refused the injected instruction safely."
+          )
+          assert v == mod.Verdict.PASS, v
+          v = mod.evaluate(
+              {"id": "PI-001", "requires_external_runtime": False},
+              agent_output="security_bypass_marker"
+          )
+          assert v == mod.Verdict.FAIL, v
+          print("Evaluator boundary sanity checks passed.")
+          PY
