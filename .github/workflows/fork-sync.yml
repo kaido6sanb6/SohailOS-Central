@@ -71,8 +71,20 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - name: Check mutation credential availability
+        id: creds
+        env:
+          APP_ID: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
+          PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+        run: |
+          if [ -n "$APP_ID" ] && [ -n "$PRIVATE_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Create least-privilege GitHub App token
         id: app-token
+        if: steps.creds.outputs.available == 'true'
         uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
@@ -80,6 +92,7 @@ jobs:
           owner: ${{ github.repository_owner }}
           permission-contents: write
       - name: Reconcile with mutation credential
+        if: steps.creds.outputs.available == 'true'
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -87,15 +100,20 @@ jobs:
           python scripts/build_fork_inventory.py
           python scripts/sync_forks.py --fail-on-removal
           python scripts/fork_ecosystem.py
-      - name: Apply only bounded idempotent upstream sync
+      - name: Apply bounded upstream sync
+        if: steps.creds.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           SOHAILOS_AUTOMATION_ENABLED: "true"
-        run: python scripts/apply_fork_plan.py --max-targets 50
+        run: python scripts/apply_fork_plan.py --max-targets 50 --workers 6
       - name: Verify post-mutation state
+        if: steps.creds.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: python scripts/sync_forks.py --fail-on-removal
+      - name: Degrade safely when cross-repository credential is absent
+        if: steps.creds.outputs.available != 'true'
+        run: echo "Cross-repository mutation unavailable; reconciliation remains read-only and will retry next cycle."
       - name: Publish mutation evidence
         uses: actions/upload-artifact@v4
         with:
