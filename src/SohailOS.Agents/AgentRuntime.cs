@@ -80,17 +80,9 @@ public sealed class AgentRuntime
             var results = new List<string>();
             foreach (var call in completion.ToolCalls)
             {
-                var result = await _executor.ExecuteAsync(call, approval ?? new ApprovalBinding(
-                    call.Name,
-                    call.Target ?? call.Name,
-                    call.Scope ?? "unspecified",
-                    call.IntendedEffect ?? "tool execution",
-                    RequestId: requestId,
-                    Nonce: Guid.NewGuid().ToString("N"),
-                    IssuedAt: DateTimeOffset.UtcNow,
-                    ExpiresAt: DateTimeOffset.UtcNow.AddMinutes(5),
-                    ScopeHash: ApprovalBinding.ScopeFingerprint(call.Scope ?? "unspecified")),
-                    cancellationToken);
+                var result = approval is null
+                    ? await _executor.ExecuteAsync(call, cancellationToken: cancellationToken)
+                    : await _executor.ExecuteAsync(call, approval, cancellationToken);
 
                 var request = new ExecutionRequest(
                     call.Arguments.Count == 0 ? ActionClass.Read : ActionClass.Read,
