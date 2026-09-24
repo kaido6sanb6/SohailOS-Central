@@ -25,7 +25,7 @@ public sealed class CanonicalPromptSynchronizationTests
         var start = source.IndexOf(prefix, StringComparison.Ordinal);
         Assert.True(start >= 0);
         start += prefix.Length;
-        var suffix = "" as const;";
+        var suffix = "\" as const;";
         var end = source.IndexOf(suffix, start, StringComparison.Ordinal);
         Assert.True(end > start);
         var literal = source[start..end];
