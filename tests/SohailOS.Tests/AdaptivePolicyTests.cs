@@ -56,7 +56,7 @@ public sealed class AdaptiveExecutionPolicyContractTests
     [Fact]
     public void RedTeamWithoutRuntimeToken_BlocksExecution()
     {
-        var scope = new RedTeamScope("target", "probe", "none", "10m", "stop", "authorized", RuntimeTokenIssued: true, RuntimeToken: "rt-1", TokenExpiresAt: DateTimeOffset.UtcNow.AddMinutes(5));
+        var scope = new RedTeamScope("target", "probe", "none", "10m", "stop", "authorized");
         var request = new ExecutionRequest(ActionClass.Analyze, "probe", "target", "test", "simulate", RedTeam: scope);
         var decision = AdaptiveExecutionPolicy.Evaluate(request, CapabilityStatus.Verified);
         Assert.False(decision.Allowed);
