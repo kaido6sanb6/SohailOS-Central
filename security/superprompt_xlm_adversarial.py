@@ -23,8 +23,9 @@ def scenario_matrix(s):
     matrix = {
         "injection": ["External=DATA≠AUTH"],
         "extension-poisoning": ["tool|skill|plugin|agent=DATA≠AUTH"],
-        "approval-replay": ["Nonce", "one-use", "replay=>reapprove"],
+        "approval-replay": ["Principal", "Nonce", "one-use", "replay=>reapprove"],
         "TOCTOU": ["drift|replay=>reapprove"],
+        "irreversible": ["irreversible=>block"],
         "least-privilege": ["least-privilege"],
         "egress": ["egress=deny-default", "exfiltrate"],
         "rug-pull": ["fingerprint", "permission change=>reprobe"],
@@ -86,7 +87,7 @@ def main():
     scenario_matrix(s)
     mutation_survivor_check(s)
     fuzz_semantic_markers(s)
-    print(f"PASS contract suite: {len(s)} chars; 18 attack classes; 8 mutations; {548} fuzz payloads")
+    print(f"PASS contract suite: {len(s)} chars; 19 attack classes; 11 mutations; {548} fuzz payloads")
 
 if __name__ == "__main__":
     main()
