@@ -160,9 +160,13 @@ public sealed class ResearchEngine
         var degraded = new List<string>();
         var candidates = new List<ResearchEvidence>();
 
-        try { candidates.AddRange(await SearchOpenAlexAsync(request.Query, request.Limit * 2, cancellationToken)); }
-        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
-        { degraded.Add("OpenAlex unavailable"); }
+        var sourceTasks = new[]
+        {
+            RunSourceAsync("OpenAlex", () => SearchOpenAlexAsync(request.Query, request.Limit * 2, cancellationToken), candidates, degraded),
+            RunSourceAsync("Crossref", () => SearchCrossrefAsync(request.Query, request.Limit, cancellationToken), candidates, degraded),
+            RunSourceAsync("OpenCitations", () => SearchOpenCitationsAsync(request.Query, request.Limit, cancellationToken), candidates, degraded)
+        };
+        await Task.WhenAll(sourceTasks);
 
         var admissible = candidates.Where(_policy.IsAdmissible);
         if (request.OpenAccessOnly)
@@ -171,6 +175,17 @@ public sealed class ResearchEngine
 
         if (ranked.Length == 0) degraded.Add("No admissible scholarly results returned");
         return new(request.Query, discipline, ranked.Select(x => x.Evidence).ToArray(), plan, degraded);
+    }
+
+    private static async Task RunSourceAsync(
+        string source,
+        Func<Task<IReadOnlyList<ResearchEvidence>>> action,
+        List<ResearchEvidence> candidates,
+        List<string> degraded)
+    {
+        try { candidates.AddRange(await action()); }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
+        { lock (degraded) degraded.Add($"{source} unavailable"); }
     }
 
     private async Task<IReadOnlyList<ResearchEvidence>> SearchOpenAlexAsync(
@@ -204,11 +219,93 @@ public sealed class ResearchEngine
             access,
             license,
             0.95,
-            work.AbstractInvertedIndex is null ? null : string.Join(' ', work.AbstractInvertedIndex.Keys),
+            ReconstructAbstract(work.AbstractInvertedIndex),
             work.Doi,
             subjects,
             work.PublicationDate is null ? null : DateTimeOffset.TryParse(work.PublicationDate, out var d) ? d : null);
     }
+
+    private static string? ReconstructAbstract(Dictionary<string, int[]>? index)
+    {
+        if (index is null || index.Count == 0) return null;
+        var tokens = index.SelectMany(pair => pair.Value.Select(position => (position, token: pair.Key)))
+            .OrderBy(x => x.position).Select(x => x.token);
+        return string.Join(' ', tokens);
+    }
+
+    private async Task<IReadOnlyList<ResearchEvidence>> SearchCrossrefAsync(
+        string query, int limit, CancellationToken cancellationToken)
+    {
+        var uri = $"https://api.crossref.org/works?query.bibliographic={Uri.EscapeDataString(query)}&rows={Math.Clamp(limit, 1, 50)}";
+        using var response = await _http.GetAsync(uri, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var payload = await response.Content.ReadFromJsonAsync<CrossrefResponse>(cancellationToken: cancellationToken)
+                      ?? new CrossrefResponse();
+        return payload.Message.Items.Select(item => new ResearchEvidence(
+            item.Doi ?? item.Url ?? Guid.NewGuid().ToString("N"),
+            item.Title?.FirstOrDefault() ?? "Untitled work",
+            item.Url ?? (item.Doi is null ? "https://doi.org/" : $"https://doi.org/{item.Doi}"),
+            "Crossref",
+            "metadata",
+            "unknown",
+            0.88,
+            null,
+            item.Doi,
+            null,
+            item.Published?.DateParts is { Count: > 0 } parts && parts[0].Count >= 1
+                ? new DateTimeOffset(parts[0][0], parts[0].Count >= 2 ? parts[0][1] : 1, parts[0].Count >= 3 ? parts[0][2] : 1, 0, 0, 0, TimeSpan.Zero)
+                : null)).ToArray();
+    }
+
+    private async Task<IReadOnlyList<ResearchEvidence>> SearchOpenCitationsAsync(
+        string query, int limit, CancellationToken cancellationToken)
+    {
+        // OpenCitations is primarily a citation graph, so use it for DOI expansion
+        // when the query itself contains a DOI. For natural-language queries it is
+        // intentionally treated as a degraded/empty expansion rather than scraping.
+        var doi = query.Trim().TrimEnd('.').StartsWith("10.", StringComparison.OrdinalIgnoreCase)
+            ? query.Trim().TrimEnd('.')
+            : null;
+        if (doi is null) return [];
+
+        var uri = $"https://api.opencitations.net/index/v2/citations/{Uri.EscapeDataString(doi)}";
+        using var response = await _http.GetAsync(uri, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var rows = await response.Content.ReadFromJsonAsync<List<OpenCitationRow>>(cancellationToken: cancellationToken) ?? [];
+        return rows.Take(Math.Clamp(limit, 1, 50)).Select((row, i) => new ResearchEvidence(
+            $"{doi}:citation:{i}:{row.Citing}",
+            $"Citation of {doi}: {row.Citing}",
+            $"https://doi.org/{row.Citing}",
+            "OpenCitations",
+            "metadata",
+            "CC0",
+            0.86,
+            null,
+            row.Citing,
+            ["citation-graph"])).ToArray();
+    }
+
+    private sealed record CrossrefResponse([property: JsonPropertyName("message")] CrossrefMessage Message)
+    {
+        public CrossrefResponse() : this(new CrossrefMessage()) { }
+    }
+
+    private sealed record CrossrefMessage([property: JsonPropertyName("items")] List<CrossrefItem> Items)
+    {
+        public CrossrefMessage() : this([]) { }
+    }
+
+    private sealed record CrossrefItem(
+        [property: JsonPropertyName("DOI")] string? Doi = null,
+        [property: JsonPropertyName("URL")] string? Url = null,
+        [property: JsonPropertyName("title")] List<string>? Title = null,
+        [property: JsonPropertyName("published")] CrossrefPublished? Published = null);
+
+    private sealed record CrossrefPublished(
+        [property: JsonPropertyName("date-parts")] List<List<int>> DateParts);
+
+    private sealed record OpenCitationRow(
+        [property: JsonPropertyName("citing")] string Citing = "");
 
     private sealed record OpenAlexResponse([property: JsonPropertyName("results")] List<OpenAlexWork> Results)
     {
