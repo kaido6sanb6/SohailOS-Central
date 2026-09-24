@@ -41,9 +41,20 @@ These are configured in the Cloudflare Worker itself, not committed to GitHub:
 
 After deployment, check:
 
+- `/dashboard` — displays an HTML control plane dashboard with Vercel Web Analytics enabled.
 - `/health` — should return JSON with `status: "ok"`.
 - `/` — should return service metadata and endpoint names.
 - `/v1/agent/run` — requires `Authorization: Bearer <SOHAILOS_GATEWAY_TOKEN>`.
 - `/mcp` — requires the same bearer token.
 
 If the workers.dev URL displays Cloudflare's "There is nothing here yet" page, the Worker has not been published to that workers.dev endpoint yet, or the workers.dev route is disabled. Check the Worker's Domains/Routes settings and the latest deployment in Cloudflare.
+
+## Vercel Web Analytics
+
+The dashboard at `/dashboard` includes Vercel Web Analytics integration. To view analytics:
+
+1. Ensure the project is deployed to Vercel or connected to a Vercel project.
+2. Enable Web Analytics in the Vercel dashboard under your project's Analytics section.
+3. After deployment, analytics data will be available in your Vercel dashboard.
+
+The analytics script (`/_vercel/insights/script.js`) is automatically injected into the dashboard page.

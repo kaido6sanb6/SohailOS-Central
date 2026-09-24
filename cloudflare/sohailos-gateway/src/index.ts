@@ -212,12 +212,193 @@ function isProviderConfigurationError(message: string): boolean { return message
 function wellKnownCard(origin: string) { return json({ name: "SohailOS Cloudflare Gateway", description: "SohailOS personal AI operating system gateway with authenticated agent execution and MCP discovery.", url: origin || "https://sohailos-central.mydominetestq.workers.dev", protocol: "MCP", compensation: { paid_by: "buyer", referral_fee: false, listing_fee: false, disclosure_url: "https://sohailos-central.mydominetestq.workers.dev/.well-known/agent-card.json" } }, 200, origin); }
 function wellKnownConsent(origin: string) { return json({ allow_tool_call: true, endpoints: ["https://sohailos-central.mydominetestq.workers.dev/mcp"], listing: "owner-consented deterministic conformance probe only; authenticated agent execution remains protected" }, 200, origin); }
 
+function dashboardHtml(env: Env): Response {
+  const memoryConfigured = Boolean(env.SOHAILOS_SUPABASE_URL && env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY);
+  const provider = env.AI ? "cloudflare" : env.SOHAILOS_OPENAI_API_KEY ? "openai" : env.SOHAILOS_GEMINI_API_KEY ? "gemini" : env.SOHAILOS_ANTHROPIC_API_KEY ? "anthropic" : "none";
+  
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SohailOS Control Plane</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 48px;
+      max-width: 800px;
+      width: 90%;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .version {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #10b981;
+      color: white;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+    .endpoints {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .endpoints h2 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+      color: #374151;
+    }
+    .endpoint {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-family: "Courier New", monospace;
+      font-size: 0.9rem;
+    }
+    .endpoint .method {
+      background: #667eea;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 12px;
+      min-width: 50px;
+      text-align: center;
+    }
+    .endpoint .path {
+      color: #4b5563;
+    }
+    .config {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .config-item {
+      background: #f9fafb;
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    .config-item .label {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .config-item .value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .footer {
+      margin-top: 32px;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SohailOS Control Plane</h1>
+    <div class="version">Version ${VERSION}</div>
+    <div class="status">● Operational</div>
+    
+    <div class="endpoints">
+      <h2>API Endpoints</h2>
+      <div class="endpoint">
+        <span class="method">GET</span>
+        <span class="path">/health</span>
+      </div>
+      <div class="endpoint">
+        <span class="method">POST</span>
+        <span class="path">/v1/agent/run</span>
+      </div>
+      <div class="endpoint">
+        <span class="method">POST</span>
+        <span class="path">/mcp</span>
+      </div>
+      <div class="endpoint">
+        <span class="method">GET</span>
+        <span class="path">/.well-known/agent-card.json</span>
+      </div>
+      <div class="endpoint">
+        <span class="method">GET</span>
+        <span class="path">/.well-known/mcp-conduct.json</span>
+      </div>
+    </div>
+
+    <div class="config">
+      <div class="config-item">
+        <div class="label">AI Provider</div>
+        <div class="value">${provider}</div>
+      </div>
+      <div class="config-item">
+        <div class="label">Memory Backend</div>
+        <div class="value">${memoryConfigured ? "Supabase" : "None"}</div>
+      </div>
+      <div class="config-item">
+        <div class="label">Gateway Type</div>
+        <div class="value">Cloudflare Workers</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Personal AI Operating System • Model-Agnostic • Research & Automation
+    </div>
+  </div>
+  
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>`;
+
+  return new Response(html, {
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff"
+    }
+  });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = allowedOrigin(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: responseHeaders(origin) });
     const url = new URL(request.url);
-    if (url.pathname === "/" && request.method === "GET") return json({ service: "SohailOS Cloudflare Gateway", version: VERSION, status: "ok", endpoints: { health: "/health", agent: "/v1/agent/run", mcp: "/mcp", agentCard: "/.well-known/agent-card.json", conductConsent: "/.well-known/mcp-conduct.json" } }, 200, origin);
+    if (url.pathname === "/" && request.method === "GET") return json({ service: "SohailOS Cloudflare Gateway", version: VERSION, status: "ok", endpoints: { health: "/health", agent: "/v1/agent/run", mcp: "/mcp", agentCard: "/.well-known/agent-card.json", conductConsent: "/.well-known/mcp-conduct.json", dashboard: "/dashboard" } }, 200, origin);
+    if (url.pathname === "/dashboard" && request.method === "GET") return dashboardHtml(env);
     if (url.pathname === "/health" && request.method === "GET") {
       const memoryConfigured = Boolean(env.SOHAILOS_SUPABASE_URL && env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY);
       const provider = env.AI ? "cloudflare" : env.SOHAILOS_OPENAI_API_KEY ? "openai" : env.SOHAILOS_GEMINI_API_KEY ? "gemini" : env.SOHAILOS_ANTHROPIC_API_KEY ? "anthropic" : "none";
