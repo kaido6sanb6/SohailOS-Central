@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0",
+  "control_plane": "kaido6sanb6/SohailOS-Central",
+  "domain": "scholarly-research",
+  "policy": "logical-first",
+  "sources": [
+    {
+      "repo": "kaido6sanb6/OpenAlex",
+      "upstream": "ourresearch/OpenAlex",
+      "role": "scholarly discovery/catalog",
+      "mode": "API_CONNECTOR"
+    },
+    {
+      "repo": "kaido6sanb6/oadoi",
+      "upstream": "ourresearch/oadoi",
+      "role": "open-access location resolution",
+      "mode": "API_CONNECTOR"
+    },
+    {
+      "repo": "kaido6sanb6/OpenCitationsCorpus",
+      "upstream": "OpenCitations/OpenCitationsCorpus",
+      "role": "open citation corpus/graph",
+      "mode": "DATA_CONNECTOR"
+    },
+    {
+      "repo": "kaido6sanb6/grobid",
+      "upstream": "grobidOrg/grobid",
+      "role": "scholarly PDF parsing and TEI extraction",
+      "mode": "DOCUMENT_PIPELINE"
+    },
+    {
+      "repo": "kaido6sanb6/DSpace",
+      "upstream": "DSpace/DSpace",
+      "role": "institutional repository architecture",
+      "mode": "ISOLATED_TOOL"
+    },
+    {
+      "repo": "kaido6sanb6/hyrax",
+      "upstream": "samvera/hyrax",
+      "role": "digital repository architecture",
+      "mode": "ISOLATED_TOOL"
+    },
+    {
+      "repo": "kaido6sanb6/openlibrary",
+      "upstream": "internetarchive/openlibrary",
+      "role": "book catalog/discovery",
+      "mode": "CATALOG_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/zotero-openalex",
+      "upstream": "danieleongari/zotero-openalex",
+      "role": "reference enrichment",
+      "mode": "ISOLATED_TOOL"
+    },
+    {
+      "repo": "kaido6sanb6/PhilLit",
+      "upstream": "AI-4-Phi/PhilLit",
+      "role": "literature-review workflow",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/wisp-science",
+      "upstream": "xuzhougeng/wisp-science",
+      "role": "research workbench architecture",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/Research-RAG",
+      "upstream": "pranavraikote/Research-RAG",
+      "role": "research RAG pattern",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/research-agent",
+      "upstream": "aghababaeiali/research-agent",
+      "role": "research-agent pattern",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/Auto-Empirical-Research-Skills",
+      "upstream": "brycewang-stanford/Auto-Empirical-Research-Skills",
+      "role": "empirical research skills",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/humanities_data_benchmark",
+      "upstream": "RISE-UNIBAS/humanities_data_benchmark",
+      "role": "humanities evaluation/benchmark data",
+      "mode": "DATA_CONNECTOR"
+    },
+    {
+      "repo": "kaido6sanb6/Notebooks4Historical_Newspapers",
+      "upstream": "soberbichler/Notebooks4Historical_Newspapers",
+      "role": "historical newspaper research workflow",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/hazm",
+      "upstream": "roshan-research/hazm",
+      "role": "Persian NLP preprocessing",
+      "mode": "ISOLATED_TOOL"
+    },
+    {
+      "repo": "kaido6sanb6/scholarly",
+      "upstream": "scholarly-python-package/scholarly",
+      "role": "Google Scholar client",
+      "mode": "ISOLATED_TOOL"
+    },
+    {
+      "repo": "kaido6sanb6/scholar.py",
+      "upstream": "ckreibich/scholar.py",
+      "role": "Google Scholar client",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/academic-ai-prompt",
+      "upstream": "bohyy/academic-ai-prompt",
+      "role": "academic prompting",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/chatgpt-prompts-for-academic-writing",
+      "upstream": "ahmetbersoz/chatgpt-prompts-for-academic-writing",
+      "role": "academic writing prompts",
+      "mode": "REFERENCE_ONLY"
+    },
+    {
+      "repo": "kaido6sanb6/PyPaperBot",
+      "upstream": "ferru97/PyPaperBot",
+      "role": "paper retrieval workflow",
+      "mode": "REVIEW_REQUIRED"
+    },
+    {
+      "repo": "kaido6sanb6/zotero-scihub",
+      "upstream": "ethanwillis/zotero-scihub",
+      "role": "paywall-bypass integration",
+      "mode": "EXCLUDE",
+      "reason": "not part of lawful OA research fabric"
+    }
+  ],
+  "external_api_targets": [
+    {
+      "name": "Semantic Scholar",
+      "role": "paper/author/citation discovery",
+      "mode": "API_CONNECTOR"
+    },
+    {
+      "name": "Crossref",
+      "role": "DOI and bibliographic metadata",
+      "mode": "API_CONNECTOR"
+    },
+    {
+      "name": "PubMed / Europe PMC",
+      "role": "biomedical and psychology-adjacent discovery",
+      "mode": "API_CONNECTOR"
+    },
+    {
+      "name": "institutional OAI-PMH repositories",
+      "role": "repository discovery",
+      "mode": "API_CONNECTOR"
+    }
+  ]
+}
