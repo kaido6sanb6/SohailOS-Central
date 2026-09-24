@@ -94,7 +94,9 @@ public sealed record RedTeamScope(
     string StopConditions,
     string LegalBasis,
     bool SimulationOnly = true,
-    bool RuntimeTokenIssued = false)
+    bool RuntimeTokenIssued = false,
+    string? RuntimeToken = null,
+    DateTimeOffset? TokenExpiresAt = null)
 {
     public bool IsComplete =>
         !string.IsNullOrWhiteSpace(Target) &&
@@ -103,6 +105,12 @@ public sealed record RedTeamScope(
         !string.IsNullOrWhiteSpace(TimeWindow) &&
         !string.IsNullOrWhiteSpace(StopConditions) &&
         !string.IsNullOrWhiteSpace(LegalBasis);
+
+    public bool HasLiveToken(DateTimeOffset now) =>
+        RuntimeTokenIssued &&
+        !string.IsNullOrWhiteSpace(RuntimeToken) &&
+        TokenExpiresAt is not null &&
+        TokenExpiresAt > now;
 }
 
 public sealed record ExecutionRequest(
@@ -137,8 +145,8 @@ public static class AdaptiveExecutionPolicy
 
         if (request.RedTeam is not null)
         {
-            if (!request.RedTeam.IsComplete || !request.RedTeam.RuntimeTokenIssued)
-                return new(false, "REDTEAM_SCOPE_INCOMPLETE", "Red-team execution requires all six scope fields and a runtime-issued token.");
+            if (!request.RedTeam.IsComplete || !request.RedTeam.HasLiveToken(DateTimeOffset.UtcNow))
+                return new(false, "REDTEAM_SCOPE_INCOMPLETE", "Red-team execution requires all six scope fields plus a live, scoped, expiring runtime token.");
             if (request.RedTeam.SimulationOnly)
                 return new(true, "SIMULATION_ONLY", "Red-team execution is explicitly limited to simulation.", RequiresDryRun: true);
         }
