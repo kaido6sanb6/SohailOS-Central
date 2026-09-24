@@ -32,6 +32,8 @@ jobs:
         run: python security/superprompt_xlm_adversarial.py
       - name: Verify canonical SuperPrompt synchronization
         run: python security/verify_superprompt_sync.py
+      - name: Run deep operational hardening gate
+        run: python security/deep_operational_hardening.py
       - name: Run deployment operational contract suite
         run: python security/deploy_operational_regression.py
       - name: Verify evaluator does not trust attacker payload text
