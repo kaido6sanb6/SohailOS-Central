@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace SohailOS.Tests;
@@ -32,6 +33,25 @@ public sealed class CanonicalPromptSynchronizationTests
 
         var decoded = System.Text.Json.JsonSerializer.Deserialize<string>(literal);
         Assert.Equal(canonical, decoded);
+    }
+
+    [Fact]
+    public void CanonicalPrompt_Flow_Is_Self_Describing_And_Ordered()
+    {
+        var root = FindRepositoryRoot();
+        var canonical = File.ReadAllText(Path.Combine(root, "prompts", "SohailOS-SuperPrompt.xlm")).Trim();
+        var match = Regex.Match(canonical, @"<F>(.*?)</F>");
+        Assert.True(match.Success);
+        var flow = match.Groups[1].Value.Split('>', StringSplitOptions.RemoveEmptyEntries);
+        var expected = new[]
+        {
+            "Understand", "Classify", "Discover", "Probe", "LeastPrivilege",
+            "Plan", "Preview", "Approve", "Execute", "Reconcile",
+            "Verify", "Validate", "Deliver"
+        };
+        Assert.Equal(expected, flow);
+        Assert.DoesNotContain("<F>U>", canonical);
+        Assert.DoesNotContain(">D>P>L>", canonical);
     }
 
     [Fact]
