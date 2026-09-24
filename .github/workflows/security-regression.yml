@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "prompts/UNIVERSAL_AI_CORE.md"
+      - "prompts/SohailOS-SuperPrompt.xlm"
       - "security/**"
       - "tests/SohailOS.Tests/**"
       - ".github/workflows/security-regression.yml"
@@ -27,6 +28,8 @@ jobs:
           python-version: "3.x"
       - name: Run event-based evaluator sanity suite
         run: python security/ai_security_regression.py
+      - name: Run SuperPrompt XLM adversarial contract suite
+        run: python security/superprompt_xlm_adversarial.py
       - name: Verify evaluator does not trust attacker payload text
         run: |
           python - <<'PY'
