@@ -4,6 +4,8 @@ SohailOS-Central is a provider-neutral AI operating-system control plane for res
 
 ## 1. Target architecture
 
+Visual diagram: [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) — the repository-native Mermaid view of the control plane.
+
 Clients -> Gateway -> Orchestration/Task Graph -> Capability/Authorization/Approval -> Knowledge + Execution Fabrics -> Verification/Validation -> Memory/Telemetry -> GitHub Source Mesh.
 
 The project is a governed platform rather than a single agent. Every external capability crosses a trust boundary, every consequential mutation is bounded, and every completion claim requires evidence.
