@@ -1,4 +1,4 @@
-import { CANONICAL_SUPERPROMPT } from "./canonical-prompt";
+import { CANONICAL_SUPERPROMPT, CANONICAL_SUPERPROMPT_SHA256 } from "./canonical-prompt";
 
 export interface Env {
   SOHAILOS_GATEWAY_TOKEN?: string;
@@ -404,7 +404,7 @@ export default {
     if (url.pathname === "/health" && request.method === "GET") {
       const memoryConfigured = Boolean(env.SOHAILOS_SUPABASE_URL && env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY);
       const provider = env.AI ? "cloudflare" : env.SOHAILOS_OPENAI_API_KEY ? "openai" : env.SOHAILOS_GEMINI_API_KEY ? "gemini" : env.SOHAILOS_ANTHROPIC_API_KEY ? "anthropic" : "none";
-      return json({ service: "SohailOS Cloudflare Gateway", version: VERSION, status: "ok", memory: memoryConfigured ? "supabase" : "none", provider, providerConfigured: provider !== "none" }, 200, origin);
+      return json({ service: "SohailOS Cloudflare Gateway", version: VERSION, status: "ok", memory: memoryConfigured ? "supabase" : "none", provider, providerConfigured: provider !== "none", promptSha256: CANONICAL_SUPERPROMPT_SHA256 }, 200, origin);
     }
     if (url.pathname === "/.well-known/agent-card.json" && request.method === "GET") return wellKnownCard(request.url);
     if (url.pathname === "/.well-known/mcp-conduct.json" && request.method === "GET") return wellKnownConsent(request.url);
