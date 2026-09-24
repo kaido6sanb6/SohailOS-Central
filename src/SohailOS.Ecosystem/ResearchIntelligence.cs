@@ -246,7 +246,8 @@ public static class SystematicResearchPlan
         var stages = new List<ResearchIntelligencePlanStage>
         {
             new("search", "federated discovery across scholarly indexes", true),
-            new("canonicalize", "deduplicate by DOI or normalized title", true),
+            new("canonicalize", "normalize provider-native scholarly records", true),
+            new("deduplicate", "deduplicate by DOI or normalized title", true),
             new("enrich_oa", "resolve lawful open-access locations", false),
             new("expand_citations", "expand citation graph where DOI evidence exists", false),
             new("screen", "apply explicit inclusion and exclusion criteria", true),
