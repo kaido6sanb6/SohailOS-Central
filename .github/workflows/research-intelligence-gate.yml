@@ -1,0 +1,32 @@
+name: research-intelligence-gate
+
+on:
+  push:
+    paths:
+      - "src/SohailOS.Ecosystem/**"
+      - "src/SohailOS.Gateway/**"
+      - "tests/SohailOS.Tests/**"
+      - ".github/workflows/research-intelligence-gate.yml"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "src/SohailOS.Ecosystem/**"
+      - "src/SohailOS.Gateway/**"
+      - "tests/SohailOS.Tests/**"
+      - ".github/workflows/research-intelligence-gate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet restore SohailOS.sln
+      - run: dotnet build SohailOS.sln --configuration Release --no-restore
+      - run: dotnet test tests/SohailOS.Tests/SohailOS.Tests.csproj --configuration Release --no-build --filter FullyQualifiedName~ResearchIntelligence
