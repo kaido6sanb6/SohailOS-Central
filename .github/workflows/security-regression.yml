@@ -1,5 +1,7 @@
 name: AI security regression
 
+# Runs the evaluator itself; no secrets or live external systems are required.
+
 on:
   push:
     branches: [main]
