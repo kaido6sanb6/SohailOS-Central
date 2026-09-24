@@ -91,8 +91,6 @@ public sealed class AdaptiveExecutionPolicyContractTests
         Assert.True(decision.RequiresDryRun);
         Assert.Equal("DRY_RUN_FIRST", decision.Code);
     }
-}
-
 
     private static ApprovalBinding ValidApproval(
         string operation,
@@ -112,3 +110,5 @@ public sealed class AdaptiveExecutionPolicyContractTests
             IssuedAt: DateTimeOffset.UtcNow.AddMinutes(-1),
             ExpiresAt: DateTimeOffset.UtcNow.AddMinutes(5),
             ScopeHash: ApprovalBinding.ScopeFingerprint(scope));
+
+}
