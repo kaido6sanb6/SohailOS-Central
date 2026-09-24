@@ -75,6 +75,40 @@ public sealed class ResearchIntelligenceTests
     }
 
     [Fact]
+    public async Task UnpaywallProvider_EnrichesRecordWithLawfulOpenAccessLocation()
+    {
+        var handler = new StubHttpHandler((request, _) =>
+        {
+            Assert.Equal("api.unpaywall.org", request.RequestUri!.Host);
+            Assert.Contains("email=research%40example.org", request.RequestUri.Query);
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(
+                    """{"best_oa_location":{"url":"https://repository.example/paper.pdf","url_for_pdf":"https://repository.example/paper.pdf","version":"acceptedVersion","license":"cc-by","host_type":"repository"}}""",
+                    Encoding.UTF8,
+                    "application/json")
+            });
+        });
+        using var http = new HttpClient(handler);
+        var provider = new UnpaywallProvider(http, "research@example.org");
+
+        var original = new ScholarlyRecord(
+            "work:1",
+            "Open access study",
+            "https://doi.org/10.1000/test",
+            "10.1000/test",
+            "Crossref",
+            .88);
+
+        var enriched = await provider.EnrichAsync(original);
+
+        Assert.NotNull(enriched);
+        Assert.Equal("oa", enriched!.AccessMode);
+        Assert.Equal("cc-by", enriched.License);
+        Assert.Contains(enriched.OpenAccessLocations!, x => x.Url == "https://repository.example/paper.pdf");
+    }
+
+    [Fact]
     public void OaiPmhParser_MapsDublinCoreFields()
     {
         const string xml = """
