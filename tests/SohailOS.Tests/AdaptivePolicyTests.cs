@@ -18,7 +18,7 @@ public sealed class AdaptiveExecutionPolicyContractTests
     public void ExactApproval_AllowsWrite()
     {
         var request = new ExecutionRequest(ActionClass.Write, "update", "repo/a", "file:x", "change x");
-        var approval = new ApprovalBinding("update", "repo/a", "file:x", "change x");
+        var approval = ValidApproval("update", "repo/a", "file:x", "change x");
         var decision = AdaptiveExecutionPolicy.Evaluate(request, CapabilityStatus.Verified, approval);
         Assert.True(decision.Allowed);
     }
@@ -27,7 +27,7 @@ public sealed class AdaptiveExecutionPolicyContractTests
     public void MismatchedApproval_BlocksWrite()
     {
         var request = new ExecutionRequest(ActionClass.Write, "update", "repo/a", "file:x", "change x");
-        var approval = new ApprovalBinding("update", "repo/b", "file:x", "change x");
+        var approval = ValidApproval("update", "repo/b", "file:x", "change x");
         var decision = AdaptiveExecutionPolicy.Evaluate(request, CapabilityStatus.Verified, approval);
         Assert.False(decision.Allowed);
         Assert.Equal("APPROVAL_REQUIRED", decision.Code);
@@ -37,7 +37,7 @@ public sealed class AdaptiveExecutionPolicyContractTests
     public void IrreversibleAction_RequiresRiskAndRollback()
     {
         var request = new ExecutionRequest(ActionClass.Irreversible, "delete", "repo/a", "all", "delete repository");
-        var approval = new ApprovalBinding("delete", "repo/a", "all", "delete repository");
+        var approval = ValidApproval("delete", "repo/a", "all", "delete repository", riskAcknowledged: false);
         var decision = AdaptiveExecutionPolicy.Evaluate(request, CapabilityStatus.Verified, approval);
         Assert.False(decision.Allowed);
         Assert.Equal("IRREVERSIBLE_GUARD", decision.Code);
@@ -72,13 +72,43 @@ public sealed class AdaptiveExecutionPolicyContractTests
     }
 
     [Fact]
+    public void ApprovalWithoutExpiry_BlocksWrite()
+    {
+        var request = new ExecutionRequest(ActionClass.Write, "update", "repo/a", "file:x", "change x");
+        var approval = new ApprovalBinding("update", "repo/a", "file:x", "change x", Nonce: "nonce");
+        var decision = AdaptiveExecutionPolicy.Evaluate(request, CapabilityStatus.Verified, approval);
+        Assert.False(decision.Allowed);
+        Assert.Equal("APPROVAL_REQUIRED", decision.Code);
+    }
+
+    [Fact]
     public void DryRunSupported_RequestsDryRunFirst()
     {
         var request = new ExecutionRequest(ActionClass.Write, "update", "repo/a", "file:x", "change x", DryRunSupported: true);
-        var approval = new ApprovalBinding("update", "repo/a", "file:x", "change x");
+        var approval = ValidApproval("update", "repo/a", "file:x", "change x");
         var decision = AdaptiveExecutionPolicy.Evaluate(request, CapabilityStatus.Verified, approval);
         Assert.True(decision.Allowed);
         Assert.True(decision.RequiresDryRun);
         Assert.Equal("DRY_RUN_FIRST", decision.Code);
     }
 }
+
+
+    private static ApprovalBinding ValidApproval(
+        string operation,
+        string target,
+        string scope,
+        string effect,
+        bool riskAcknowledged = true) =>
+        new(
+            operation,
+            target,
+            scope,
+            effect,
+            RiskAcknowledged: riskAcknowledged,
+            RollbackPlan: "restore previous state",
+            RequestId: "",
+            Nonce: Guid.NewGuid().ToString("N"),
+            IssuedAt: DateTimeOffset.UtcNow.AddMinutes(-1),
+            ExpiresAt: DateTimeOffset.UtcNow.AddMinutes(5),
+            ScopeHash: ApprovalBinding.ScopeFingerprint(scope));
