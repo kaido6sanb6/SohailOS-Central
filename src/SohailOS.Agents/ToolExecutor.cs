@@ -60,6 +60,20 @@ public sealed class ToolExecutor : IToolExecutor
             attestation.Status.ToString(), $"Capability {attestation.Name} attested.",
             new Dictionary<string, object?> { ["fingerprint"] = attestation.SchemaFingerprint }));
 
+        if (_policy.RequiresConfirmation(tool.Definition) && approval is null)
+        {
+            var confirmation = new ToolExecutionResult(
+                new ToolResult(call.Name, false, "Tool execution requires an explicit approval binding.", true),
+                false,
+                true,
+                new PolicyDecision(false, "PERMISSION_POLICY_DENIED", "Permission policy requires explicit confirmation before this tool can execute.", true));
+            _telemetry?.Record(new(
+                requestId, null, ExecutionEventType.ApprovalRejected, DateTimeOffset.UtcNow,
+                "PERMISSION_POLICY_DENIED", confirmation.Result.Content,
+                new Dictionary<string, object?>()));
+            return confirmation;
+        }
+
         var action = tool.Definition.Permission switch
         {
             ToolPermission.Destructive => ActionClass.Mutate,

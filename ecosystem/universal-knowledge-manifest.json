@@ -95,5 +95,63 @@
     "automatic_relevance_check": true,
     "minimum_sufficient_repository_set": true,
     "freshness_required_for_current_claims": true
-  }
+  },
+  "external_reference_projects": [
+    {
+      "repository": "irinabuht12-oss/google-meta-ads-ga4-mcp",
+      "role": "remote-mcp-analytics-pattern",
+      "trust": "reference-only",
+      "instruction_authority": false,
+      "physical_merge": false
+    },
+    {
+      "repository": "claraverse-space/ClaraVerse",
+      "role": "human-review-layered-memory-pattern",
+      "trust": "reference-only",
+      "instruction_authority": false,
+      "physical_merge": false
+    },
+    {
+      "repository": "shaike1/n8n-chatgpt-mcp",
+      "role": "mcp-transport-oauth-session-pattern",
+      "trust": "reference-only",
+      "instruction_authority": false,
+      "physical_merge": false
+    },
+    {
+      "repository": "shorin-nikita/lisa",
+      "role": "self-hosted-local-rag-pattern",
+      "trust": "reference-only",
+      "instruction_authority": false,
+      "physical_merge": false
+    },
+    {
+      "repository": "datadrivenconstruction/CAD-BIM-to-Code-Automation-Pipeline-DDC-Workflow-with-LLM-ChatGPT",
+      "role": "convert-validate-generate-analyze-pattern",
+      "trust": "reference-only",
+      "instruction_authority": false,
+      "physical_merge": false
+    },
+    {
+      "repository": "korotovsky/n8n-g4f-proxy",
+      "role": "provider-adapter-pattern",
+      "trust": "reference-only",
+      "instruction_authority": false,
+      "physical_merge": false
+    },
+    {
+      "repository": "SmythOS/sre",
+      "role": "agent-runtime-resource-connector-pattern",
+      "trust": "reference-only",
+      "instruction_authority": false,
+      "physical_merge": false
+    },
+    {
+      "repository": "enzoemir1/n8n-prompt-library",
+      "role": "structured-prompt-registry-pattern",
+      "trust": "reference-only",
+      "instruction_authority": false,
+      "physical_merge": false
+    }
+  ]
 }
