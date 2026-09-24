@@ -202,7 +202,7 @@ public static class ScholarlyGraphBuilder
         IEnumerable<CitationEdge> citationEdges)
     {
         var nodes = new Dictionary<string, ScholarlyGraphNode>(StringComparer.Ordinal);
-        var edges = new HashSet<(string Source, string Target, ScholarlyEdgeType Type)>();
+        var edges = new Dictionary<(string Source, string Target, ScholarlyEdgeType Type), string>();
 
         foreach (var record in records)
         {
@@ -213,7 +213,7 @@ public static class ScholarlyGraphBuilder
             {
                 var authorId = "author:" + ScholarlyCanonicalizer.NormalizeTitle(author.Name);
                 nodes.TryAdd(authorId, new ScholarlyGraphNode(authorId, ScholarlyNodeType.Author, author.Name));
-                edges.Add((workId, authorId, ScholarlyEdgeType.AuthoredBy));
+                edges.TryAdd((workId, authorId, ScholarlyEdgeType.AuthoredBy), "normalized-record");
             }
 
             foreach (var subject in record.Subjects ?? [])
@@ -221,7 +221,7 @@ public static class ScholarlyGraphBuilder
                 if (string.IsNullOrWhiteSpace(subject)) continue;
                 var topicId = "topic:" + ScholarlyCanonicalizer.NormalizeTitle(subject);
                 nodes.TryAdd(topicId, new ScholarlyGraphNode(topicId, ScholarlyNodeType.Topic, subject));
-                edges.Add((workId, topicId, ScholarlyEdgeType.HasTopic));
+                edges.TryAdd((workId, topicId, ScholarlyEdgeType.HasTopic), "normalized-record");
             }
         }
 
@@ -232,11 +232,11 @@ public static class ScholarlyGraphBuilder
 
             nodes.TryAdd(citingId, new ScholarlyGraphNode(citingId, ScholarlyNodeType.Work, edge.CitingDoi));
             nodes.TryAdd(citedId, new ScholarlyGraphNode(citedId, ScholarlyNodeType.Work, edge.CitedDoi));
-            edges.Add((citingId, citedId, ScholarlyEdgeType.Cites));
+            edges.TryAdd((citingId, citedId, ScholarlyEdgeType.Cites), edge.Source);
         }
 
         var finalEdges = edges
-            .Select(x => new ScholarlyGraphEdge(x.Source, x.Target, x.Type, x.Type == ScholarlyEdgeType.Cites ? "OpenCitations" : "normalized-record"))
+            .Select(x => new ScholarlyGraphEdge(x.Key.Source, x.Key.Target, x.Key.Type, x.Value))
             .OrderBy(x => x.Type)
             .ThenBy(x => x.SourceId, StringComparer.Ordinal)
             .ThenBy(x => x.TargetId, StringComparer.Ordinal)
