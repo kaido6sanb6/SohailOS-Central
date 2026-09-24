@@ -409,7 +409,7 @@ public sealed class UnpaywallProvider(HttpClient http, string? email) : IOpenAcc
 
         var locations = payload.BestOaLocation is not null
             ? [new OpenAccessLocation(
-                payload.BestOaLocation.UrlForPdf ?? payload.BestOaLocation.Url,
+                payload.BestOaLocation.EffectiveUrl,
                 payload.BestOaLocation.Version,
                 payload.BestOaLocation.License,
                 payload.BestOaLocation.HostType)]
@@ -428,13 +428,13 @@ public sealed class UnpaywallProvider(HttpClient http, string? email) : IOpenAcc
         [property: JsonPropertyName("best_oa_location")] UnpaywallLocation? BestOaLocation = null);
 
     private sealed record UnpaywallLocation(
-        [property: JsonPropertyName("url")] string? Url = null,
+        [property: JsonPropertyName("url")] string? RawUrl = null,
         [property: JsonPropertyName("url_for_pdf")] string? UrlForPdf = null,
         [property: JsonPropertyName("version")] string? Version = null,
         [property: JsonPropertyName("license")] string? License = null,
         [property: JsonPropertyName("host_type")] string? HostType = null)
     {
-        public string Url => UrlForPdf ?? Url ?? "https://doi.org/";
+        public string EffectiveUrl => UrlForPdf ?? RawUrl ?? "https://doi.org/";
     }
 }
 
