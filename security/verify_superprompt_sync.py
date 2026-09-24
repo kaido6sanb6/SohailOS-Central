@@ -2,6 +2,7 @@
 """Verify canonical SuperPrompt XLM synchronization across runtime artifacts."""
 from pathlib import Path
 import hashlib
+import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +16,7 @@ match = re.search(r'public const string Sha256 = "([0-9a-f]{64})";', csharp)
 assert match and match.group(1) == digest, "C# prompt digest drift"
 m = re.search(r'public const string Compact = "(.*)";', csharp)
 assert m, "C# compact prompt constant missing"
-csharp_prompt = bytes(m.group(1), "utf-8").decode("unicode_escape")
+csharp_prompt = json.loads('"' + m.group(1) + '"' )
 assert csharp_prompt == canonical, "C# prompt text drift"
 
 ts = (ROOT / "cloudflare" / "sohailos-gateway" / "src" / "canonical-prompt.ts").read_text(encoding="utf-8")
@@ -23,7 +24,7 @@ match = re.search(r'CANONICAL_SUPERPROMPT_SHA256 = "([0-9a-f]{64})"', ts)
 assert match and match.group(1) == digest, "Cloudflare prompt digest drift"
 m = re.search(r'CANONICAL_SUPERPROMPT = "((?:\\.|[^"\\])*)" as const;', ts)
 assert m, "Cloudflare canonical prompt constant missing"
-ts_prompt = bytes(m.group(1), "utf-8").decode("unicode_escape")
+ts_prompt = json.loads('"' + m.group(1) + '"' )
 assert ts_prompt == canonical, "Cloudflare prompt text drift"
 
 worker = (ROOT / "cloudflare" / "sohailos-gateway" / "src" / "index.ts").read_text(encoding="utf-8")
