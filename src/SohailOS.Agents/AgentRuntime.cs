@@ -84,8 +84,16 @@ public sealed class AgentRuntime
                     ? await _executor.ExecuteAsync(call, cancellationToken: cancellationToken)
                     : await _executor.ExecuteAsync(call, approval, cancellationToken);
 
+                var definition = _registry.Get(call.Name)?.Definition;
+                var action = definition?.Permission switch
+                {
+                    ToolPermission.Destructive => ActionClass.Mutate,
+                    ToolPermission.Write => ActionClass.Write,
+                    _ => ActionClass.Read
+                };
+
                 var request = new ExecutionRequest(
-                    call.Arguments.Count == 0 ? ActionClass.Read : ActionClass.Read,
+                    action,
                     call.Name,
                     call.Target ?? call.Name,
                     call.Scope ?? "unspecified",
