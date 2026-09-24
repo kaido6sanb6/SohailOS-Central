@@ -30,6 +30,8 @@ jobs:
         run: python security/ai_security_regression.py
       - name: Run SuperPrompt XLM adversarial contract suite
         run: python security/superprompt_xlm_adversarial.py
+      - name: Run deployment operational contract suite
+        run: python security/deploy_operational_regression.py
       - name: Verify evaluator does not trust attacker payload text
         run: |
           python - <<'PY'
