@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace SohailOS.Tests;
@@ -9,9 +10,9 @@ public sealed class CanonicalPromptSynchronizationTests
     {
         var root = FindRepositoryRoot();
         var canonical = File.ReadAllText(Path.Combine(root, "prompts", "SohailOS-SuperPrompt.xlm")).Trim();
-        Assert.Equal(canonical, SohailOS.Core.CanonicalPrompt.Compact);
+        Assert.Equal(SohailOS.Core.CanonicalPrompt.Compact, canonical);
         var expectedHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(canonical))).ToLowerInvariant();
-        Assert.Equal(expectedHash, SohailOS.Core.CanonicalPrompt.Sha256);
+        Assert.Equal(SohailOS.Core.CanonicalPrompt.Sha256, expectedHash);
     }
 
     [Fact]
@@ -21,13 +22,10 @@ public sealed class CanonicalPromptSynchronizationTests
         var canonical = File.ReadAllText(Path.Combine(root, "prompts", "SohailOS-SuperPrompt.xlm")).Trim();
         var source = File.ReadAllText(Path.Combine(root, "cloudflare", "sohailos-gateway", "src", "canonical-prompt.ts"));
 
-        var prefix = "export const CANONICAL_SUPERPROMPT = ";
-        Assert.StartsWith(prefix, source, StringComparison.Ordinal);
-        var literal = source[prefix.Length..].Trim();
-        Assert.EndsWith(" as const;", literal, StringComparison.Ordinal);
-        literal = literal[..^" as const;".Length].Trim();
-
-        var decoded = System.Text.Json.JsonSerializer.Deserialize<string>(literal);
+        var match = Regex.Match(source, @"CANONICAL_SUPERPROMPT = "((?:\\.|[^"\\])*)" as const;");
+        Assert.True(match.Success);
+        var escaped = match.Groups[1].Value;
+        var decoded = System.Text.Json.JsonSerializer.Deserialize<string>($""{escaped}"");
         Assert.Equal(canonical, decoded);
     }
 
