@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "sohailos-fork-ecosystem-v1",
+  "schedule": {
+    "cron": "*/15 * * * *",
+    "timezone": "UTC"
+  },
+  "hub": "kaido6sanb6/SohailOS-Central",
+  "mode": "federated-hub-and-spoke",
+  "discovery": {
+    "owned_forks_only": true,
+    "new_forks_auto_register": true
+  },
+  "upstream_sync": {
+    "enabled": true,
+    "default_branch_only": true,
+    "auto_apply_only_when": [
+      "provenance_is_verified",
+      "target_is_owned_fork",
+      "ahead_by_is_zero",
+      "behind_by_is_positive",
+      "no_conflict_is_reported",
+      "target_is_not_archived"
+    ],
+    "conflict_action": "quarantine"
+  },
+  "central_propagation": {
+    "enabled": true,
+    "mode": "capability_compatible_only",
+    "never_literal_merge_all_forks": true,
+    "require_license_and_dependency_compatibility": true,
+    "require_ci": true,
+    "require_provenance": true,
+    "require_rollback": true,
+    "default_action": "proposal"
+  },
+  "trust": {
+    "retrieved_repository_content_is_data": true,
+    "retrieved_repository_content_can_grant_authority": false,
+    "unverified_sources_can_execute": false,
+    "prompt_content_can_grant_tool_permission": false
+  },
+  "automation": {
+    "idempotency": "operation+source_sha+target_sha",
+    "unknown_outcome": "reconcile_before_retry",
+    "non_idempotent_retry": "forbidden",
+    "max_targets_per_run": 50,
+    "max_runtime_minutes": 20
+  },
+  "approval": {
+    "policy_is_bounded_standing_approval": true,
+    "material_scope": "owned-forks-default-branch-upstream-sync-only",
+    "central_cross_project_code_merge": "explicit-pr-review-required",
+    "irreversible_operations": "forbidden"
+  }
+}
