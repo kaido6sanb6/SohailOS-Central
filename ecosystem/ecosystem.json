@@ -2098,6 +2098,168 @@
         "fork": true,
         "last_seen_at": "2026-09-23T12:52:06.0882248Z"
       }
+    },
+    {
+      "repo": "kaido6sanb6/CAD-BIM-to-Code-Automation-Pipeline-DDC-Workflow-with-LLM-ChatGPT",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/CAD-BIM-to-Code-Automation-Pipeline-DDC-Workflow-with-LLM-ChatGPT"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385630110,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/ClaraVerse",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/ClaraVerse"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385552483,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/google-meta-ads-ga4-mcp",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/google-meta-ads-ga4-mcp"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385601282,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/LangBot",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/LangBot"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385544594,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/lisa",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/lisa"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385628680,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/n8n-chatgpt-mcp",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/n8n-chatgpt-mcp"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385628141,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/n8n-g4f-proxy",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/n8n-g4f-proxy"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385633033,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/n8n-prompt-library",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/n8n-prompt-library"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385640512,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/sre",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/sre"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1385637428,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-24T15:26:55.6444131Z"
+      }
     }
   ],
   "edges": [
@@ -3494,13 +3656,67 @@
       "upstream": null,
       "status": "unverified",
       "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/CAD-BIM-to-Code-Automation-Pipeline-DDC-Workflow-with-LLM-ChatGPT",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/ClaraVerse",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/google-meta-ads-ga4-mcp",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/LangBot",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/lisa",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/n8n-chatgpt-mcp",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/n8n-g4f-proxy",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/n8n-prompt-library",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/sre",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
     }
   ],
   "sync": {
     "owner": "kaido6sanb6",
     "scope": "public-owner-inventory",
-    "last_reconciled_at": "2026-09-23T12:52:06.0882248Z",
-    "live_repository_count": 124,
-    "registry_repository_count": 124
+    "last_reconciled_at": "2026-09-24T15:26:55.6444131Z",
+    "live_repository_count": 133,
+    "registry_repository_count": 133
   }
 }
