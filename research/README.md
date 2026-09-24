@@ -77,4 +77,4 @@ Gateway surfaces:
 - \`POST /v1/research/repository/harvest\` — harvests only an allowlisted OAI-PMH repository.
 
 The systematic-review layer defines an auditable extraction schema; it does not invent study data or silently perform statistical synthesis. Any meta-analysis requires actual extracted effect estimates and their uncertainty from admissible sources.
-
+The research-intelligence CI gate runs the complete .NET test suite on a Windows runner so the solution's Windows-targeting project is verified alongside the research layer.
