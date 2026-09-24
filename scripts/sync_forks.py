@@ -28,3 +28,5 @@ def main():
     os.makedirs(os.path.dirname(REPORT),exist_ok=True); json.dump(out,open(REPORT,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
     print(json.dumps(summary,indent=2))
 if __name__=="__main__": main()
+
+# merge-upstream: mutation is intentionally reserved for the separately approval-gated PR workflow.

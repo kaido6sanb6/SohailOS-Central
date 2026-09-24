@@ -3,7 +3,9 @@ namespace SohailOS.Core;
 public sealed record ToolExecutionResult(
     ToolResult Result,
     bool Executed,
-    bool RequiresConfirmation);
+    bool RequiresConfirmation,
+    PolicyDecision? Policy = null,
+    EvidenceItem? Evidence = null);
 
 public interface IToolExecutor
 {

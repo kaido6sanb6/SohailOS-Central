@@ -107,3 +107,20 @@ Fork synchronization is scheduled every 15 minutes, uses non-destructive upstrea
 ## Readiness semantics
 
 Repository implementation, CI, synchronization, and architecture contracts must be reported from fresh evidence. Account-owned secrets and external client registration cannot be inferred from repository state. A green build is not equivalent to a live provider-enabled deployment.
+
+
+## SuperPrompt XLM runtime hardening
+
+The runtime enforcement layer is implemented in the V3 hardening branch and covered by contract tests:
+- runtime capability attestation with schema fingerprints and expiry
+- structured approval bindings with request identity, nonce, expiry, scope fingerprint and provenance
+- one-time approval replay protection
+- scoped, expiring red-team runtime tokens
+- explicit task-graph cycle validation
+- evidence objects plus independent verification and validation contracts
+- execution lifecycle telemetry
+- bounded agent execution with unverified/unknown completion semantics
+- opt-in durable memory persistence
+- gateway migration from boolean write confirmation to structured approval
+
+The branch must not be reported as production-complete until the build/test workflow is green and the resulting commit has been independently checked.

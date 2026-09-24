@@ -32,7 +32,7 @@ on:
         required: true
         type: string
   schedule:
-    - cron: "17 * * * *"
+    - cron: "*/15 * * * *"
 
 concurrency:
   group: fork-sync-${{ github.event.inputs.target || 'discovery' }}
@@ -48,15 +48,53 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Validate GitHub App private key
+        id: key-check
+        env:
+          RAW_PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${RAW_PRIVATE_KEY}"
+          printf '%s' "${RAW_PRIVATE_KEY}" | base64 --decode > /tmp/app-key.pem 2>/dev/null || printf '%s' "${RAW_PRIVATE_KEY}" > /tmp/app-key.pem
+          openssl pkey -in /tmp/app-key.pem -noout
+          echo "GitHub App private key validated."
+
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
+          private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          permission-contents: write
+          permission-workflows: write
+          permission-pull-requests: write
+
       - name: Build fork inventory
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: python scripts/build_fork_inventory.py
+
       - name: Detect upstream divergence (read-only)
+        id: reconcile
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: python scripts/sync_forks.py
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: python scripts/sync_forks.py --fail-on-removal
+
+      - name: sync-gate
+        id: sync-gate
+        if: always()
+        run: |
+          echo "reconcile=${{ steps.reconcile.outcome }}"
+          test "${{ steps.reconcile.outcome }}" = "success"
+
       - name: Validate read-only report
+        if: steps.sync-gate.outcome == 'success'
         run: |
           python - <<'PY'
           import json
@@ -67,6 +105,7 @@ jobs:
           assert all(r.get("mutation") is not True for r in rep.get("results",[]))
           print("read-only fork discovery/compare gate passed")
           PY
+
       - name: Publish report
         uses: actions/upload-artifact@v4
         with:
@@ -99,16 +138,35 @@ jobs:
           test "$SCOPE" != "all"
           echo "Exact approval binding accepted for this invocation."
 
-      - name: Checkout exact target fork
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           repository: ${{ github.event.inputs.target }}
           token: ${{ github.token }}
           fetch-depth: 0
 
+      - name: Validate GitHub App private key
+        env:
+          RAW_PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${RAW_PRIVATE_KEY}"
+          printf '%s' "${RAW_PRIVATE_KEY}" | base64 --decode > /tmp/app-key.pem 2>/dev/null || printf '%s' "${RAW_PRIVATE_KEY}" > /tmp/app-key.pem
+          openssl pkey -in /tmp/app-key.pem -noout
+
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
+          private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          permission-contents: write
+          permission-workflows: write
+          permission-pull-requests: write
+
       - name: Verify target provenance
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           TARGET: ${{ github.event.inputs.target }}
         run: |
           set -euo pipefail
@@ -120,6 +178,7 @@ jobs:
       - name: Create merge proposal branch
         env:
           SCOPE: ${{ github.event.inputs.scope }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           set -euo pipefail
           git fetch origin "$SCOPE"
@@ -131,7 +190,7 @@ jobs:
 
       - name: Create review-gated PR
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           TARGET: ${{ github.event.inputs.target }}
           SCOPE: ${{ github.event.inputs.scope }}
           EFFECT: ${{ github.event.inputs.intended_effect }}

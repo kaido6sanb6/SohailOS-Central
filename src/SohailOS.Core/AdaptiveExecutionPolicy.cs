@@ -60,13 +60,30 @@ public sealed record ApprovalBinding(
     string IntendedEffect,
     bool RiskAcknowledged = false,
     string? RollbackPlan = null,
-    bool Reversible = true)
+    bool Reversible = true,
+    string RequestId = "",
+    string Nonce = "",
+    DateTimeOffset? IssuedAt = null,
+    DateTimeOffset? ExpiresAt = null,
+    string? ScopeHash = null,
+    string Provenance = "user-explicit")
 {
-    public bool Matches(ExecutionRequest request) =>
+    public bool Matches(ExecutionRequest request, DateTimeOffset now) =>
         string.Equals(Operation, request.Operation, StringComparison.Ordinal) &&
         string.Equals(Target, request.Target, StringComparison.Ordinal) &&
         string.Equals(Scope, request.Scope, StringComparison.Ordinal) &&
-        string.Equals(IntendedEffect, request.IntendedEffect, StringComparison.Ordinal);
+        string.Equals(IntendedEffect, request.IntendedEffect, StringComparison.Ordinal) &&
+        (string.IsNullOrWhiteSpace(RequestId) || string.Equals(RequestId, request.RequestId, StringComparison.Ordinal)) &&
+        !string.IsNullOrWhiteSpace(Nonce) &&
+        IssuedAt is not null &&
+        ExpiresAt is not null &&
+        IssuedAt <= now &&
+        ExpiresAt > now &&
+        (string.IsNullOrWhiteSpace(ScopeHash) || string.Equals(ScopeHash, ScopeFingerprint(Scope), StringComparison.Ordinal));
+
+    public static string ScopeFingerprint(string scope) =>
+        Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+            System.Text.Encoding.UTF8.GetBytes(scope))).ToLowerInvariant();
 }
 
 public sealed record RedTeamScope(
@@ -77,7 +94,9 @@ public sealed record RedTeamScope(
     string StopConditions,
     string LegalBasis,
     bool SimulationOnly = true,
-    bool RuntimeTokenIssued = false)
+    bool RuntimeTokenIssued = false,
+    string? RuntimeToken = null,
+    DateTimeOffset? TokenExpiresAt = null)
 {
     public bool IsComplete =>
         !string.IsNullOrWhiteSpace(Target) &&
@@ -86,6 +105,12 @@ public sealed record RedTeamScope(
         !string.IsNullOrWhiteSpace(TimeWindow) &&
         !string.IsNullOrWhiteSpace(StopConditions) &&
         !string.IsNullOrWhiteSpace(LegalBasis);
+
+    public bool HasLiveToken(DateTimeOffset now) =>
+        RuntimeTokenIssued &&
+        !string.IsNullOrWhiteSpace(RuntimeToken) &&
+        TokenExpiresAt is not null &&
+        TokenExpiresAt > now;
 }
 
 public sealed record ExecutionRequest(
@@ -97,7 +122,9 @@ public sealed record ExecutionRequest(
     bool Idempotent = true,
     bool OutcomeKnown = true,
     bool DryRunSupported = false,
-    RedTeamScope? RedTeam = null);
+    RedTeamScope? RedTeam = null,
+    string RequestId = "",
+    string? TaskId = null);
 
 public sealed record PolicyDecision(
     bool Allowed,
@@ -118,8 +145,8 @@ public static class AdaptiveExecutionPolicy
 
         if (request.RedTeam is not null)
         {
-            if (!request.RedTeam.IsComplete || !request.RedTeam.RuntimeTokenIssued)
-                return new(false, "REDTEAM_SCOPE_INCOMPLETE", "Red-team execution requires all six scope fields and a runtime-issued token.");
+            if (!request.RedTeam.IsComplete || !request.RedTeam.HasLiveToken(DateTimeOffset.UtcNow))
+                return new(false, "REDTEAM_SCOPE_INCOMPLETE", "Red-team execution requires all six scope fields plus a live, scoped, expiring runtime token.");
             if (request.RedTeam.SimulationOnly)
                 return new(true, "SIMULATION_ONLY", "Red-team execution is explicitly limited to simulation.", RequiresDryRun: true);
         }
@@ -128,8 +155,8 @@ public static class AdaptiveExecutionPolicy
         if (!needsApproval)
             return new(true, "ALLOWED", "Non-mutating action.");
 
-        if (approval is null || !approval.Matches(request))
-            return new(false, "APPROVAL_REQUIRED", "Exact approval binding is required: operation, target, scope, intended effect.", RequiresApproval: true);
+        if (approval is null || !approval.Matches(request, DateTimeOffset.UtcNow))
+            return new(false, "APPROVAL_REQUIRED", "A non-expired approval binding with operation, target, scope, intended effect, request identity, nonce, and provenance is required.", RequiresApproval: true);
 
         if (request.Action == ActionClass.Irreversible &&
             (!approval.RiskAcknowledged || string.IsNullOrWhiteSpace(approval.RollbackPlan)))
