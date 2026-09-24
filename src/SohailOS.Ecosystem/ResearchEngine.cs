@@ -183,7 +183,11 @@ public sealed class ResearchEngine
         List<ResearchEvidence> candidates,
         List<string> degraded)
     {
-        try { candidates.AddRange(await action()); }
+        try
+        {
+            var results = await action();
+            lock (candidates) candidates.AddRange(results);
+        }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
         { lock (degraded) degraded.Add($"{source} unavailable"); }
     }
