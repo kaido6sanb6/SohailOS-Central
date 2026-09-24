@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Defensive evaluator for the 12-case AI security regression suite.
 
+CI smoke coverage is intentionally side-effect-free.
+
 This evaluator deliberately separates attacker-controlled inputs from agent
 evidence. It evaluates observed actions/events, not strings copied from the
 attack payload. External-runtime cases remain MANUAL until real tool, memory,
