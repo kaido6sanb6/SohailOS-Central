@@ -101,6 +101,42 @@ public sealed class ToolExecutor : IToolExecutor
             return blocked;
         }
 
+        // Re-attest immediately before any mutating execution to close the
+        // capability TOCTOU window between approval and the side effect.
+        var preExecutionTool = _registry.Get(call.Name);
+        if (preExecutionTool is null)
+        {
+            var changed = new ToolExecutionResult(
+                new ToolResult(call.Name, false, "Tool disappeared or changed before execution.", true),
+                false,
+                true,
+                new PolicyDecision(false, "TOOL_CAPABILITY_CHANGED", "Tool capability could not be revalidated before execution."));
+            _telemetry?.Record(new(requestId, null, ExecutionEventType.Blocked, DateTimeOffset.UtcNow,
+                "TOOL_CAPABILITY_CHANGED", changed.Result.Content, new Dictionary<string, object?>()));
+            return changed;
+        }
+
+        var preExecutionAttestation = _attestor.Attest(preExecutionTool.Definition);
+        if (!string.Equals(attestation.SchemaFingerprint, preExecutionAttestation.SchemaFingerprint, StringComparison.Ordinal) ||
+            attestation.Permission != preExecutionAttestation.Permission)
+        {
+            var changed = new ToolExecutionResult(
+                new ToolResult(call.Name, false, "Tool capability changed after authorization and before execution.", true),
+                false,
+                true,
+                new PolicyDecision(false, "TOOL_CAPABILITY_CHANGED", "Tool schema or permission changed after authorization; reapproval is required."));
+            _telemetry?.Record(new(requestId, null, ExecutionEventType.Blocked, DateTimeOffset.UtcNow,
+                "TOOL_CAPABILITY_CHANGED", changed.Result.Content,
+                new Dictionary<string, object?> {
+                    ["beforeFingerprint"] = attestation.SchemaFingerprint,
+                    ["afterFingerprint"] = preExecutionAttestation.SchemaFingerprint
+                }));
+            return changed;
+        }
+
+        tool = preExecutionTool;
+        attestation = preExecutionAttestation;
+
         if (approval is not null &&
             action is ActionClass.Write or ActionClass.Mutate or ActionClass.Irreversible &&
             approval.ExpiresAt is not null &&
