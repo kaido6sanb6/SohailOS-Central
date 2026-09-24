@@ -11,4 +11,9 @@ public interface IToolExecutor
         ToolCall call,
         bool confirmed = false,
         CancellationToken cancellationToken = default);
+
+    Task<ToolExecutionResult> ExecuteAsync(
+        ToolCall call,
+        ApprovalBinding approval,
+        CancellationToken cancellationToken = default);
 }

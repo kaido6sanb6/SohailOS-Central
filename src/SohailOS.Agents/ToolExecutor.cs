@@ -13,23 +13,53 @@ public sealed class ToolExecutor : IToolExecutor
         _policy = policy;
     }
 
-    public async Task<ToolExecutionResult> ExecuteAsync(
+    public Task<ToolExecutionResult> ExecuteAsync(
         ToolCall call,
         bool confirmed = false,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default) =>
+        ExecuteInternalAsync(call, null, cancellationToken);
+
+    public Task<ToolExecutionResult> ExecuteAsync(
+        ToolCall call,
+        ApprovalBinding approval,
+        CancellationToken cancellationToken = default) =>
+        ExecuteInternalAsync(call, approval, cancellationToken);
+
+    private async Task<ToolExecutionResult> ExecuteInternalAsync(
+        ToolCall call,
+        ApprovalBinding? approval,
+        CancellationToken cancellationToken)
     {
         var tool = _registry.Get(call.Name);
         if (tool is null)
             return new(new ToolResult(call.Name, false, $"Unknown tool: {call.Name}"), false, false);
 
         var requiresConfirmation = _policy.RequiresConfirmation(tool.Definition);
-        if (requiresConfirmation && !confirmed)
+        if (requiresConfirmation)
         {
-            return new(
-                new ToolResult(call.Name, false,
-                    $"Tool '{call.Name}' requires user confirmation before execution.", true),
-                false,
-                true);
+            var action = tool.Definition.Permission == ToolPermission.Destructive
+                ? ActionClass.Mutate
+                : ActionClass.Write;
+
+            var request = new ExecutionRequest(
+                action,
+                call.Name,
+                call.Target ?? call.Name,
+                call.Scope ?? "unspecified",
+                call.IntendedEffect ?? tool.Definition.Description);
+
+            var decision = AdaptiveExecutionPolicy.Evaluate(
+                request,
+                CapabilityStatus.Verified,
+                approval);
+
+            if (!decision.Allowed)
+            {
+                return new(
+                    new ToolResult(call.Name, false, decision.Reason, true),
+                    false,
+                    true);
+            }
         }
 
         var result = await tool.ExecuteAsync(call.Arguments, cancellationToken);

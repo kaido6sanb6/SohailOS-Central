@@ -15,7 +15,10 @@ public sealed record ToolDefinition(
 
 public sealed record ToolCall(
     string Name,
-    IReadOnlyDictionary<string, object?> Arguments);
+    IReadOnlyDictionary<string, object?> Arguments,
+    string? Target = null,
+    string? Scope = null,
+    string? IntendedEffect = null);
 
 public sealed record ToolResult(
     string ToolName,

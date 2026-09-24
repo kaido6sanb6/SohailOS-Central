@@ -1,163 +1,148 @@
-# Verification trigger: contract-test repair completed.
-# Fail-closed gate: credential, sync, and reconciliation failures must stop downstream refresh.
-# Continuous fork synchronization and verification
-# Verification marker: GitHub App PEM normalization and validation.
-# Operational probe: live credential rotation verification.
-# Gate policy: knowledge refresh only after App auth, fork sync, and registry reconciliation succeed.
 name: fork-sync-and-knowledge-refresh
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/fork-sync.yml"
+    inputs:
+      operation:
+        description: "Must be CREATE_SYNC_PR"
+        required: true
+        type: string
+      target:
+        description: "Exact fork target, e.g. kaido6sanb6/example"
+        required: true
+        type: string
+      scope:
+        description: "Exact branch scope, e.g. main"
+        required: true
+        type: string
+      intended_effect:
+        description: "Exact intended effect"
+        required: true
+        type: string
+      risks:
+        description: "Known risks"
+        required: true
+        type: string
+      rollback:
+        description: "Rollback plan"
+        required: true
+        type: string
+      approval:
+        description: "Type APPROVE_CREATE_PR to authorize this single PR creation"
+        required: true
+        type: string
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "17 * * * *"
 
 concurrency:
-  group: fork-sync-and-knowledge-refresh
+  group: fork-sync-${{ github.event.inputs.target || 'discovery' }}
   cancel-in-progress: false
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
-  discover-and-sync:
+  discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
-      - name: Checkout control plane
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
+      - uses: actions/checkout@v4
       - name: Build fork inventory
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/build_fork_inventory.py
-
-      - name: Validate GitHub App private key
-        shell: bash
+      - name: Detect upstream divergence (read-only)
         env:
-          RAW_PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
-        run: |
-          set -euo pipefail
-          if [ -z "$RAW_PRIVATE_KEY" ]; then echo "SOHAILOS_GITHUB_APP_PRIVATE_KEY is empty or unavailable."; exit 1; fi
-          normalized="${RAW_PRIVATE_KEY//$'\r'/}"
-          normalized="${normalized//\\n/$'\n'}"
-          normalized="${normalized#\"}"; normalized="${normalized%\"}"; normalized="${normalized#\'}"; normalized="${normalized%\'}"
-          work_key="$RUNNER_TEMP/sohailos-github-app.pem"
-          printf '%s' "$normalized" > "$work_key"
-          if ! grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key"; then
-            printf '%s' "$normalized" | base64 --decode > "$work_key" 2>/dev/null || { echo "GitHub App private key is not PEM or base64-encoded PEM."; exit 1; }
-          fi
-          grep -Eq '^-----BEGIN (RSA |EC |)PRIVATE KEY-----$' "$work_key" || { echo "Unsupported private-key format."; exit 1; }
-          openssl pkey -in "$work_key" -noout >/dev/null || { echo "OpenSSL could not parse the private key."; exit 1; }
-          echo "GitHub App private key validation passed."
-
-      - name: Generate GitHub App installation token
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
-          private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
-          permission-contents: write
-          permission-workflows: write
-
-      - name: Verify GitHub App installation scope
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          count="$(gh api "/installation/repositories?per_page=1" --jq '.total_count')"
-          test -n "$count" && test "$count" -ge 1
-          echo "GitHub App installation exposes $count repositories."
-          gh api --paginate "/installation/repositories?per_page=100" --jq '.repositories[].full_name' | sort -u > "$RUNNER_TEMP/installed-repositories.txt"
-          INSTALLED_REPOSITORIES_FILE="$RUNNER_TEMP/installed-repositories.txt" python - <<'PY'
-          import json, os
-          inventory={x["full_name"] for x in json.load(open("ecosystem/generated/forks.json",encoding="utf-8"))["forks"]}
-          installed={x.strip() for x in open(os.environ["INSTALLED_REPOSITORIES_FILE"],encoding="utf-8") if x.strip()}
-          missing=sorted(inventory-installed)
-          if missing:
-              raise SystemExit("GitHub App installation is missing target repositories: " + ", ".join(missing))
-          print(f"GitHub App installation covers all {len(inventory)} target forks.")
-          PY
-
-      - name: Sync forks with upstream
-        id: sync
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
         run: python scripts/sync_forks.py
-
-      - name: Validate fork inventory
+      - name: Validate read-only report
         run: |
           python - <<'PY'
           import json
-          data=json.load(open("ecosystem/generated/forks.json",encoding="utf-8")); forks=data.get("forks",[])
-          assert data.get("fork_count")==len(forks)
-          assert all(all(k in f for k in ("full_name","default_branch","upstream","source")) for f in forks)
-          print(f"validated {len(forks)} fork records")
+          inv=json.load(open("ecosystem/generated/forks.json",encoding="utf-8"))
+          rep=json.load(open("ecosystem/generated/fork-sync-report.json",encoding="utf-8"))
+          assert rep.get("read_only") is True
+          assert len(rep.get("results",[])) == inv.get("fork_count")
+          assert all(r.get("mutation") is not True for r in rep.get("results",[]))
+          print("read-only fork discovery/compare gate passed")
           PY
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "10.0.x"
-
-      - name: Reconcile central registry
-        id: reconcile
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: dotnet run --project src/SohailOS.Ecosystem/SohailOS.Ecosystem.csproj --configuration Release -- --owner kaido6sanb6 --manifest ecosystem/ecosystem.json --report "${{ runner.temp }}/ecosystem-reconciliation.json" --write --fail-on-removal
-
-      - name: Commit fork inventory and sync report
-        run: |
-          git config user.name "SohailOS Fork Sync Bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ecosystem/ecosystem.json ecosystem/generated/forks.json ecosystem/generated/fork-sync-report.json
-          git diff --cached --quiet || git commit -m "chore: refresh fork inventory and sync report"
-          git push
-
-      - name: Enforce synchronization gate
-        id: sync-gate
-        if: always()
-        run: |
-          set -euo pipefail
-          if [ "${{ steps['app-token'].outcome }}" != "success" ]; then
-            echo "Synchronization gate failed: GitHub App token step did not succeed."
-            exit 1
-          fi
-          if [ "${{ steps.sync.outcome }}" != "success" ]; then
-            echo "Synchronization gate failed: fork synchronization step did not succeed."
-            exit 1
-          fi
-          if [ "${{ steps.reconcile.outcome }}" != "success" ]; then
-            echo "Synchronization gate failed: central registry reconciliation did not succeed."
-            exit 1
-          fi
-          python - <<'PY'
-          import json
-          s=json.load(open("ecosystem/generated/fork-sync-report.json",encoding="utf-8")).get("summary",{})
-          b,e,c=(int(s.get(k,0)) for k in ("blocked","error","conflict"))
-          if b or e or c:
-              raise SystemExit(f"fork synchronization incomplete: blocked={b}, errors={e}, conflicts={c}")
-          print("fork synchronization gate passed")
-          PY
-
-      - name: Publish synchronization report
-        if: always()
+      - name: Publish report
         uses: actions/upload-artifact@v4
         with:
           name: fork-sync-report
           path: |
             ecosystem/generated/forks.json
             ecosystem/generated/fork-sync-report.json
-          if-no-files-found: error
 
-      - name: Trigger ecosystem reconciliation and knowledge refresh
-        if: steps.sync-gate.outcome == 'success'
+  approved-sync-pr:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.approval == 'APPROVE_CREATE_PR'
+    needs: discover
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Validate exact approval binding
+        env:
+          OP: ${{ github.event.inputs.operation }}
+          TARGET: ${{ github.event.inputs.target }}
+          SCOPE: ${{ github.event.inputs.scope }}
+          EFFECT: ${{ github.event.inputs.intended_effect }}
+          RISKS: ${{ github.event.inputs.risks }}
+          ROLLBACK: ${{ github.event.inputs.rollback }}
+          APPROVAL: ${{ github.event.inputs.approval }}
+        run: |
+          set -euo pipefail
+          test "$OP" = "CREATE_SYNC_PR"
+          test "$APPROVAL" = "APPROVE_CREATE_PR"
+          test -n "$TARGET"; test -n "$SCOPE"; test -n "$EFFECT"
+          test -n "$RISKS"; test -n "$ROLLBACK"
+          test "$SCOPE" != "all"
+          echo "Exact approval binding accepted for this invocation."
+
+      - name: Checkout exact target fork
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.inputs.target }}
+          token: ${{ github.token }}
+          fetch-depth: 0
+
+      - name: Verify target provenance
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/${{ github.repository }}/dispatches" -f event_type=forks_reconciled
+          TARGET: ${{ github.event.inputs.target }}
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$TARGET" --jq '.full_name')" = "$TARGET"
+          upstream="$(gh api "repos/$TARGET" --jq '.parent.full_name // empty')"
+          test -n "$upstream"
+          echo "UPSTREAM=$upstream" >> "$GITHUB_ENV"
+
+      - name: Create merge proposal branch
+        env:
+          SCOPE: ${{ github.event.inputs.scope }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$SCOPE"
+          git checkout -B "automation/upstream-sync-${GITHUB_RUN_ID}" "origin/$SCOPE"
+          git remote add upstream "https://github.com/${UPSTREAM}.git"
+          git fetch --no-tags upstream "$SCOPE"
+          git merge --no-edit "upstream/$SCOPE"
+          git push --set-upstream origin "automation/upstream-sync-${GITHUB_RUN_ID}"
+
+      - name: Create review-gated PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ github.event.inputs.target }}
+          SCOPE: ${{ github.event.inputs.scope }}
+          EFFECT: ${{ github.event.inputs.intended_effect }}
+          RISKS: ${{ github.event.inputs.risks }}
+          ROLLBACK: ${{ github.event.inputs.rollback }}
+        run: |
+          gh pr create --repo "$TARGET" --base "$SCOPE" --head "automation/upstream-sync-${GITHUB_RUN_ID}" --title "chore: propose upstream synchronization" --body "Human-approved PR creation.
+          Operation: CREATE_SYNC_PR
+          Target: $TARGET
+          Scope: $SCOPE
+          IntendedEffect: $EFFECT
+          Risks: $RISKS
+          Rollback: $ROLLBACK
+          Merge remains a separate human-approved operation."
