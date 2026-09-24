@@ -42,7 +42,7 @@ async function assertUnauthorized() {
       accept: "application/json, text/event-stream",
       authorization: "Bearer invalid-smoke-token",
     },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 99, method: "tools/list" }),
+    body: JSON.stringify({ jsonrpc: "2.0", id: 99, method: "tools/call", params: { name: "sohailos_agent_run", arguments: { prompt: "auth-smoke" } } }),
   });
   if (response.status !== 401) {
     const body = await response.text();
