@@ -21,3 +21,6 @@ logs/
 # Local Gate-0 knowledge index
 App_Data/
 *.knowledge-index.json
+
+# Node.js dependencies
+node_modules/
