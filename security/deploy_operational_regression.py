@@ -40,10 +40,18 @@ def main():
     assert "npm install --no-audit --no-fund" in s
     assert "npx wrangler --version" in s
     assert "secret put" in s
-    assert "echo "$SOHAILOS_" not in s
+    secret_names = [
+        "SOHAILOS_GATEWAY_TOKEN",
+        "SOHAILOS_OPENAI_API_KEY",
+        "SOHAILOS_GEMINI_API_KEY",
+        "SOHAILOS_ANTHROPIC_API_KEY",
+        "SOHAILOS_SUPABASE_SERVICE_ROLE_KEY",
+    ]
+    for secret in secret_names:
+        assert f'echo "$' + secret + '"' not in s, f"workflow echoes secret variable: {secret}"
     assert not re.search(r"git\s+push\s+--force|wrangler\s+deploy.*--force", s)
 
-    print("PASS deploy operational contract: concurrency, least privilege, preflight, dry-run, smoke, MCP, scoped rollback, evidence")
+    print("PASS deploy operational contract")
 
 if __name__ == "__main__":
     main()
