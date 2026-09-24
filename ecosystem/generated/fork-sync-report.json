@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "generated_at": "2026-09-23T23:14:07.724079+00:00",
+  "generated_at": "2026-09-24T01:30:19.900888+00:00",
   "owner": "kaido6sanb6",
   "fork_count": 121,
   "results": [
@@ -104,8 +104,8 @@
       "repo": "kaido6sanb6/awesome-nano-banana-pro-prompts",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream YouMind-OpenLab:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream YouMind-OpenLab:main.",
+      "merge_type": "fast-forward",
       "upstream": "YouMind-OpenLab/awesome-nano-banana-pro-prompts"
     },
     {
@@ -224,8 +224,8 @@
       "repo": "kaido6sanb6/DeepSeek-Reasonix",
       "branch": "main-v2",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream esengine:main-v2.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream esengine:main-v2.",
+      "merge_type": "none",
       "upstream": "esengine/DeepSeek-Reasonix"
     },
     {
@@ -376,8 +376,8 @@
       "repo": "kaido6sanb6/hermes-webui",
       "branch": "master",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream nesquena:master.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream nesquena:master.",
+      "merge_type": "none",
       "upstream": "nesquena/hermes-webui"
     },
     {
@@ -576,8 +576,8 @@
       "repo": "kaido6sanb6/OmniRoute",
       "branch": "release/v3.8.51",
       "status": "synced",
-      "message": "This branch is not behind the upstream diegosouzapw:release/v3.8.51.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream diegosouzapw:release/v3.8.51.",
+      "merge_type": "fast-forward",
       "upstream": "diegosouzapw/OmniRoute"
     },
     {
@@ -608,16 +608,16 @@
       "repo": "kaido6sanb6/openinterpreter",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream openinterpreter:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream openinterpreter:main.",
+      "merge_type": "none",
       "upstream": "openinterpreter/openinterpreter"
     },
     {
       "repo": "kaido6sanb6/OpenMetadata",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream open-metadata:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream open-metadata:main.",
+      "merge_type": "none",
       "upstream": "open-metadata/OpenMetadata"
     },
     {
@@ -904,16 +904,16 @@
       "repo": "kaido6sanb6/transformerss",
       "branch": "main",
       "status": "synced",
-      "message": "Successfully fetched and fast-forwarded from upstream huggingface:main.",
-      "merge_type": "fast-forward",
+      "message": "This branch is not behind the upstream huggingface:main.",
+      "merge_type": "none",
       "upstream": "huggingface/transformers"
     },
     {
       "repo": "kaido6sanb6/v",
       "branch": "master",
       "status": "synced",
-      "message": "This branch is not behind the upstream vlang:master.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream vlang:master.",
+      "merge_type": "fast-forward",
       "upstream": "vlang/v"
     },
     {
@@ -952,8 +952,8 @@
       "repo": "kaido6sanb6/WeKnora",
       "branch": "main",
       "status": "synced",
-      "message": "This branch is not behind the upstream Tencent:main.",
-      "merge_type": "none",
+      "message": "Successfully fetched and fast-forwarded from upstream Tencent:main.",
+      "merge_type": "fast-forward",
       "upstream": "Tencent/WeKnora"
     },
     {
