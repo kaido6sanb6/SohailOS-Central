@@ -14,17 +14,25 @@ digest = hashlib.sha256(canonical.encode()).hexdigest()
 csharp = (ROOT / "src" / "SohailOS.Core" / "CanonicalPrompt.cs").read_text(encoding="utf-8")
 match = re.search(r'public const string Sha256 = "([0-9a-f]{64})";', csharp)
 assert match and match.group(1) == digest, "C# prompt digest drift"
-m = re.search(r'public const string Compact = "(.*)";', csharp)
-assert m, "C# compact prompt constant missing"
-csharp_prompt = json.loads('"' + m.group(1) + '"' )
+prefix = '    public const string Compact = '
+start = csharp.find(prefix)
+assert start >= 0, "C# compact prompt constant missing"
+start += len(prefix)
+end = csharp.find('";', start)
+assert end > start, "C# compact prompt terminator missing"
+csharp_prompt = json.loads(csharp[start:end+1])
 assert csharp_prompt == canonical, "C# prompt text drift"
 
 ts = (ROOT / "cloudflare" / "sohailos-gateway" / "src" / "canonical-prompt.ts").read_text(encoding="utf-8")
 match = re.search(r'CANONICAL_SUPERPROMPT_SHA256 = "([0-9a-f]{64})"', ts)
 assert match and match.group(1) == digest, "Cloudflare prompt digest drift"
-m = re.search(r'CANONICAL_SUPERPROMPT = "((?:\\.|[^"\\])*)" as const;', ts)
-assert m, "Cloudflare canonical prompt constant missing"
-ts_prompt = json.loads('"' + m.group(1) + '"' )
+prefix = 'export const CANONICAL_SUPERPROMPT = '
+start = ts.find(prefix)
+assert start >= 0, "Cloudflare canonical prompt constant missing"
+start += len(prefix)
+end = ts.find('" as const;', start)
+assert end > start, "Cloudflare canonical prompt terminator missing"
+ts_prompt = json.loads(ts[start:end])
 assert ts_prompt == canonical, "Cloudflare prompt text drift"
 
 worker = (ROOT / "cloudflare" / "sohailos-gateway" / "src" / "index.ts").read_text(encoding="utf-8")
