@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Xunit;
 
 namespace SohailOS.Tests;
@@ -22,10 +21,16 @@ public sealed class CanonicalPromptSynchronizationTests
         var canonical = File.ReadAllText(Path.Combine(root, "prompts", "SohailOS-SuperPrompt.xlm")).Trim();
         var source = File.ReadAllText(Path.Combine(root, "cloudflare", "sohailos-gateway", "src", "canonical-prompt.ts"));
 
-        var match = Regex.Match(source, @"CANONICAL_SUPERPROMPT = "((?:\\.|[^"\\])*)" as const;");
-        Assert.True(match.Success);
-        var escaped = match.Groups[1].Value;
-        var decoded = System.Text.Json.JsonSerializer.Deserialize<string>($""{escaped}"");
+        var prefix = "export const CANONICAL_SUPERPROMPT = ";
+        var start = source.IndexOf(prefix, StringComparison.Ordinal);
+        Assert.True(start >= 0);
+        start += prefix.Length;
+        var suffix = "" as const;";
+        var end = source.IndexOf(suffix, start, StringComparison.Ordinal);
+        Assert.True(end > start);
+        var literal = source[start..end];
+
+        var decoded = System.Text.Json.JsonSerializer.Deserialize<string>(literal);
         Assert.Equal(canonical, decoded);
     }
 
