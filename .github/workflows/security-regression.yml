@@ -1,20 +1,21 @@
 name: AI security regression
 
-# Runs the evaluator itself; no secrets or live external systems are required.
-
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
       - "prompts/UNIVERSAL_AI_CORE.md"
       - "security/**"
       - "tests/SohailOS.Tests/**"
+      - ".github/workflows/security-regression.yml"
   pull_request:
     branches: [main]
     paths:
       - "prompts/UNIVERSAL_AI_CORE.md"
       - "security/**"
       - "tests/SohailOS.Tests/**"
+      - ".github/workflows/security-regression.yml"
 
 jobs:
   regression:
