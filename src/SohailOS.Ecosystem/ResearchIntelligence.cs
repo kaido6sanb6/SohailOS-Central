@@ -1,3 +1,6 @@
+using System.Net.Http;
+using System.Text.Json;
+
 namespace SohailOS.Ecosystem;
 
 public sealed class ResearchIntelligenceEngine
@@ -89,7 +92,18 @@ public sealed class ResearchIntelligenceEngine
             if (result.Degraded && !string.IsNullOrWhiteSpace(result.DegradedReason))
                 lock (degraded) degraded.Add($"{provider.Name}:{result.DegradedReason}");
         }
-        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            lock (audit) audit.Add(new ResearchAuditEvent(
+                DateTimeOffset.UtcNow,
+                provider.Name,
+                "search",
+                0,
+                true,
+                "timeout"));
+            lock (degraded) degraded.Add($"{provider.Name}:timeout");
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException)
         {
             lock (audit) audit.Add(new ResearchAuditEvent(
                 DateTimeOffset.UtcNow,
