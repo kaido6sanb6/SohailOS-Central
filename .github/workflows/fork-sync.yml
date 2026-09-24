@@ -3,122 +3,131 @@ name: fork-sync-and-knowledge-refresh
 on:
   workflow_dispatch:
     inputs:
-      operation:
-        description: "Must be CREATE_SYNC_PR"
-        required: true
-        type: string
-      target:
-        description: "Exact fork target, e.g. kaido6sanb6/example"
-        required: true
-        type: string
-      scope:
-        description: "Exact branch scope, e.g. main"
-        required: true
-        type: string
-      intended_effect:
-        description: "Exact intended effect"
-        required: true
-        type: string
-      risks:
-        description: "Known risks"
-        required: true
-        type: string
-      rollback:
-        description: "Rollback plan"
-        required: true
-        type: string
-      approval:
-        description: "Type APPROVE_CREATE_PR to authorize this single PR creation"
-        required: true
-        type: string
+      operation: {description: "Must be CREATE_SYNC_PR", required: true, type: string}
+      target: {description: "Exact fork target", required: true, type: string}
+      scope: {description: "Exact branch scope", required: true, type: string}
+      intended_effect: {description: "Exact intended effect", required: true, type: string}
+      risks: {description: "Known risks", required: true, type: string}
+      rollback: {description: "Rollback plan", required: true, type: string}
+      approval: {description: "Type APPROVE_CREATE_PR", required: true, type: string}
   schedule:
     - cron: "*/15 * * * *"
 
 concurrency:
-  group: fork-sync-${{ github.event.inputs.target || 'discovery' }}
+  group: fork-ecosystem-${{ github.repository }}
   cancel-in-progress: false
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
-  discover:
+  reconcile:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-
-      - name: Validate GitHub App private key
-        id: key-check
+      - name: Build fork inventory
         env:
-          RAW_PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/build_fork_inventory.py
+      - name: Detect upstream divergence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/sync_forks.py --fail-on-removal
+      - name: Build capability graph and mutation plan
+        run: python scripts/fork_ecosystem.py
+      - name: Run ecosystem policy tests
+        run: python -m unittest discover -s tests -p 'test_fork_ecosystem.py' -v
+      - name: Validate plan
         run: |
-          set -euo pipefail
-          test -n "${RAW_PRIVATE_KEY}"
-          printf '%s' "${RAW_PRIVATE_KEY}" | base64 --decode > /tmp/app-key.pem 2>/dev/null || printf '%s' "${RAW_PRIVATE_KEY}" > /tmp/app-key.pem
-          openssl pkey -in /tmp/app-key.pem -noout
-          echo "GitHub App private key validated."
+          python - <<'PY'
+          import json
+          inv=json.load(open("ecosystem/generated/forks.json",encoding="utf-8"))
+          rep=json.load(open("ecosystem/generated/fork-sync-report.json",encoding="utf-8"))
+          plan=json.load(open("ecosystem/generated/fork-sync-plan.json",encoding="utf-8"))
+          assert rep["fork_count"] == inv["fork_count"]
+          assert plan["inventory_count"] == inv["fork_count"]
+          assert plan["mutation"] is False
+          assert all(a["operation"] in {"UPSTREAM_SYNC","OBSERVE"} for a in plan["actions"])
+          print("ecosystem plan gate passed")
+          PY
+      - name: Publish evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: fork-ecosystem-evidence
+          path: |
+            ecosystem/generated/forks.json
+            ecosystem/generated/fork-sync-report.json
+            ecosystem/generated/fork-graph.json
+            ecosystem/generated/fork-sync-plan.json
 
-      - name: Create GitHub App token
+  bounded-auto-sync:
+    needs: reconcile
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.approval == 'APPROVE_CREATE_PR')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check mutation credential availability
+        id: creds
+        env:
+          APP_ID: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
+          PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
+        run: |
+          if [ -n "$APP_ID" ] && [ -n "$PRIVATE_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Create least-privilege GitHub App token
         id: app-token
+        if: steps.creds.outputs.available == 'true'
         uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.SOHAILOS_GITHUB_APP_ID }}
           private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           permission-contents: write
-          permission-workflows: write
-          permission-pull-requests: write
-
-      - name: Build fork inventory
+      - name: Reconcile with mutation credential
+        if: steps.creds.outputs.available == 'true'
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: python scripts/build_fork_inventory.py
-
-      - name: Detect upstream divergence (read-only)
-        id: reconcile
+        run: |
+          python scripts/build_fork_inventory.py
+          python scripts/sync_forks.py --fail-on-removal
+          python scripts/fork_ecosystem.py
+      - name: Apply bounded upstream sync
+        if: steps.creds.outputs.available == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SOHAILOS_AUTOMATION_ENABLED: "true"
+        run: python scripts/apply_fork_plan.py --max-targets 50 --workers 6
+      - name: Verify post-mutation state
+        if: steps.creds.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: python scripts/sync_forks.py --fail-on-removal
-
-      - name: sync-gate
-        id: sync-gate
-        if: always()
-        run: |
-          echo "reconcile=${{ steps.reconcile.outcome }}"
-          test "${{ steps.reconcile.outcome }}" = "success"
-
-      - name: Validate read-only report
-        if: steps.sync-gate.outcome == 'success'
-        run: |
-          python - <<'PY'
-          import json
-          inv=json.load(open("ecosystem/generated/forks.json",encoding="utf-8"))
-          rep=json.load(open("ecosystem/generated/fork-sync-report.json",encoding="utf-8"))
-          assert rep.get("read_only") is True
-          assert len(rep.get("results",[])) == inv.get("fork_count")
-          assert all(r.get("mutation") is not True for r in rep.get("results",[]))
-          print("read-only fork discovery/compare gate passed")
-          PY
-
-      - name: Publish report
+      - name: Degrade safely when cross-repository credential is absent
+        if: steps.creds.outputs.available != 'true'
+        run: echo "Cross-repository mutation unavailable; reconciliation remains read-only and will retry next cycle."
+      - name: Publish mutation evidence
         uses: actions/upload-artifact@v4
         with:
-          name: fork-sync-report
-          path: |
-            ecosystem/generated/forks.json
-            ecosystem/generated/fork-sync-report.json
+          name: fork-ecosystem-mutation-evidence
+          path: ecosystem/generated/fork-sync-report.json
 
   approved-sync-pr:
+    needs: reconcile
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.approval == 'APPROVE_CREATE_PR'
-    needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Validate exact approval binding
         env:
@@ -134,26 +143,9 @@ jobs:
           test "$OP" = "CREATE_SYNC_PR"
           test "$APPROVAL" = "APPROVE_CREATE_PR"
           test -n "$TARGET"; test -n "$SCOPE"; test -n "$EFFECT"
-          test -n "$RISKS"; test -n "$ROLLBACK"
-          test "$SCOPE" != "all"
-          echo "Exact approval binding accepted for this invocation."
-
+          test -n "$RISKS"; test -n "$ROLLBACK"; test "$SCOPE" != "all"
       - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.inputs.target }}
-          token: ${{ github.token }}
-          fetch-depth: 0
-
-      - name: Validate GitHub App private key
-        env:
-          RAW_PRIVATE_KEY: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
-        run: |
-          set -euo pipefail
-          test -n "${RAW_PRIVATE_KEY}"
-          printf '%s' "${RAW_PRIVATE_KEY}" | base64 --decode > /tmp/app-key.pem 2>/dev/null || printf '%s' "${RAW_PRIVATE_KEY}" > /tmp/app-key.pem
-          openssl pkey -in /tmp/app-key.pem -noout
-
-      - name: Create GitHub App token
+      - name: Create least-privilege GitHub App token
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
@@ -161,34 +153,8 @@ jobs:
           private-key: ${{ secrets.SOHAILOS_GITHUB_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           permission-contents: write
-          permission-workflows: write
           permission-pull-requests: write
-
-      - name: Verify target provenance
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          TARGET: ${{ github.event.inputs.target }}
-        run: |
-          set -euo pipefail
-          test "$(gh api "repos/$TARGET" --jq '.full_name')" = "$TARGET"
-          upstream="$(gh api "repos/$TARGET" --jq '.parent.full_name // empty')"
-          test -n "$upstream"
-          echo "UPSTREAM=$upstream" >> "$GITHUB_ENV"
-
-      - name: Create merge proposal branch
-        env:
-          SCOPE: ${{ github.event.inputs.scope }}
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          set -euo pipefail
-          git fetch origin "$SCOPE"
-          git checkout -B "automation/upstream-sync-${GITHUB_RUN_ID}" "origin/$SCOPE"
-          git remote add upstream "https://github.com/${UPSTREAM}.git"
-          git fetch --no-tags upstream "$SCOPE"
-          git merge --no-edit "upstream/$SCOPE"
-          git push --set-upstream origin "automation/upstream-sync-${GITHUB_RUN_ID}"
-
-      - name: Create review-gated PR
+      - name: Create review-gated upstream PR
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           TARGET: ${{ github.event.inputs.target }}
@@ -196,12 +162,15 @@ jobs:
           EFFECT: ${{ github.event.inputs.intended_effect }}
           RISKS: ${{ github.event.inputs.risks }}
           ROLLBACK: ${{ github.event.inputs.rollback }}
+          OP: ${{ github.event.inputs.operation }}
         run: |
-          gh pr create --repo "$TARGET" --base "$SCOPE" --head "automation/upstream-sync-${GITHUB_RUN_ID}" --title "chore: propose upstream synchronization" --body "Human-approved PR creation.
-          Operation: CREATE_SYNC_PR
-          Target: $TARGET
-          Scope: $SCOPE
-          IntendedEffect: $EFFECT
-          Risks: $RISKS
-          Rollback: $ROLLBACK
-          Merge remains a separate human-approved operation."
+          set -euo pipefail
+          upstream="$(gh api "repos/$TARGET" --jq '.parent.full_name // empty')"
+          test -n "$upstream"
+          git fetch origin "$SCOPE"
+          git checkout -B "automation/upstream-sync-${GITHUB_RUN_ID}" "origin/$SCOPE"
+          git remote add upstream "https://github.com/${upstream}.git"
+          git fetch --no-tags upstream "$SCOPE"
+          git merge --no-edit "upstream/$SCOPE"
+          git push --set-upstream origin "automation/upstream-sync-${GITHUB_RUN_ID}"
+          gh pr create --repo "$TARGET" --base "$SCOPE" --head "automation/upstream-sync-${GITHUB_RUN_ID}" --title "chore: propose upstream synchronization" --body "Approval-bound proposal. Operation=$OP Target=$TARGET Scope=$SCOPE Effect=$EFFECT Risks=$RISKS Rollback=$ROLLBACK"
