@@ -6,10 +6,13 @@ import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_SHA256 = "188d68db1886e2d97f407cab2c2e654feeb055d49d8253524302d432fb1df5f5"
+
 canonical = (ROOT / "prompts" / "SohailOS-SuperPrompt.xlm").read_text(encoding="utf-8").strip()
 assert canonical.startswith("<SO>") and canonical.endswith("</SO>")
 assert len(canonical) <= 1500, f"canonical prompt exceeds 1500 characters: {len(canonical)}"
 digest = hashlib.sha256(canonical.encode()).hexdigest()
+assert digest == EXPECTED_SHA256, "canonical SuperPrompt does not match the approved contract"
 
 csharp = (ROOT / "src" / "SohailOS.Core" / "CanonicalPrompt.cs").read_text(encoding="utf-8")
 match = re.search(r'public const string Sha256 = "([0-9a-f]{64})";', csharp)
