@@ -4510,5 +4510,7 @@
     "last_reconciled_at": "2026-09-24T22:39:33.3642669Z",
     "live_repository_count": 166,
     "registry_repository_count": 166
-  }
+  },
+  "fork_capability_registry": "ecosystem/fork-capabilities.json",
+  "command_catalog": "ecosystem/command-catalog.json"
 }
