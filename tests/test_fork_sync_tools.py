@@ -2,6 +2,8 @@ import importlib.util
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
+import json
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -48,9 +50,13 @@ class ForkSyncToolTests(TestCase):
 class ForkApplyTests(TestCase):
     def test_apply_requires_explicit_automation_flag(self):
         tool = load("apply_fork_plan")
-        with patch.dict("os.environ", {"SOHAILOS_AUTOMATION_ENABLED": "false"}, clear=False):
-            with patch("builtins.print") as printed:
-                result = tool.main()
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "plan.json"
+            plan.write_text(json.dumps({"mutation": False, "actions": []}), encoding="utf-8")
+            with patch.dict("os.environ", {"SOHAILOS_AUTOMATION_ENABLED": "false"}, clear=False):
+                with patch("sys.argv", ["apply_fork_plan.py", "--plan", str(plan)]):
+                    with patch("builtins.print") as printed:
+                        result = tool.main()
         self.assertEqual(result, 0)
         printed.assert_called()
 
