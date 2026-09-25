@@ -61,7 +61,7 @@ public sealed class ResearchIntelligenceTests
             Assert.Contains("api.semanticscholar.org", request.RequestUri!.Host);
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Unauthorized)
             {
-                Content = new StringContent("{"message":"missing key"}", Encoding.UTF8, "application/json")
+                Content = new StringContent("{\"message\":\"missing key\"}", Encoding.UTF8, "application/json")
             });
         });
         using var http = new HttpClient(handler);
