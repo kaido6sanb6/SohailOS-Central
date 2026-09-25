@@ -40,6 +40,10 @@ The canonical contract is prompts/SohailOS-SuperPrompt.xlm and is aligned with t
 
 Vercel is reserved for an optional HTTPS control endpoint/dashboard and Cron integration. The connected Vercel account currently exposes no team/project in this session, so no live Vercel deployment or team creation is claimed. GitHub Actions is the active scheduler.
 
+## Setup
+
+See `docs/SETUP.md` for prerequisites, local execution, external dependencies, and deployment boundaries. The repository can be verified and its fork tooling can run locally without GitHub Actions.
+
 ## Security
 
 Never commit credentials, private keys, API keys, tokens or sensitive personal data. Runtime credentials must be short-lived and scoped.
