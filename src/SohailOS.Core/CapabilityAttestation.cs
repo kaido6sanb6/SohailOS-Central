@@ -69,13 +69,26 @@ public sealed record CapabilityAttestationContract(
     DateTimeOffset IssuedAt,
     DateTimeOffset? ExpiresAt)
 {
+    public bool IsValid() =>
+        !string.IsNullOrWhiteSpace(CapabilityId) &&
+        !string.IsNullOrWhiteSpace(Version) &&
+        !string.IsNullOrWhiteSpace(SchemaFingerprint) &&
+        Permissions is { Count: > 0 } &&
+        Permissions.All(x => !string.IsNullOrWhiteSpace(x)) &&
+        !string.IsNullOrWhiteSpace(EvidenceDigest) &&
+        ExpiresAt is not null &&
+        IssuedAt < ExpiresAt;
+
     public bool IsFresh(DateTimeOffset now) =>
-        IssuedAt <= now && ExpiresAt is not null && ExpiresAt > now;
+        IsValid() &&
+        IssuedAt <= now &&
+        ExpiresAt is not null &&
+        ExpiresAt > now;
 
     public string Digest()
     {
         var permissions = string.Join(",", Permissions.OrderBy(x => x, StringComparer.Ordinal));
-        var canonical = string.Join("\n",
+        var canonical = string.Join("\\n",
             CapabilityId,
             Version,
             SchemaFingerprint,
@@ -92,8 +105,14 @@ public sealed class CapabilityRegistryContract
     private readonly Dictionary<string, CapabilityAttestationContract> _attestations =
         new(StringComparer.Ordinal);
 
-    public void Register(CapabilityAttestationContract attestation) =>
+    public void Register(CapabilityAttestationContract attestation)
+    {
+        ArgumentNullException.ThrowIfNull(attestation);
+        if (!attestation.IsValid())
+            throw new ArgumentException("Capability attestation is structurally invalid.", nameof(attestation));
+
         _attestations[attestation.CapabilityId] = attestation;
+    }
 
     public CapabilityAttestationContract? Lookup(string capabilityId) =>
         _attestations.TryGetValue(capabilityId, out var value) ? value : null;
