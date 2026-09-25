@@ -122,5 +122,12 @@
     ],
     "digest_algorithm": "sha256",
     "freshness": "issued_at <= now < expires_at"
+  },
+  "command_plane": {
+    "schema": "ecosystem/command-catalog.json",
+    "authority": "semantic-only",
+    "unknown_command": "block",
+    "approval_command_does_not_grant_authorization": true,
+    "mutating_commands_require_governance": true
   }
 }

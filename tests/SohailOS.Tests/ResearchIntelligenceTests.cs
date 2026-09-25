@@ -61,7 +61,7 @@ public sealed class ResearchIntelligenceTests
             Assert.Contains("api.semanticscholar.org", request.RequestUri!.Host);
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Unauthorized)
             {
-                Content = new StringContent("{"message":"missing key"}", Encoding.UTF8, "application/json")
+                Content = new StringContent("{\"message\":\"missing key\"}", Encoding.UTF8, "application/json")
             });
         });
         using var http = new HttpClient(handler);
@@ -135,8 +135,8 @@ public sealed class ResearchIntelligenceTests
 
         var record = Assert.Single(records);
         Assert.Equal("University Repository Study", record.Title);
-        Assert.Contains("Jane Doe", record.Authors);
-        Assert.Contains("sociology", record.Subjects);
+        Assert.Contains(record.Authors ?? Array.Empty<ScholarlyAuthor>(), author => author.Name == "Jane Doe");
+        Assert.Contains("sociology", record.Subjects ?? Array.Empty<string>());
         Assert.Equal("https://repository.example/item/1", record.Url);
     }
 

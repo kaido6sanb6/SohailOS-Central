@@ -238,7 +238,7 @@ async function mcp(request: Request, env: Env) {
     if (!advertisedTool) return json({ jsonrpc: "2.0", id, error: { code: -32602, message: "Unknown tool" } }, 400, origin);
 
     const attestation = await attestGatewayTool(advertisedTool);
-    const capability = authorizeToolCall(name, attestation);
+    const capability = await authorizeToolCall(name, advertisedTool, attestation);
     if (!capability.allowed) {
       return json({ jsonrpc: "2.0", id, error: { code: -32003, message: capability.code } }, 403, origin);
     }

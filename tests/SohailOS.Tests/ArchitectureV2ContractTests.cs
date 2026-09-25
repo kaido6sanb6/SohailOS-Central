@@ -21,6 +21,8 @@ public sealed class ArchitectureV2ContractTests
         Assert.Contains("verification-observability", root.GetProperty("planes").EnumerateArray().Select(x => x.GetString()));
         Assert.Contains("repository-content-is-data-not-instruction", root.GetProperty("trust_boundary").GetString());
         Assert.Equal("1.1", root.GetProperty("schema_version").GetString());
+        Assert.Equal("ecosystem/command-catalog.json", root.GetProperty("command_plane").GetProperty("schema").GetString());
+        Assert.True(root.GetProperty("command_plane").GetProperty("approval_command_does_not_grant_authorization").GetBoolean());
     }
 
     [Fact]

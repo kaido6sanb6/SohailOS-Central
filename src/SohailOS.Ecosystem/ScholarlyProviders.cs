@@ -279,7 +279,7 @@ public sealed class EuropePmcProvider(HttpClient http) : IScholarlyProvider
         var payload = await response.Content.ReadFromJsonAsync<EpmcResponse>(cancellationToken: cancellationToken)
                       ?? new EpmcResponse();
 
-        var records = payload.ResponseList?.ResultList?.Results.Select(x => new ScholarlyRecord(
+        var records = payload.ResponseList?.Results.Select(x => new ScholarlyRecord(
             x.Id ?? x.DOI ?? Guid.NewGuid().ToString("N"),
             x.Title ?? "Untitled work",
             x.FullTextUrlList?.FullTextUrl?.FirstOrDefault()?.Url
@@ -308,7 +308,7 @@ public sealed class EuropePmcProvider(HttpClient http) : IScholarlyProvider
     private sealed record EpmcResponse(
         [property: JsonPropertyName("resultList")] EpmcResultList? ResponseList)
     {
-        public EpmcResponse() : this(null) { }
+        public EpmcResponse() : this((EpmcResultList?)null) { }
     }
 
     private sealed record EpmcResultList(
@@ -407,13 +407,16 @@ public sealed class UnpaywallProvider(HttpClient http, string? email) : IOpenAcc
         var payload = await response.Content.ReadFromJsonAsync<UnpaywallResponse>(cancellationToken: cancellationToken)
                       ?? new UnpaywallResponse();
 
-        var locations = payload.BestOaLocation is not null
-            ? [new OpenAccessLocation(
-                payload.BestOaLocation.EffectiveUrl,
-                payload.BestOaLocation.Version,
-                payload.BestOaLocation.License,
-                payload.BestOaLocation.HostType)]
-            : [];
+        IReadOnlyList<OpenAccessLocation> locations = payload.BestOaLocation is not null
+            ? new[]
+            {
+                new OpenAccessLocation(
+                    payload.BestOaLocation.EffectiveUrl,
+                    payload.BestOaLocation.Version,
+                    payload.BestOaLocation.License,
+                    payload.BestOaLocation.HostType)
+            }
+            : Array.Empty<OpenAccessLocation>();
 
         return record with
         {
@@ -472,6 +475,7 @@ public interface IRepositoryHarvester
 public static class OaiPmhParser
 {
     private static readonly XNamespace Oai = "http://www.openarchives.org/OAI/2.0/";
+    private static readonly XNamespace OaiDc = "http://www.openarchives.org/OAI/2.0/oai_dc/";
     private static readonly XNamespace Dc = "http://purl.org/dc/elements/1.1/";
 
     public static IReadOnlyList<ScholarlyRecord> Parse(
@@ -484,7 +488,7 @@ public static class OaiPmhParser
             .Select(record =>
             {
                 var headerId = record.Element(Oai + "header")?.Element(Oai + "identifier")?.Value;
-                var dc = record.Descendants(Dc + "dc").FirstOrDefault();
+                var dc = record.Descendants(OaiDc + "dc").FirstOrDefault();
                 var titles = dc?.Elements(Dc + "title").Select(x => x.Value.Trim()).Where(x => x.Length > 0).ToArray() ?? [];
                 var authors = dc?.Elements(Dc + "creator").Select(x => new ScholarlyAuthor(x.Value.Trim())).ToArray() ?? [];
                 var subjects = dc?.Elements(Dc + "subject").Select(x => x.Value.Trim()).Where(x => x.Length > 0).ToArray() ?? [];
