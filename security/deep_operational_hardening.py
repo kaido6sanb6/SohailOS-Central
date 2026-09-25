@@ -47,7 +47,8 @@ assert policy["approval"]["irreversible_operations"] == "forbidden"
 
 assert "TOOL_CAPABILITY_CHANGED" in executor
 assert "_replayGuard.TryConsume" in executor
-assert "CanPersistDurableMemory" in runtime
+assert "MemoryTransactionContract" in runtime
+assert "persistMemory" in runtime
 assert "BlocksUnsafeEgressAsync" in web
 assert "promptSha256" in worker
 assert "persistMemory" in worker
