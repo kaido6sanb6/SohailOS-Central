@@ -60,5 +60,5 @@ jobs:
           jq empty ecosystem/command-catalog.json
           jq empty ecosystem/fork-capabilities.json
           jq empty ecosystem/ecosystem.json
-          test `jq '[.commands[].trigger] | map(ascii_downcase) | unique | length == length' ecosystem/command-catalog.json`
-          test `jq '.commands[] | select(.trigger == "/approve") | .grants_authorization == false' ecosystem/command-catalog.json`
+          jq -e '[.commands[].trigger] | map(ascii_downcase) | unique | length == length' ecosystem/command-catalog.json
+          jq -e '.commands[] | select(.trigger == "/approve") | .grants_authorization == false' ecosystem/command-catalog.json
