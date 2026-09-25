@@ -214,7 +214,7 @@ public sealed class ResearchEngine
                   ?? "https://openalex.org/";
         var license = work.OpenAccess?.License ?? "unknown";
         var access = oa ? "oa" : "metadata";
-        var subjects = work.Topics?.Select(x => x.DisplayName).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+        var subjects = work.Topics?.Select(x => x.DisplayName).OfType<string>().Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
         return new(
             work.Id ?? work.Doi ?? Guid.NewGuid().ToString("N"),
             work.Title ?? "Untitled work",
