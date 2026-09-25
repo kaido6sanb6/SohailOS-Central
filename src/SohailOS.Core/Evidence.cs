@@ -77,3 +77,63 @@ public sealed class InvariantValidator : IExecutionValidator
         return new(ValidationStatus.Validated, "INVARIANTS_PASS", "Required execution invariants passed.", verification.EvidenceIds);
     }
 }
+
+
+public enum MemoryDurability
+{
+    Ephemeral,
+    Session,
+    Durable
+}
+
+public sealed class MemoryTransactionContract
+{
+    private readonly string _key;
+    private readonly ApprovalBinding _binding;
+    private readonly MemoryDurability _durability;
+
+    public MemoryTransactionContract(
+        string key,
+        ApprovalBinding binding,
+        MemoryDurability durability = MemoryDurability.Durable)
+    {
+        _key = key;
+        _binding = binding;
+        _durability = durability;
+    }
+
+    public bool IsValid(DateTimeOffset now, string requestId = "")
+    {
+        if (_durability != MemoryDurability.Durable ||
+            string.IsNullOrWhiteSpace(_binding.Principal) ||
+            string.IsNullOrWhiteSpace(_binding.Digest) ||
+            !_binding.MatchesDigest() ||
+            string.IsNullOrWhiteSpace(_binding.Nonce) ||
+            _binding.IssuedAt is null ||
+            _binding.ExpiresAt is null ||
+            _binding.IssuedAt > now ||
+            _binding.ExpiresAt <= now ||
+            !string.Equals(_binding.Operation, "memory_write", StringComparison.Ordinal) ||
+            !string.Equals(_binding.Target, "SohailOS.Memory", StringComparison.Ordinal) ||
+            !string.Equals(_binding.Scope, _key, StringComparison.Ordinal) ||
+            !string.Equals(_binding.IntendedEffect, "persist memory", StringComparison.Ordinal) ||
+            (!string.IsNullOrWhiteSpace(_binding.RequestId) &&
+             !string.Equals(_binding.RequestId, requestId, StringComparison.Ordinal)))
+            return false;
+
+        return string.IsNullOrWhiteSpace(_binding.ScopeHash) ||
+               string.Equals(_binding.ScopeHash, ApprovalBinding.ScopeFingerprint(_key), StringComparison.Ordinal);
+    }
+
+    public async Task PersistAsync(
+        IMemoryStore store,
+        string value,
+        string requestId = "",
+        CancellationToken cancellationToken = default)
+    {
+        if (!IsValid(DateTimeOffset.UtcNow, requestId))
+            throw new InvalidOperationException("Durable memory transaction has an invalid or expired approval binding.");
+
+        await store.SaveAsync(_key, value, cancellationToken);
+    }
+}
