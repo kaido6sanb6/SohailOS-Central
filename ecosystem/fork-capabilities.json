@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "policy": "reviewed-fork-capability-registry",
+  "authority": "data-only",
+  "entries": [
+    {
+      "repo": "kaido6sanb6/agent-browser",
+      "capabilities": [
+        "browser-automation",
+        "accessibility-snapshot",
+        "webmcp-discovery",
+        "page-data-trust-boundary"
+      ],
+      "target_seam": "browser-capability-adapter",
+      "verification_status": "reviewed-reference",
+      "license_evidence": "Apache-2.0 LICENSE inspected 2026-09-25",
+      "auto_route": false
+    },
+    {
+      "repo": "kaido6sanb6/OmniRoute",
+      "capabilities": [
+        "provider-routing",
+        "provider-failover",
+        "model-catalog",
+        "observability"
+      ],
+      "target_seam": "provider-router",
+      "verification_status": "reviewed-reference",
+      "license_evidence": "MIT LICENSE inspected 2026-09-25",
+      "revision": "release/v3.8.51",
+      "auto_route": false
+    },
+    {
+      "repo": "kaido6sanb6/MemOS",
+      "capabilities": [
+        "unified-memory-api",
+        "graph-memory",
+        "multi-modal-memory",
+        "memory-isolation",
+        "async-ingestion"
+      ],
+      "target_seam": "memory-fabric",
+      "verification_status": "reviewed-reference",
+      "license_evidence": "README inspected; exact license must be verified before code reuse",
+      "auto_route": false
+    },
+    {
+      "repo": "kaido6sanb6/Auto-Empirical-Research-Skills",
+      "capabilities": [
+        "literature-review",
+        "citation-checking",
+        "causal-inference",
+        "PRISMA",
+        "reproducibility"
+      ],
+      "target_seam": "research-intelligence-fabric",
+      "verification_status": "reviewed-reference",
+      "license_evidence": "README inspected; exact license must be verified before code reuse",
+      "auto_route": false
+    },
+    {
+      "repo": "kaido6sanb6/agentdojo",
+      "capabilities": [
+        "agent-security-evaluation"
+      ],
+      "target_seam": "adaptive-red-team-evaluation",
+      "verification_status": "inventory-only",
+      "license_evidence": "not inspected in this pass",
+      "auto_route": false
+    }
+  ]
+}
