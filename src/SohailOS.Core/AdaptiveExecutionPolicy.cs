@@ -68,6 +68,52 @@ public sealed record ApprovalBinding(
     string? ScopeHash = null,
     string Provenance = "user-explicit")
 {
+    public string Principal { get; init; } = "";
+    public string Effect => IntendedEffect;
+    public string Digest { get; init; } = "";
+    public bool Consumed { get; init; }
+
+    public static ApprovalBinding Create(
+        string principal,
+        string operation,
+        string target,
+        string scope,
+        string effect,
+        DateTimeOffset expiresAt,
+        string nonce,
+        DateTimeOffset? issuedAt = null,
+        string requestId = "",
+        bool riskAcknowledged = true,
+        string? rollbackPlan = "restore previous state")
+    {
+        var issued = issuedAt ?? DateTimeOffset.UtcNow;
+        var binding = new ApprovalBinding(
+            operation, target, scope, effect, riskAcknowledged, rollbackPlan,
+            Reversible: true, RequestId: requestId, Nonce: nonce,
+            IssuedAt: issued, ExpiresAt: expiresAt,
+            ScopeHash: ScopeFingerprint(scope), Provenance: "user-explicit")
+        {
+            Principal = principal
+        };
+        return binding with { Digest = binding.ComputeDigest() };
+    }
+
+    public string ComputeDigest() =>
+        Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+            System.Text.Encoding.UTF8.GetBytes(string.Join("\n",
+                Principal, Operation, Target, Scope, Effect,
+                ExpiresAt?.UtcDateTime.ToString("O") ?? string.Empty,
+                Nonce)))).ToLowerInvariant();
+
+    public bool MatchesDigest() =>
+        !string.IsNullOrWhiteSpace(Digest) &&
+        string.Equals(Digest, ComputeDigest(), StringComparison.Ordinal);
+
+    public ApprovalBinding Consume()
+    {
+        if (Consumed) throw new InvalidOperationException("Approval binding has already been consumed.");
+        return this with { Consumed = true };
+    }
     public bool Matches(ExecutionRequest request, DateTimeOffset now) =>
         string.Equals(Operation, request.Operation, StringComparison.Ordinal) &&
         string.Equals(Target, request.Target, StringComparison.Ordinal) &&
@@ -79,6 +125,7 @@ public sealed record ApprovalBinding(
         ExpiresAt is not null &&
         IssuedAt <= now &&
         ExpiresAt > now &&
+        !Consumed &&
         (string.IsNullOrWhiteSpace(ScopeHash) || string.Equals(ScopeHash, ScopeFingerprint(Scope), StringComparison.Ordinal));
 
     public static string ScopeFingerprint(string scope) =>

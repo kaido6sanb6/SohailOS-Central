@@ -1,3 +1,4 @@
+using SohailOS.Agents;
 using SohailOS.Core;
 using Xunit;
 
@@ -15,6 +16,58 @@ public sealed class ControlPlaneHardeningTests
 
         Assert.Equal(first.SchemaFingerprint, second.SchemaFingerprint);
         Assert.True(first.IsUsable(DateTimeOffset.UtcNow));
+    }
+
+    [Fact]
+    public void CapabilityRegistry_ProbeRejectsStaleAttestation()
+    {
+        var registry = new CapabilityRegistryContract();
+        var now = DateTimeOffset.UtcNow;
+        registry.Register(new CapabilityAttestationContract("tool:test", "1.0", "schema", ["read"], "evidence", now.AddMinutes(-2), now.AddMinutes(-1)));
+        Assert.Null(registry.Probe("tool:test", now));
+    }
+
+    [Fact]
+    public void ApprovalBinding_CreateComputesStableDigest()
+    {
+        var expiry = DateTimeOffset.UtcNow.AddHours(1);
+        var approval = ApprovalBinding.Create("owner", "op", "target", "scope", "effect", expiry, "nonce");
+        Assert.False(string.IsNullOrWhiteSpace(approval.Digest));
+        Assert.True(approval.MatchesDigest());
+    }
+
+    [Fact]
+    public async Task MutationTransaction_BlocksReplayAndUnverifiedCompletion()
+    {
+        var approval = ApprovalBinding.Create("owner", "op", "target", "scope", "effect", DateTimeOffset.UtcNow.AddHours(1), Guid.NewGuid().ToString("N"));
+        var tx = new MutationTransactionContract(approval);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => tx.ExecuteAsync(() => Task.CompletedTask));
+        tx.Preview();
+        tx.ScheduleIndependentVerifier(() => Task.FromResult(true));
+        var result = await tx.ExecuteAsync(() => Task.CompletedTask);
+        Assert.True(result.Executed);
+        Assert.Equal(VerificationStatus.Unknown, result.VerificationStatus);
+        var verified = await tx.VerifyAsync();
+        Assert.Equal(VerificationStatus.Verified, verified);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => tx.ExecuteAsync(() => Task.CompletedTask));
+    }
+
+    [Fact]
+    public void OrchestrationBoundary_RejectsBackwardTransition()
+    {
+        var boundary = new OrchestrationBoundary();
+        boundary.Advance(LifecycleStage.CLASSIFY);
+        Assert.Throws<InvalidOperationException>(() => boundary.Advance(LifecycleStage.REQUEST));
+        Assert.Equal(LifecycleStage.CLASSIFY, boundary.Current);
+    }
+
+    [Fact]
+    public void OrchestrationBoundary_DoesNotEquateExecuteWithVerification()
+    {
+        var boundary = new OrchestrationBoundary();
+        boundary.Advance(LifecycleStage.CLASSIFY);
+        boundary.Advance(LifecycleStage.EXECUTE);
+        Assert.Equal(LifecycleStage.EXECUTE, boundary.Current);
     }
 
     [Fact]

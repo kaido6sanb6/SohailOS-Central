@@ -18,6 +18,9 @@ public sealed record CapabilityAttestation(
     public bool IsUsable(DateTimeOffset now) =>
         Status == CapabilityStatus.Verified &&
         (ExpiresAt is null || ExpiresAt > now);
+
+    public CapabilityAttestationContract ToContract(string evidenceDigest) =>
+        new(CapabilityId, Version, SchemaFingerprint, [Permission.ToString()], evidenceDigest, ObservedAt, ExpiresAt);
 }
 
 public interface ICapabilityAttestor
@@ -55,4 +58,52 @@ public sealed class CapabilityAttestor : ICapabilityAttestor
             ObservedAt: observed,
             ExpiresAt: observed.Add(_ttl));
     }
+}
+
+public sealed record CapabilityAttestationContract(
+    string CapabilityId,
+    string Version,
+    string SchemaFingerprint,
+    IReadOnlyCollection<string> Permissions,
+    string EvidenceDigest,
+    DateTimeOffset IssuedAt,
+    DateTimeOffset? ExpiresAt)
+{
+    public bool IsFresh(DateTimeOffset now) =>
+        IssuedAt <= now && ExpiresAt is not null && ExpiresAt > now;
+
+    public string Digest()
+    {
+        var permissions = string.Join(",", Permissions.OrderBy(x => x, StringComparer.Ordinal));
+        var canonical = string.Join("\n",
+            CapabilityId,
+            Version,
+            SchemaFingerprint,
+            permissions,
+            EvidenceDigest,
+            IssuedAt.UtcDateTime.ToString("O"),
+            ExpiresAt?.UtcDateTime.ToString("O") ?? string.Empty);
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical))).ToLowerInvariant();
+    }
+}
+
+public sealed class CapabilityRegistryContract
+{
+    private readonly Dictionary<string, CapabilityAttestationContract> _attestations =
+        new(StringComparer.Ordinal);
+
+    public void Register(CapabilityAttestationContract attestation) =>
+        _attestations[attestation.CapabilityId] = attestation;
+
+    public CapabilityAttestationContract? Lookup(string capabilityId) =>
+        _attestations.TryGetValue(capabilityId, out var value) ? value : null;
+
+    public CapabilityAttestationContract? Probe(string capabilityId, DateTimeOffset now)
+    {
+        var value = Lookup(capabilityId);
+        return value is not null && value.IsFresh(now) ? value : null;
+    }
+
+    public IReadOnlyCollection<CapabilityAttestationContract> ListActive(DateTimeOffset now) =>
+        _attestations.Values.Where(x => x.IsFresh(now)).ToArray();
 }

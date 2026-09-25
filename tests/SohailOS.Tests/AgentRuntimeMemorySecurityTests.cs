@@ -27,16 +27,15 @@ public sealed class AgentRuntimeMemorySecurityTests
     {
         var memory = new RecordingMemoryStore();
         var runtime = new AgentRuntime(new FinalProvider(), new ToolRegistry(), new StubToolExecutor(), memory);
-        var approval = new ApprovalBinding(
+        var approval = ApprovalBinding.Create(
+            "test-user",
             "memory_write",
             "SohailOS.Memory",
             "user-test",
             "persist memory",
-            RequestId: "",
-            Nonce: Guid.NewGuid().ToString("N"),
-            IssuedAt: DateTimeOffset.UtcNow.AddMinutes(-1),
-            ExpiresAt: DateTimeOffset.UtcNow.AddMinutes(5),
-            ScopeHash: ApprovalBinding.ScopeFingerprint("user-test"));
+            DateTimeOffset.UtcNow.AddMinutes(5),
+            Guid.NewGuid().ToString("N"),
+            issuedAt: DateTimeOffset.UtcNow.AddMinutes(-1));
 
         await runtime.RunAsync(
             "system",
@@ -47,6 +46,27 @@ public sealed class AgentRuntimeMemorySecurityTests
 
         Assert.Single(memory.Saves);
         Assert.Equal("user-test", memory.Saves[0].Key);
+    }
+
+    [Fact]
+    public async Task DurableMemoryTransaction_RejectsInvalidBinding()
+    {
+        var memory = new RecordingMemoryStore();
+        var invalid = ApprovalBinding.Create(
+            "test-user",
+            "memory_write",
+            "SohailOS.Memory",
+            "other-key",
+            "persist memory",
+            DateTimeOffset.UtcNow.AddMinutes(5),
+            Guid.NewGuid().ToString("N"));
+
+        var transaction = new MemoryTransactionContract("user-test", invalid);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            transaction.PersistAsync(memory, "value"));
+
+        Assert.Empty(memory.Saves);
     }
 
     private sealed class FinalProvider : IAiCompletionProvider

@@ -1,4 +1,5 @@
 import { CANONICAL_SUPERPROMPT, CANONICAL_SUPERPROMPT_SHA256 } from "./canonical-prompt";
+import { attestGatewayTool, authorizeToolCall } from "./gateway-policy";
 
 export interface Env {
   SOHAILOS_GATEWAY_TOKEN?: string;
@@ -233,8 +234,23 @@ async function mcp(request: Request, env: Env) {
   if (body?.method === "tools/list") return json({ jsonrpc: "2.0", id, result: { tools: mcpTools() } }, 200, origin);
   if (body?.method === "tools/call") {
     const name = body?.params?.name;
-    if (name === "sohailos_conformance_ping") return json({ jsonrpc: "2.0", id, result: { content: [{ type: "text", text: "SOHAILOS_MCP_CONFORMANCE_OK" }], structuredContent: { ok: true, deterministic: true } } }, 200, origin);
-    if (name !== "sohailos_agent_run") return json({ jsonrpc: "2.0", id, error: { code: -32602, message: "Unknown tool" } }, 400, origin);
+    const advertisedTool = mcpTools().find(tool => tool.name === name);
+    if (!advertisedTool) return json({ jsonrpc: "2.0", id, error: { code: -32602, message: "Unknown tool" } }, 400, origin);
+
+    const attestation = await attestGatewayTool(advertisedTool);
+    const capability = authorizeToolCall(name, attestation);
+    if (!capability.allowed) {
+      return json({ jsonrpc: "2.0", id, error: { code: -32003, message: capability.code } }, 403, origin);
+    }
+
+    if (name === "sohailos_conformance_ping") return json({
+      jsonrpc: "2.0",
+      id,
+      result: {
+        content: [{ type: "text", text: "SOHAILOS_MCP_CONFORMANCE_OK" }],
+        structuredContent: { ok: true, deterministic: true, capabilityAttestation: attestation }
+      }
+    }, 200, origin);
     if (!authorized(request, env)) return json({ jsonrpc: "2.0", id, error: { code: -32001, message: "Unauthorized" } }, 401, origin);
     const args = body?.params?.arguments ?? {};
     try {
