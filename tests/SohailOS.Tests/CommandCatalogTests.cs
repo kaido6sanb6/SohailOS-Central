@@ -1,3 +1,4 @@
+using System.Text.Json;
 using SohailOS.Core;
 using Xunit;
 
@@ -13,6 +14,24 @@ public sealed class CommandCatalogTests
         Assert.Equal(catalog.Count, catalog.Select(x => x.Trigger).Distinct(StringComparer.OrdinalIgnoreCase).Count());
         Assert.Contains(catalog, x => x.Trigger == "/plan");
         Assert.Contains(catalog, x => x.Trigger == "/verify");
+    }
+
+    [Fact]
+    public void JsonCatalog_MatchesRuntimeCatalogTriggers()
+    {
+        var path = FindRepositoryFile("ecosystem/command-catalog.json");
+        using var document = JsonDocument.Parse(File.ReadAllText(path));
+        var jsonTriggers = document.RootElement.GetProperty("commands")
+            .EnumerateArray()
+            .Select(x => x.GetProperty("trigger").GetString()!)
+            .OrderBy(x => x, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var runtimeTriggers = CommandCatalog.CreateDefault()
+            .Select(x => x.Trigger)
+            .OrderBy(x => x, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.Equal(jsonTriggers, runtimeTriggers);
     }
 
     [Fact]
@@ -42,6 +61,18 @@ public sealed class CommandCatalogTests
 
         Assert.False(result.Found);
         Assert.Equal("/does-not-exist", result.Trigger);
+    }
+
+    private static string FindRepositoryFile(string relativePath)
+    {
+        var current = new DirectoryInfo(AppContext.BaseDirectory);
+        while (current is not null)
+        {
+            var candidate = Path.Combine(current.FullName, relativePath);
+            if (File.Exists(candidate)) return candidate;
+            current = current.Parent;
+        }
+        return Path.GetFullPath(relativePath);
     }
 
     [Fact]
