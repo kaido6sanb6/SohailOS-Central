@@ -279,7 +279,7 @@ public sealed class EuropePmcProvider(HttpClient http) : IScholarlyProvider
         var payload = await response.Content.ReadFromJsonAsync<EpmcResponse>(cancellationToken: cancellationToken)
                       ?? new EpmcResponse();
 
-        var records = payload.ResponseList?.ResultList?.Results.Select(x => new ScholarlyRecord(
+        var records = payload.ResponseList?.Results.Select(x => new ScholarlyRecord(
             x.Id ?? x.DOI ?? Guid.NewGuid().ToString("N"),
             x.Title ?? "Untitled work",
             x.FullTextUrlList?.FullTextUrl?.FirstOrDefault()?.Url
@@ -308,7 +308,7 @@ public sealed class EuropePmcProvider(HttpClient http) : IScholarlyProvider
     private sealed record EpmcResponse(
         [property: JsonPropertyName("resultList")] EpmcResultList? ResponseList)
     {
-        public EpmcResponse() : this(null) { }
+        public EpmcResponse() : this((EpmcResultList?)null) { }
     }
 
     private sealed record EpmcResultList(
@@ -407,13 +407,16 @@ public sealed class UnpaywallProvider(HttpClient http, string? email) : IOpenAcc
         var payload = await response.Content.ReadFromJsonAsync<UnpaywallResponse>(cancellationToken: cancellationToken)
                       ?? new UnpaywallResponse();
 
-        var locations = payload.BestOaLocation is not null
-            ? [new OpenAccessLocation(
-                payload.BestOaLocation.EffectiveUrl,
-                payload.BestOaLocation.Version,
-                payload.BestOaLocation.License,
-                payload.BestOaLocation.HostType)]
-            : [];
+        IReadOnlyList<OpenAccessLocation> locations = payload.BestOaLocation is not null
+            ? new[]
+            {
+                new OpenAccessLocation(
+                    payload.BestOaLocation.EffectiveUrl,
+                    payload.BestOaLocation.Version,
+                    payload.BestOaLocation.License,
+                    payload.BestOaLocation.HostType)
+            }
+            : Array.Empty<OpenAccessLocation>();
 
         return record with
         {
