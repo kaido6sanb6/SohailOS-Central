@@ -135,8 +135,8 @@ public sealed class ResearchIntelligenceTests
 
         var record = Assert.Single(records);
         Assert.Equal("University Repository Study", record.Title);
-        Assert.Contains(record.Authors, author => author.Name == "Jane Doe");
-        Assert.Contains("sociology", record.Subjects);
+        Assert.Contains(record.Authors ?? Array.Empty<ScholarlyAuthor>(), author => author.Name == "Jane Doe");
+        Assert.Contains("sociology", record.Subjects ?? Array.Empty<string>());
         Assert.Equal("https://repository.example/item/1", record.Url);
     }
 
