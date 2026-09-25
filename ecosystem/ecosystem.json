@@ -2854,6 +2854,114 @@
         "fork": true,
         "last_seen_at": "2026-09-24T22:39:33.3642669Z"
       }
+    },
+    {
+      "repo": "kaido6sanb6/bibcure",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/bibcure"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1387169081,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-25T19:51:48.6275317Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/cline",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/cline"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1387390939,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-25T19:51:48.6275317Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/onefilellm",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/onefilellm"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1387167760,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-25T19:51:48.6275317Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/paperdl",
+      "default_branch": "main",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/paperdl"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1387174164,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-25T19:51:48.6275317Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/Sci-Hub",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/Sci-Hub"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1387171883,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-25T19:51:48.6275317Z"
+      }
+    },
+    {
+      "repo": "kaido6sanb6/scihub2pdf",
+      "default_branch": "master",
+      "role": "unclassified",
+      "capabilities": [],
+      "verification_status": "unverified",
+      "auto_route": false,
+      "evidence": [
+        "https://github.com/kaido6sanb6/scihub2pdf"
+      ],
+      "notes": "Discovered by live ecosystem reconciliation; capability classification requires evidence review.",
+      "inventory": {
+        "id": 1387170331,
+        "private": false,
+        "fork": true,
+        "last_seen_at": "2026-09-25T19:51:48.6275317Z"
+      }
     }
   ],
   "edges": [
@@ -4502,14 +4610,50 @@
       "upstream": null,
       "status": "unverified",
       "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/bibcure",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/cline",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/onefilellm",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/paperdl",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/Sci-Hub",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
+    },
+    {
+      "repo": "kaido6sanb6/scihub2pdf",
+      "upstream": null,
+      "status": "unverified",
+      "reason": "Live inventory establishes repository identity only; parent/source provenance is not inferred."
     }
   ],
   "sync": {
     "owner": "kaido6sanb6",
     "scope": "public-owner-inventory",
-    "last_reconciled_at": "2026-09-24T22:39:33.3642669Z",
-    "live_repository_count": 166,
-    "registry_repository_count": 166
+    "last_reconciled_at": "2026-09-25T19:51:48.6275317Z",
+    "live_repository_count": 172,
+    "registry_repository_count": 172
   },
   "fork_capability_registry": "ecosystem/fork-capabilities.json",
   "command_catalog": "ecosystem/command-catalog.json"
