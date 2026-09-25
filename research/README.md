@@ -47,3 +47,34 @@ SohailOS may index metadata and use openly licensed or otherwise permitted full 
 
 ## Synchronization
 Forks remain independently synchronized with their upstreams. SohailOS-Central records identity and capability; it does not blindly merge upstream application code into the core runtime.
+
+
+## Executable intelligence layer
+
+The runtime research engine is exposed through the Gateway and uses a canonical scholarly record model rather than returning provider-native payloads.
+
+Active discovery providers:
+- OpenAlex: works, authors, topics, OA metadata and reconstructed abstracts.
+- Crossref: DOI and bibliographic metadata.
+- Semantic Scholar: optional API-key provider for paper/author discovery.
+- Europe PMC: biomedical and psychology-adjacent discovery.
+- OpenCitations: DOI-based citation-graph expansion.
+- Unpaywall: optional DOI-based lawful OA resolution.
+
+Document/repository adapters:
+- OAI-PMH institutional repository harvester. Endpoints are strictly allowlisted with \`SOHAILOS_OAI_ENDPOINTS\`.
+- GROBID TEI parser and HTTP client for permitted scholarly PDFs.
+
+Runtime configuration:
+- \`SOHAILOS_SEMANTIC_SCHOLAR_API_KEY\` — optional.
+- \`SOHAILOS_UNPAYWALL_EMAIL\` — optional and used for Unpaywall requests.
+- \`SOHAILOS_OAI_ENDPOINTS\` — optional semicolon-separated \`name=https://repository.example/oai\` entries.
+
+Gateway surfaces:
+- \`POST /v1/research/search\` — federated discovery, canonicalization, OA enrichment, deterministic ranking and citation graph.
+- \`POST /v1/research/review/plan\` — systematic-review workflow plan with explicit screening/extraction/audit stages.
+- \`GET /v1/research/capabilities\` — configured provider and repository capabilities.
+- \`POST /v1/research/repository/harvest\` — harvests only an allowlisted OAI-PMH repository.
+
+The systematic-review layer defines an auditable extraction schema; it does not invent study data or silently perform statistical synthesis. Any meta-analysis requires actual extracted effect estimates and their uncertainty from admissible sources.
+The research-intelligence CI gate runs the complete .NET test suite on a Windows runner so the solution's Windows-targeting project is verified alongside the research layer.

@@ -35,7 +35,30 @@ bool Authorized(HttpRequest request) =>
 
 var registry = new ToolRegistry();
 var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-var researchEngine = new ResearchEngine(httpClient);
+
+var semanticScholarKey = Environment.GetEnvironmentVariable("SOHAILOS_SEMANTIC_SCHOLAR_API_KEY");
+var unpaywallEmail = Environment.GetEnvironmentVariable("SOHAILOS_UNPAYWALL_EMAIL");
+var scholarlyOpenAlex = new OpenAlexProvider(httpClient);
+var scholarlyCrossref = new CrossrefProvider(httpClient);
+var scholarlySemanticScholar = new SemanticScholarProvider(httpClient, semanticScholarKey);
+var scholarlyEuropePmc = new EuropePmcProvider(httpClient);
+var scholarlyOpenCitations = new OpenCitationsProvider(httpClient);
+IOpenAccessResolver? scholarlyOpenAccess = string.IsNullOrWhiteSpace(unpaywallEmail)
+    ? new UnpaywallProvider(httpClient, null)
+    : new UnpaywallProvider(httpClient, unpaywallEmail);
+
+var researchIntelligence = new ResearchIntelligenceEngine(
+    [
+        scholarlyOpenAlex,
+        scholarlyCrossref,
+        scholarlySemanticScholar,
+        scholarlyEuropePmc,
+        scholarlyOpenCitations
+    ],
+    scholarlyOpenAccess,
+    scholarlyOpenCitations);
+
+var oaiEndpoints = ParseAllowedEndpoints(Environment.GetEnvironmentVariable("SOHAILOS_OAI_ENDPOINTS"));
 var knowledgeIndexPath = Environment.GetEnvironmentVariable("SOHAILOS_KNOWLEDGE_INDEX_PATH")
     ?? Path.Combine(AppContext.BaseDirectory, "App_Data", "sohailos-knowledge-index.json");
 DataPlaneProvider knowledgeProvider = new JsonFileDataPlaneProvider(knowledgeIndexPath);
@@ -75,8 +98,83 @@ app.MapPost("/v1/research/search", async (HttpRequest request, ResearchSearchReq
     if (!Authorized(request)) return Results.Unauthorized();
     if (string.IsNullOrWhiteSpace(input.Query))
         return Results.BadRequest(new { error = "query is required" });
-    var result = await researchEngine.SearchAsync(input, cancellationToken);
-    return Results.Ok(result);
+
+    var result = await researchIntelligence.SearchAsync(input, cancellationToken);
+    return Results.Ok(new
+    {
+        result.Query,
+        discipline = result.Discipline.ToString(),
+        records = result.Records,
+        graph = result.Graph,
+        plan = result.Plan,
+        audit_trail = result.AuditTrail,
+        degraded_flags = result.DegradedFlags,
+        evidence_policy = new
+        {
+            lawful_open_access_only = true,
+            no_paywall_bypass = true,
+            provenance_required = result.Plan.RequiresProvenance
+        }
+    });
+});
+
+app.MapPost("/v1/research/review/plan", (HttpRequest request, ResearchReviewPlanRequest input) =>
+{
+    if (!Authorized(request)) return Results.Unauthorized();
+    if (string.IsNullOrWhiteSpace(input.Query))
+        return Results.BadRequest(new { error = "query is required" });
+
+    var discipline = input.Discipline == ResearchDiscipline.General
+        ? ResearchQueryClassifier.Classify(input.Query)
+        : input.Discipline;
+    return Results.Ok(SystematicReviewPlanner.Create(input.Query, discipline));
+});
+
+app.MapGet("/v1/research/capabilities", (HttpRequest request) =>
+{
+    if (!Authorized(request)) return Results.Unauthorized();
+    return Results.Ok(new
+    {
+        providers = new[]
+        {
+            new { name = scholarlyOpenAlex.Name, configured = scholarlyOpenAlex.IsConfigured },
+            new { name = scholarlyCrossref.Name, configured = scholarlyCrossref.IsConfigured },
+            new { name = scholarlySemanticScholar.Name, configured = scholarlySemanticScholar.IsConfigured },
+            new { name = scholarlyEuropePmc.Name, configured = scholarlyEuropePmc.IsConfigured },
+            new { name = scholarlyOpenCitations.Name, configured = scholarlyOpenCitations.IsConfigured },
+            new { name = scholarlyOpenAccess.Name, configured = scholarlyOpenAccess.IsConfigured }
+        },
+        institutional_repository_endpoints = oaiEndpoints.Keys.OrderBy(x => x, StringComparer.Ordinal).ToArray(),
+        modes = new[] { "metadata", "oa", "citation-graph", "oai-pmh", "grobid" },
+        lawful_access_only = true
+    });
+});
+
+app.MapPost("/v1/research/repository/harvest", async (
+    HttpRequest request,
+    ResearchRepositoryHarvestRequest input,
+    CancellationToken cancellationToken) =>
+{
+    if (!Authorized(request)) return Results.Unauthorized();
+    if (string.IsNullOrWhiteSpace(input.Repository))
+        return Results.BadRequest(new { error = "repository is required" });
+
+    if (!oaiEndpoints.TryGetValue(input.Repository, out var endpoint))
+        return Results.BadRequest(new { error = "repository is not in SOHAILOS_OAI_ENDPOINTS allowlist" });
+
+    var provider = new OaiPmhProvider(httpClient, endpoint);
+    var records = await provider.HarvestAsync(
+        input.Set,
+        Math.Clamp(input.Limit, 1, 100),
+        cancellationToken);
+
+    return Results.Ok(new
+    {
+        repository = input.Repository,
+        records,
+        count = records.Count,
+        data_not_instructions = true
+    });
 });
 
 app.MapGet("/health", () => Results.Ok(new
@@ -170,6 +268,28 @@ app.MapGet("/mcp", (HttpRequest request) =>
 
 app.Run();
 
+static Dictionary<string, string> ParseAllowedEndpoints(string? raw)
+{
+    var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    foreach (var entry in (raw ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+    {
+        var separator = entry.IndexOf('=');
+        if (separator <= 0 || separator >= entry.Length - 1)
+            continue;
+
+        var name = entry[..separator].Trim();
+        var endpointText = entry[(separator + 1)..].Trim();
+        if (string.IsNullOrWhiteSpace(name) ||
+            !Uri.TryCreate(endpointText, UriKind.Absolute, out var endpoint) ||
+            endpoint.Scheme is not ("https" or "http"))
+            continue;
+
+        result[name] = endpoint.AbsoluteUri;
+    }
+
+    return result;
+}
+
 static IMemoryStore CreateMemoryStore(HttpClient httpClient)
 {
     var url = Environment.GetEnvironmentVariable("SOHAILOS_SUPABASE_URL");
@@ -245,6 +365,15 @@ static async Task<object> CallToolAsync(JsonElement parameters, IToolExecutor ex
         requiresConfirmation = result.RequiresConfirmation
     };
 }
+
+public sealed record ResearchReviewPlanRequest(
+    string Query,
+    ResearchDiscipline Discipline = ResearchDiscipline.General);
+
+public sealed record ResearchRepositoryHarvestRequest(
+    string Repository,
+    string? Set = null,
+    int Limit = 25);
 
 public sealed record AgentRunRequest(
     string Prompt,
