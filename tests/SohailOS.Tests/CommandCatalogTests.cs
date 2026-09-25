@@ -81,7 +81,7 @@ public sealed class CommandCatalogTests
         var command = CommandCatalog.Resolve("/approve");
 
         Assert.True(command.Found);
-        Assert.True(command.IsApprovalIntent);
-        Assert.False(command.GrantsAuthorization);
+        Assert.True(command.Command!.IsApprovalIntent);
+        Assert.False(command.Command.GrantsAuthorization);
     }
 }
