@@ -51,6 +51,9 @@ jobs:
         working-directory: cloudflare/sohailos-gateway
         run: node scripts/gateway-policy.test.mjs
 
+      - name: Python tooling regression tests
+        run: python -m unittest discover -s tests -p "test_*.py"
+
       - name: Deep operational hardening
         run: python security/deep_operational_hardening.py
 
