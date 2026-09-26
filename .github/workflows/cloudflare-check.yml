@@ -2,9 +2,7 @@ name: Cloudflare Worker Check
 
 on:
   pull_request:
-    paths:
-      - 'cloudflare/sohailos-gateway/**'
-      - '.github/workflows/cloudflare-check.yml'
+    branches: [ main ]
   push:
     branches:
       - main
