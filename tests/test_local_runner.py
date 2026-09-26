@@ -5,12 +5,16 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 
+
 def load_runner():
-    spec = importlib.util.spec_from_file_location("sohailos_local_runner", ROOT / "scripts" / "run_local.py")
+    spec = importlib.util.spec_from_file_location(
+        "sohailos_local_runner", ROOT / "scripts" / "run_local.py"
+    )
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
     return module
+
 
 class LocalRunnerTests(TestCase):
     def test_verify_runs_repository_checks_without_github_actions(self):
@@ -41,6 +45,16 @@ class LocalRunnerTests(TestCase):
         with patch.object(runner, "run", return_value=0) as mocked:
             self.assertEqual(runner.fork_apply(), 0)
         self.assertEqual(mocked.call_args.args[0][1:], ["scripts/apply_fork_plan.py"])
+
+    def test_corpus_sync_is_local_entrypoint(self):
+        runner = load_runner()
+        with patch.object(runner, "run", return_value=0) as mocked:
+            self.assertEqual(runner.corpus_sync(), 0)
+        self.assertEqual(
+            mocked.call_args.args[0][1:],
+            ["scripts/sync_system_prompts_leaks.py"],
+        )
+
 
 if __name__ == "__main__":
     import unittest
