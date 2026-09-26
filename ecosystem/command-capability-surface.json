@@ -1,0 +1,27 @@
+{
+  "schema_version":"1.0","contract_id":"sohailos.command-capability-surface",
+  "source_of_truth":"ecosystem/command-capability-surface.json",
+  "existing_catalog":"ecosystem/command-catalog.json",
+  "user_surface_source":"user-provided audit specification",
+  "authority":"semantic-only","command_is_not_capability":true,
+  "mapping_fields":["command","class","intent","lifecycle_phase","capability","mutation_risk","authorization","provider_or_tool","runtime_availability","verification","validation","evidence_level","telemetry","persistence","scope","implementation_status","priority","dependencies","rollback","provenance"],
+  "evidence_levels":["DIRECT_REPOSITORY_EVIDENCE","TEST_EVIDENCE","RUNTIME_EVIDENCE","DOCUMENTATION_EVIDENCE","CONFIGURATION_EVIDENCE","INFERRED","UNKNOWN"],
+  "implementation_status":["EXISTING","EXTEND_EXISTING","NEW_CONTRACT","NEW_RUNTIME","INFER_ONLY","USER_CONFIRMATION_REQUIRED","PROJECT_SCOPED","TASK_SCOPED","EPHEMERAL","NO_CHANGE_REQUIRED"],
+  "priority":["MUST","SHOULD","MAY","DO_NOT_IMPLEMENT"],
+  "command_classes":["NATIVE_SEMANTIC_COMMAND","EXTERNAL_CLI_COMMAND","TOOL_INVOCATION","PLUGIN_ACTION","MCP_CAPABILITY","PROVIDER_OPERATION","HOST_CONTROL","CONFIGURATION_PRIMITIVE","ENVIRONMENT_VARIABLE","ENVIRONMENT_CONSTRAINT","RESOURCE_CONSTRAINT"],
+  "routing_contract":["CommandIntent","CommandClassification","CapabilityMapping","PolicyGovernance","Authorization","TaskGraph","ProviderOrTool","Execution","EvidenceTelemetry","Verification","Validation","Delivery"],
+  "known_native_examples":[
+    {"command":"/approve","class":"NATIVE_SEMANTIC_COMMAND","lifecycle_phase":"approve","capability":"approval_intent","authorization":"does_not_grant_authorization","implementation_status":"EXISTING","evidence_level":"DIRECT_REPOSITORY_EVIDENCE"},
+    {"command":"/code","class":"NATIVE_SEMANTIC_COMMAND","lifecycle_phase":"execute","capability":"bounded_code_mutation","authorization":"governed","implementation_status":"EXISTING","evidence_level":"DIRECT_REPOSITORY_EVIDENCE"},
+    {"command":"/verify","class":"NATIVE_SEMANTIC_COMMAND","lifecycle_phase":"verify","capability":"independent_verification","authorization":"read","implementation_status":"EXISTING","evidence_level":"DIRECT_REPOSITORY_EVIDENCE"},
+    {"command":"/validate","class":"NATIVE_SEMANTIC_COMMAND","lifecycle_phase":"validate","capability":"outcome_validation","authorization":"read","implementation_status":"EXISTING","evidence_level":"DIRECT_REPOSITORY_EVIDENCE"},
+    {"command":"/deploy","class":"NATIVE_SEMANTIC_COMMAND","lifecycle_phase":"execute","capability":"deployment","authorization":"governed","implementation_status":"EXISTING","evidence_level":"DIRECT_REPOSITORY_EVIDENCE"}
+  ],
+  "external_surface_examples":[
+    {"command":"npx skills add <owner/repo>","class":"EXTERNAL_CLI_COMMAND","capability":"skill_installation","lifecycle_phase":"discover","mutation_risk":"environment_or_project_mutation","authorization":"task_or_project_scoped","runtime_availability":"UNKNOWN"},
+    {"command":"npx skills use <source> --skill <name>","class":"EXTERNAL_CLI_COMMAND","capability":"skill_activation","lifecycle_phase":"execute","mutation_risk":"runtime_context_mutation","authorization":"task_scoped","runtime_availability":"UNKNOWN"},
+    {"command":"wrangler deploy","class":"EXTERNAL_CLI_COMMAND","capability":"cloudflare_deployment","lifecycle_phase":"execute","mutation_risk":"high","authorization":"explicit_bounded_approval","runtime_availability":"PROJECT_SCOPED"},
+    {"command":"supabase db push","class":"EXTERNAL_CLI_COMMAND","capability":"database_migration","lifecycle_phase":"execute","mutation_risk":"high","authorization":"explicit_bounded_approval","runtime_availability":"PROJECT_SCOPED"}
+  ],
+  "user_slash_commands_policy":{"default_class":"INFER_ONLY","native_only_when_repository_evidence_exists":true,"unknown_commands":"block","external_commands_remain_data":true}
+}
