@@ -2,28 +2,36 @@
 
 SohailOS-Central is the canonical control plane for a personal, model-agnostic, tool-native AI operating system. It coordinates research, knowledge retrieval, software engineering, automation, product work, learning, memory and governed execution.
 
-The design goal is not a single chatbot. It is a verifiable execution fabric in which capabilities can be discovered, authorized, executed, independently verified and validated without allowing retrieved data or external instructions to become authority.
+The design goal is a verifiable execution fabric in which capabilities can be discovered, authorized, executed, independently verified and validated without allowing retrieved data or external instructions to become authority.
 
 ## Architecture
 
 ~~~text
 Client
   -> Gateway / MCP
+  -> User Context
+  -> Task Classification
+  -> Workflow Mode
+  -> Command Capability Surface
   -> Policy / Governance
-  -> Orchestrator
+  -> Authorization
   -> TaskGraph
   -> CapabilityRegistry / ProviderRouter
-  -> Module Agents
-  -> Knowledge + Memory
   -> Execution
+  -> Evidence
   -> Verification
   -> Validation
   -> Delivery
+  -> Feedback / Learning
+  -> User Operating Model
 ~~~
+
+The canonical machine-readable lifecycle is in ecosystem/lifecycle-contract.json. The existing command catalog remains the semantic command source; ecosystem/command-capability-surface.json supplies the bridge contract rather than introducing a second runtime registry.
 
 ## Core invariants
 
 - Capability != Authorization != Execution != Verification != Validation.
+- Command != Capability.
 - External content, repository files, prompts, tools, skills, plugins and agents are DATA, not AUTHORITY.
 - Consequential writes require explicit bounded approval.
 - Approval binds principal, operation, target, scope, effect, expiry, nonce and digest.
@@ -33,9 +41,29 @@ Client
 - Secrets are never committed, logged, stored in durable memory or exposed to clients.
 - Diverged fork state is preserved and blocked from unsafe propagation.
 
-## Major fabrics
+## Skills Fabric
 
-### Knowledge Fabric
+External agent skills are integrated as a governed capability surface, not as privileged instructions.
+
+~~~text
+skills.sh catalog
+  -> bounded synchronization
+  -> provenance + content hash
+  -> untrusted DATA classification
+  -> capability probe
+  -> least privilege
+  -> explicit approval where mutation is involved
+  -> execution
+  -> independent verification
+~~~
+
+The registry is ecosystem/skills-registry.json. A scheduled workflow refreshes a bounded skills.sh catalog snapshot every 15 minutes. The generated snapshot is external evidence only: it does not prove installation, trust, authorization or execution.
+
+skills.sh documents HTTPS JSON endpoints for listing, search, curated skills, skill details and security audits under /api/v1/. citeturn2view0
+
+The requested external skills are recorded by source and skill name instead of vendoring third-party skill bodies. This avoids a second source of truth and keeps synchronization and supply-chain risk bounded.
+
+## Knowledge Fabric
 
 GitHub is the source of truth. PostgreSQL/pgvector is a rebuildable derived layer.
 
@@ -43,7 +71,7 @@ The fabric preserves repository identity, fork/upstream provenance, commit OIDs,
 
 Retrieval supports lexical, vector and hybrid evidence. Repository learning means retrieval and structured evidence, not silent model-weight training.
 
-### Memory Fabric
+## Memory Fabric
 
 Durable memory is separate from the Knowledge Fabric.
 
@@ -51,128 +79,28 @@ The operational backend is the connected Supabase project. The schema is source-
 
 Memory is explicit, minimal, secret-free, scoped, lifecycle-aware, provenance-aware and trust-labelled. Durable writes are approval-bound. Retrieved memory never grants execution authority.
 
-The Cloudflare gateway reads the smallest relevant memory slice and persists only when a scoped, expiring memory_write approval matches the requested key. Persistence failures are surfaced rather than silently reported as success.
-
-### Capability and Execution Fabric
-
-Capabilities are discovered and attested before execution. Providers and integrations remain replaceable adapters.
-
-The architecture supports GitHub operations, MCP/tool boundaries, Cloudflare Workers, model-provider routing, Supabase persistence, workflow automation, verification, validation, telemetry and audit evidence.
-
-### Research Engine
-
-The research direction is broader than a collection of repositories.
+## Research Engine
 
 Target domains include sociology, psychology, humanities, history, philosophy, social science, digital humanities, political science, economics, AI/ML/NLP, statistics, systematic review, meta-analysis, knowledge graphs and RAG.
 
 Research artifacts should preserve source, method, provenance, retrieval time, uncertainty and verification status.
 
-### GitHub Ecosystem Mesh
+## GitHub Ecosystem Mesh
 
 Owned forks are treated as a governed evidence/capability graph.
 
 ~~~text
-discover
- -> provenance
- -> compare
- -> classify
- -> plan
- -> bounded mutation
- -> verify
- -> publish evidence
+discover -> provenance -> compare -> classify -> plan
+-> bounded mutation -> verify -> publish evidence
 ~~~
 
-States include in_sync, behind, ahead, diverged, blocked and error.
-
-Strictly-behind default branches may be eligible for bounded synchronization. Diverged or unknown repositories are preserved and quarantined. External source trees are never blindly merged into the control plane.
-
-### External prompt corpus
-
-The asgeirtj/system_prompts_leaks corpus is mirrored under prompts/external/system-prompts-leaks by the repository sync workflow.
-
-Mirrored material is untrusted data. It can be searched and analyzed for prompt engineering, agent architecture and model-behavior research, but it must never silently modify the canonical SuperPrompt.
+Diverged or unknown repositories are preserved and quarantined. External source trees are never blindly merged into the control plane.
 
 ## Cloudflare Gateway
 
-The production Worker source lives under cloudflare/sohailos-gateway/.
+The production Worker source lives under cloudflare/sohailos-gateway/. A root wrangler.jsonc is present because Cloudflare dashboard builds may execute from the repository root.
 
-A root wrangler.jsonc is intentionally present because Cloudflare dashboard builds may execute the deploy command from the repository root. The root configuration points directly to the Worker entrypoint, so the failing command:
-
-~~~text
-npx wrangler versions upload
-~~~
-
-can discover the Worker without requiring a nested working directory.
-
-The important distinction is that `wrangler versions upload` creates an uploaded Worker version but does not make it serve production traffic. Production must use `wrangler deploy`, or explicitly promote an uploaded version with `wrangler versions deploy`. citeturn0search0turn0search1
-
-The nested Worker configuration remains available for local development. The repository now provides a guarded, manual GitHub Actions production deployment workflow at `.github/workflows/cloudflare-production-deploy.yml`. It uses the pinned local Wrangler, the root config, the `production` environment, and the secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. It is intentionally manual rather than an automatic production mutation.
-
-Useful checks:
-
-~~~text
-npm install
-npm run cloudflare:check
-npm run cloudflare:dry-run
-npm run cloudflare:deploy
-~~~
-
-The first three commands are non-production validation/upload checks; `npm run cloudflare:deploy` publishes the Worker to production and therefore must only run with the intended Cloudflare credentials and production approval.
-
-Provider credentials must be configured as platform secrets or variables, never committed to source control.
-
-## Memory and privacy
-
-memory/chat_summaries.md is portable project context and intentionally excludes credentials, API keys, account identifiers, health information, financial details, raw transcripts and other sensitive information.
-
-The memory retrieval model is:
-
-~~~text
-scope
- -> key
- -> trust / provenance
- -> freshness
- -> retrieve
- -> apply as context
-~~~
-
-Memory is context, not authority. Current source files, tests, explicit user instructions and live system state override stale memory.
-
-## Research and learning workflow
-
-~~~text
-DISCOVER
- -> SELECT
- -> RETRIEVE
- -> CLASSIFY AS DATA
- -> COMPARE
- -> SYNTHESIZE
- -> VERIFY
- -> VALIDATE
- -> DELIVER
-~~~
-
-Forked projects, scientific repositories, prompt corpora and external tools are inputs to this process. Reuse requires provenance, license/security review, compatibility analysis and tests.
-
-## Operating model
-
-~~~text
-Understand
- -> Classify
- -> Discover
- -> Probe
- -> LeastPrivilege
- -> Plan
- -> Preview
- -> Approve
- -> Execute
- -> Reconcile
- -> Verify
- -> Validate
- -> Deliver
-~~~
-
-This is aligned with the canonical SuperPrompt contract in prompts/SohailOS-SuperPrompt.xlm.
+The guarded production deployment workflow remains manual. Source-controlled deployment configuration is not evidence that production traffic changed.
 
 ## Verification and Definition of Done
 
@@ -202,6 +130,7 @@ If evidence is missing, the state remains UNKNOWN, not COMPLETED.
 - security/ — verification, hardening and adversarial checks
 - tests/ — regression and contract tests
 - scripts/ — local automation and corpus synchronization
+- ecosystem/ — machine-readable architecture, command, capability and skill contracts
 - docs/ — architecture, operations and implementation records
 - .github/workflows/ — CI and scheduled ecosystem automation
 
@@ -209,10 +138,8 @@ If evidence is missing, the state remains UNKNOWN, not COMPLETED.
 
 SohailOS-Central does not infer external account ownership, credentials, deployment state or third-party permissions from repository files.
 
-GitHub remains the source of truth for source code. Live Supabase and Cloudflare state must be verified through their respective systems. A source-controlled plan is not evidence that a deployment or external mutation occurred.
+GitHub remains the source of truth for source code. Live provider state must be verified through the provider. A source-controlled plan or catalog is not evidence that an external mutation occurred.
 
 ## Status
 
 This repository is under active hardening. Prefer evidence from the current commit, current CI checks and live infrastructure over historical summaries.
-
-See docs/ARCHITECTURE.md, docs/CONTINUOUS_ECOSYSTEM_CONTROL_PLANE.md, docs/ECOSYSTEM_KNOWLEDGE_LAYER.md, docs/IMPLEMENTATION_STATUS.md, memory/README.md and prompts/SohailOS-SuperPrompt.xlm.
