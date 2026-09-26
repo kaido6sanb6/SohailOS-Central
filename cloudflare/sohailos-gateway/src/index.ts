@@ -456,7 +456,6 @@ function dashboardHtml(env: Env): Response {
     </div>
   </div>
   
-  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>`;
 
