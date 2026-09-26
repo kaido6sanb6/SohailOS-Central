@@ -57,8 +57,15 @@ public sealed class TaskGraph
         return _nodes.Values
             .Where(n => n.Status == TaskNodeStatus.Planned &&
                         n.Dependencies.All(d => _nodes[d].Status == TaskNodeStatus.Completed))
-            .Select(n => n with { Status = TaskNodeStatus.Ready })
             .ToArray();
+    }
+
+    public IReadOnlyList<TaskNode> ClaimReadyNodes()
+    {
+        var ready = GetReadyNodes();
+        foreach (var node in ready)
+            SetStatus(node.Id, TaskNodeStatus.Ready);
+        return ready.Select(node => node with { Status = TaskNodeStatus.Ready }).ToArray();
     }
 
     public void SetStatus(string nodeId, TaskNodeStatus status)
