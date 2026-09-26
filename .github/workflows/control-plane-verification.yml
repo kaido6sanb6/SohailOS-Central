@@ -44,6 +44,8 @@ jobs:
         run: node scripts/gateway-policy.test.mjs
       - name: Deep operational hardening
         run: python security/deep_operational_hardening.py
+      - name: Validate command, lifecycle and skills contracts
+        run: python security/verify_command_capability_surface.py
       - name: Validate JSON registries
         run: |
           jq empty ecosystem/architecture-v2.json
