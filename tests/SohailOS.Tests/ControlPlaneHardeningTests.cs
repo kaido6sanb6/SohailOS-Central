@@ -106,10 +106,14 @@ public sealed class ControlPlaneHardeningTests
         var graph = new TaskGraph();
         graph.Add(new TaskNode("a", "A", [], ActionClass.Read, new RetryPolicy(true)));
 
-        var ready = Assert.Single(graph.GetReadyNodes());
-        Assert.Equal(TaskNodeStatus.Ready, ready.Status);
+        var eligible = Assert.Single(graph.GetReadyNodes());
+        Assert.Equal(TaskNodeStatus.Planned, eligible.Status);
+        Assert.Equal(TaskNodeStatus.Planned, Assert.Single(graph.Nodes).Status);
 
-        graph.SetStatus("a", TaskNodeStatus.Ready);
+        var ready = Assert.Single(graph.ClaimReadyNodes());
+        Assert.Equal(TaskNodeStatus.Ready, ready.Status);
+        Assert.Equal(TaskNodeStatus.Ready, Assert.Single(graph.Nodes).Status);
+
         graph.SetStatus("a", TaskNodeStatus.Running);
 
         Assert.Equal(TaskNodeStatus.Running, Assert.Single(graph.Nodes).Status);
