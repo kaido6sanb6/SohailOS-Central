@@ -40,7 +40,7 @@ The 12-case security regression evaluator is in `security/ai_security_regression
 - Scored rule-based routing with primary/supporting modules
 - Provider-independent AI contracts
 - OpenAI-compatible, Anthropic, Gemini-compatible, and stub providers
-- Local JSON and optional Supabase/PostgREST memory
+- Local JSON plus governed Supabase/PostgREST durable memory boundary
 - Persistent conversation history and context builder
 - Permission-aware tool registry/executor with read/write/destructive boundaries
 - Bounded autonomous agent tool loop
@@ -57,7 +57,7 @@ The 12-case security regression evaluator is in `security/ai_security_regression
 
 ## Deployment state
 
-The Cloudflare deployment path is wired for deployment and runtime-secret synchronization. Required account-owned configuration remains external to source control.
+The Cloudflare deployment path is wired for deployment and runtime-secret synchronization. The repository root now contains a Wrangler configuration and pinned root Wrangler dependency so dashboard commands executed from repository root can resolve the Worker entrypoint. Required account-owned configuration remains external to source control.
 
 Required GitHub Actions secrets for a provider-enabled live V1:
 - `CLOUDFLARE_API_TOKEN`
@@ -95,7 +95,7 @@ Fork synchronization is scheduled every 15 minutes, uses non-destructive upstrea
 
 - Full MCP Streamable HTTP/SSE compatibility where required by target clients
 - OAuth for multi-user/remote deployments
-- Deeper long-term memory governance
+- Deeper long-term memory consolidation, lifecycle automation and vector/semantic retrieval
 - Full external adapter suite
 - Automatic model routing by task/cost/latency policy
 - Rich desktop task workspace/settings UI
@@ -123,4 +123,4 @@ The runtime enforcement layer is implemented in the V3 hardening branch and cove
 - opt-in durable memory persistence
 - gateway migration from boolean write confirmation to structured approval
 
-The branch must not be reported as production-complete until the build/test workflow is green and the resulting commit has been independently checked.
+The branch must not be reported as production-complete until the build/test workflow is green and the resulting commit has been independently checked. The governed Supabase memory schema is live and RLS-enabled; Cloudflare root configuration is CI-validated with Wrangler dry-run.

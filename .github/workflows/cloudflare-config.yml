@@ -1,0 +1,26 @@
+name: cloudflare-config
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'wrangler.jsonc'
+      - 'package.json'
+      - 'cloudflare/sohailos-gateway/**'
+      - '.github/workflows/cloudflare-config.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --ignore-scripts
+      - run: npm run cloudflare:check
+      - run: npm run cloudflare:dry-run

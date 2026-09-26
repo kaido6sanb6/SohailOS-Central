@@ -44,7 +44,8 @@ function responseHeaders(origin: string): Headers {
     "cache-control": "no-store",
     "x-content-type-options": "nosniff",
     "access-control-allow-headers": "authorization,content-type,mcp-session-id",
-    "access-control-allow-methods": "GET,POST,OPTIONS"
+    "access-control-allow-methods": "GET,POST,OPTIONS",
+    "vary": "Origin"
   });
   if (origin) headers.set("access-control-allow-origin", origin);
   return headers;
@@ -178,16 +179,28 @@ function canPersistDurableMemory(approval: MemoryApproval | undefined, memoryKey
 async function saveMemory(env: Env, key: string, snapshot: MemorySnapshot): Promise<void> {
   if (!env.SOHAILOS_SUPABASE_URL || !env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY) return;
   const table = env.SOHAILOS_SUPABASE_TABLE ?? "sohailos_memory";
-  const url = `${env.SOHAILOS_SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${encodeURIComponent(table)}`;
-  try {
-    await fetchWithTimeout(url, { method: "POST", headers: { "content-type": "application/json", prefer: "resolution=merge-duplicates,return=minimal", apikey: env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY, authorization: `Bearer ${env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY}` }, body: JSON.stringify({ key, value: JSON.stringify(snapshot), updated_at: snapshot.updatedAt }) });
-  } catch {}
+  const url = env.SOHAILOS_SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/" + encodeURIComponent(table);
+  const payload = JSON.stringify(snapshot);
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(payload));
+  const contentHash = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+  const response = await fetchWithTimeout(url, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      prefer: "resolution=merge-duplicates,return=minimal",
+      apikey: env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY,
+      authorization: "Bearer " + env.SOHAILOS_SUPABASE_SERVICE_ROLE_KEY
+    },
+    body: JSON.stringify({ key, value: payload, namespace: "global", kind: "conversation", trust: "verified", source: "sohailos-gateway", content_hash: contentHash, updated_at: snapshot.updatedAt })
+  });
+  if (!response.ok) throw new Error("Memory persistence failed with status " + response.status);
 }
 
 async function runAgent(request: AgentRequest, env: Env) {
   if (!request || typeof request.prompt !== "string" || !request.prompt.trim()) throw new Error("prompt is required");
   if (request.prompt.length > MAX_PROMPT_LENGTH) throw new Error(`prompt exceeds ${MAX_PROMPT_LENGTH} characters`);
-  const memoryKey = (typeof request.memoryKey === "string" ? request.memoryKey : "global").slice(0, MAX_MEMORY_KEY_LENGTH);
+  const memoryKey = (typeof request.memoryKey === "string" ? request.memoryKey : "global").trim().slice(0, MAX_MEMORY_KEY_LENGTH);
+  if (!/^[A-Za-z0-9._:-]+$/.test(memoryKey)) throw new Error("memoryKey contains unsupported characters");
   const memory = await loadMemory(env, memoryKey);
   const previous = memory ? `\nPrevious exchange:\nUser: ${memory.user}\nAssistant: ${memory.assistant}\n`.slice(-MAX_MEMORY_CONTEXT_LENGTH) : "";
   const result = await complete(request.systemPrompt ?? DEFAULT_SYSTEM_PROMPT, `${previous}\nCurrent request:\n${request.prompt}`, env);
@@ -269,7 +282,9 @@ async function mcp(request: Request, env: Env) {
   return json({ jsonrpc: "2.0", id, error: { code: -32601, message: "Method not found" } }, 404, origin);
 }
 
-function isClientError(message: string): boolean { return message === "Request body must be valid JSON" || message === "prompt is required" || message.startsWith("prompt exceeds"); }
+function isClientError(message: string): boolean {
+  return message === "Request body must be valid JSON" || message === "prompt is required" || message.startsWith("prompt exceeds") || message.startsWith("memoryKey contains unsupported characters");
+}
 function isProviderConfigurationError(message: string): boolean { return message.startsWith("No AI provider is configured.") || message === "Cloudflare Workers AI binding is not configured"; }
 function wellKnownCard(origin: string) { return json({ name: "SohailOS Cloudflare Gateway", description: "SohailOS personal AI operating system gateway with authenticated agent execution and MCP discovery.", url: origin || "https://sohailos-central.mydominetestq.workers.dev", protocol: "MCP", compensation: { paid_by: "buyer", referral_fee: false, listing_fee: false, disclosure_url: "https://sohailos-central.mydominetestq.workers.dev/.well-known/agent-card.json" } }, 200, origin); }
 function wellKnownConsent(origin: string) { return json({ allow_tool_call: true, endpoints: ["https://sohailos-central.mydominetestq.workers.dev/mcp"], listing: "owner-consented deterministic conformance probe only; authenticated agent execution remains protected" }, 200, origin); }
@@ -441,7 +456,6 @@ function dashboardHtml(env: Env): Response {
     </div>
   </div>
   
-  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>`;
 
