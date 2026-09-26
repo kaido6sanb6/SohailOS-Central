@@ -19,15 +19,20 @@ public sealed record MutationExecutionResult(
 public sealed class MutationTransactionContract
 {
     private readonly ApprovalBinding _approval;
+    private readonly ExecutionRequest _request;
     private readonly IApprovalReplayGuard _replayGuard;
     private Func<Task<bool>>? _verifier;
     private MutationTransactionState _state = MutationTransactionState.Created;
 
     public MutationTransactionContract(
         ApprovalBinding approval,
+        ExecutionRequest request,
         IApprovalReplayGuard? replayGuard = null)
     {
+        ArgumentNullException.ThrowIfNull(approval);
+        ArgumentNullException.ThrowIfNull(request);
         _approval = approval;
+        _request = request;
         _replayGuard = replayGuard ?? new InMemoryApprovalReplayGuard();
     }
 
@@ -40,8 +45,11 @@ public sealed class MutationTransactionContract
             string.IsNullOrWhiteSpace(_approval.Digest) ||
             !_approval.MatchesDigest())
             throw new InvalidOperationException("Mutation approval binding is incomplete or has an invalid digest.");
-        if (_approval.ExpiresAt is null || _approval.ExpiresAt <= DateTimeOffset.UtcNow)
+        var now = DateTimeOffset.UtcNow;
+        if (_approval.ExpiresAt is null || _approval.ExpiresAt <= now)
             throw new InvalidOperationException("Mutation approval binding is expired.");
+        if (!_approval.Matches(_request, now))
+            throw new InvalidOperationException("Mutation approval binding does not match the requested operation, target, scope, effect, or request identity.");
         _state = MutationTransactionState.Previewed;
     }
 
