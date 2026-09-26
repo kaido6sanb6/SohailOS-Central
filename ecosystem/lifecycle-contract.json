@@ -1,0 +1,23 @@
+{
+  "schema_version":"1.0","contract_id":"sohailos.canonical.lifecycle",
+  "source_of_truth":"ecosystem/lifecycle-contract.json",
+  "phases":[
+    {"id":"understand","name":"Understand","purpose":"Establish objective, scope, constraints, authority and evidence needs."},
+    {"id":"classify","name":"Classify","purpose":"Classify task, risk, command surface and workflow."},
+    {"id":"discover","name":"Discover","purpose":"Discover existing capabilities, providers, tools, skills and evidence."},
+    {"id":"probe","name":"Probe","purpose":"Verify current capability identity, availability, permissions and freshness."},
+    {"id":"least_privilege","name":"LeastPrivilege","purpose":"Reduce capability and authority to the minimum necessary scope."},
+    {"id":"plan","name":"Plan","purpose":"Construct an evidence-backed bounded plan and acceptance criteria."},
+    {"id":"preview","name":"Preview","purpose":"Show consequential effects before mutation where applicable."},
+    {"id":"approve","name":"Approve","purpose":"Bind explicit approval to principal, operation, target, scope, effect, expiry, nonce and digest."},
+    {"id":"execute","name":"Execute","purpose":"Execute only the approved, currently valid operation."},
+    {"id":"reconcile","name":"Reconcile","purpose":"Compare expected and observed state and preserve conflicts or unknowns."},
+    {"id":"verify","name":"Verify","purpose":"Collect independent evidence that execution occurred and matches intended effect."},
+    {"id":"validate","name":"Validate","purpose":"Check outcome against requirements, scope, security and privacy."},
+    {"id":"deliver","name":"Deliver","purpose":"Return only evidence-supported results and explicit uncertainty."},
+    {"id":"feedback","name":"Feedback/Learning","purpose":"Capture scoped feedback without converting inference into authority."}
+  ],
+  "transition_rules":{"monotonic":true,"unknown_outcome":"reconcile","stale_or_conflicted_capability":"probe","mutation_without_valid_approval":"block","verification_failure":"reconcile","validation_failure":"block_delivery","feedback_is_non_authoritative":true},
+  "authority_model":["System","Developer","Security","Tool","User","ExternalData"],
+  "invariants":["Command != Capability","Capability != Authorization","Authorization != Execution","Execution != Verification","Verification != Validation","Inference != Authorization","Preference != Policy"]
+}
