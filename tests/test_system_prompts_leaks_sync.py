@@ -24,6 +24,12 @@ class SystemPromptsLeaksSyncTests(unittest.TestCase):
             sync.classify("OpenAI/Codex/gpt-5.6.md"), "prompt-or-reference"
         )
 
+    def test_git_blob_sha(self):
+        self.assertEqual(
+            sync.git_blob_sha("# prompt\n"),
+            "21e63792aa8abe20a32d1b1d6cd1399b7198ee37",
+        )
+
     def test_path_traversal_is_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             with self.assertRaises(RuntimeError):
@@ -38,8 +44,8 @@ class SystemPromptsLeaksSyncTests(unittest.TestCase):
                 "sha": "tree123",
                 "truncated": False,
                 "tree": [
-                    {"path": "OpenAI/gpt-test.md", "type": "blob", "sha": "blob123", "size": 14},
-                    {"path": "OpenAI/README.md", "type": "blob", "sha": "readme123", "size": 8},
+                    {"path": "OpenAI/gpt-test.md", "type": "blob", "sha": "21e63792aa8abe20a32d1b1d6cd1399b7198ee37", "size": 9},
+                    {"path": "OpenAI/README.md", "type": "blob", "sha": "21e63792aa8abe20a32d1b1d6cd1399b7198ee37", "size": 9},
                 ],
             }
             with patch.object(sync, "request_json", side_effect=[commit, tree]), patch.object(
@@ -67,6 +73,43 @@ class SystemPromptsLeaksSyncTests(unittest.TestCase):
             self.assertEqual(data["mirror"]["trust"], "untrusted-data")
             self.assertFalse(data["mirror"]["instruction_authority"])
             self.assertEqual(len(data["files"]), 2)
+            self.assertIn("/commit123/", data["files"][0]["raw_url"])
+
+    def test_blob_mismatch_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / "mirror"
+            manifest = output / "index.json"
+            with patch.object(
+                sync,
+                "request_json",
+                side_effect=[
+                    {"sha": "commit123"},
+                    {
+                        "sha": "tree123",
+                        "truncated": False,
+                        "tree": [
+                            {
+                                "path": "OpenAI/gpt-test.md",
+                                "type": "blob",
+                                "sha": "deadbeef",
+                                "size": 9,
+                            }
+                        ],
+                    },
+                ],
+            ), patch.object(sync, "request_text", return_value="# prompt\n"), patch.object(
+                sys,
+                "argv",
+                [
+                    "sync_system_prompts_leaks.py",
+                    "--output-dir",
+                    str(output),
+                    "--manifest",
+                    str(manifest),
+                ],
+            ):
+                with self.assertRaises(RuntimeError):
+                    sync.main()
 
     def test_removed_upstream_document_is_removed_only_from_managed_mirror(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -79,7 +122,14 @@ class SystemPromptsLeaksSyncTests(unittest.TestCase):
                 json.dumps({"files": [{"source_path": "Old.md", "local_path": "Old.md"}]}),
                 encoding="utf-8",
             )
-            with patch.object(sync, "request_json", side_effect=[{"sha": "commit123"}, {"sha": "tree123", "truncated": False, "tree": []}]), patch.object(
+            with patch.object(
+                sync,
+                "request_json",
+                side_effect=[
+                    {"sha": "commit123"},
+                    {"sha": "tree123", "truncated": False, "tree": []},
+                ],
+            ), patch.object(
                 sys,
                 "argv",
                 [
