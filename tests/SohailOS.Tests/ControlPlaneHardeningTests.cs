@@ -91,6 +91,66 @@ public sealed class ControlPlaneHardeningTests
     }
 
     [Fact]
+    public void TaskGraph_RejectsUnknownDependenciesWhenScheduling()
+    {
+        var graph = new TaskGraph();
+        graph.Add(new TaskNode("a", "A", ["missing"], ActionClass.Read, new RetryPolicy(true)));
+
+        Assert.Throws<InvalidOperationException>(() => graph.GetReadyNodes());
+    }
+
+    [Fact]
+    public void TaskGraph_PersistsReadyToRunningStatus()
+    {
+        var graph = new TaskGraph();
+        graph.Add(new TaskNode("a", "A", [], ActionClass.Read, new RetryPolicy(true)));
+
+        var ready = Assert.Single(graph.GetReadyNodes());
+        Assert.Equal(TaskNodeStatus.Ready, ready.Status);
+
+        graph.SetStatus("a", TaskNodeStatus.Ready);
+        graph.SetStatus("a", TaskNodeStatus.Running);
+
+        Assert.Equal(TaskNodeStatus.Running, Assert.Single(graph.Nodes).Status);
+    }
+
+    [Fact]
+    public async Task MutationTransaction_MarksFailedWhenMutationThrows()
+    {
+        var approval = ApprovalBinding.Create(
+            "owner", "op", "target", "scope", "effect",
+            DateTimeOffset.UtcNow.AddHours(1),
+            Guid.NewGuid().ToString("N"));
+
+        var tx = new MutationTransactionContract(approval);
+        tx.Preview();
+        tx.ScheduleIndependentVerifier(() => Task.FromResult(true));
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            tx.ExecuteAsync(() => throw new InvalidOperationException("boom")));
+
+        Assert.Equal(MutationTransactionState.Failed, tx.State);
+    }
+
+    [Fact]
+    public void EvidencePipeline_DoesNotVerifyMutationsFromTheirOwnToolOutput()
+    {
+        var request = new ExecutionRequest(ActionClass.Mutate, "write", "target", "scope", "change");
+        var evidence = new EvidenceItem("ev:1", EvidenceKind.ToolResult, "write", "ok", DateTimeOffset.UtcNow);
+        var result = new ToolExecutionResult(
+            new ToolResult("write", true, "ok"),
+            true,
+            false,
+            new PolicyDecision(true, "APPROVED", "ok"),
+            evidence);
+
+        var verification = new BasicExecutionVerifier().Verify(request, result, [evidence]);
+
+        Assert.Equal(VerificationStatus.Unknown, verification.Status);
+        Assert.Equal("EXTERNAL_OUTCOME_VERIFICATION_REQUIRED", verification.Code);
+    }
+
+    [Fact]
     public void EvidencePipeline_DistinguishesExecutionFromValidation()
     {
         var request = new ExecutionRequest(ActionClass.Read, "read", "target", "scope", "observe");
