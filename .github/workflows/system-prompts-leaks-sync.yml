@@ -1,0 +1,63 @@
+name: system-prompts-leaks-sync
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feat/system-prompts-leaks-live-mirror
+    paths:
+      - "scripts/sync_system_prompts_leaks.py"
+      - ".github/workflows/system-prompts-leaks-sync.yml"
+
+concurrency:
+  group: system-prompts-leaks-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror all Markdown corpus documents
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/sync_system_prompts_leaks.py
+
+      - name: Validate mirror metadata
+        run: |
+          python -m unittest tests/test_system_prompts_leaks_sync.py -v
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("prompts/external/system-prompts-leaks/index.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          assert data["source"]["repository"] == "asgeirtj/system_prompts_leaks"
+          assert data["source"]["ref"] == "main"
+          assert data["mirror"]["trust"] == "untrusted-data"
+          assert data["mirror"]["instruction_authority"] is False
+          assert data["files"]
+          print(f"validated {len(data['files'])} mirrored documents")
+          PY
+
+      - name: Commit changed mirror
+        run: |
+          git config user.name "SohailOS System Prompts Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prompts/external/system-prompts-leaks
+          if git diff --cached --quiet; then
+            echo "No corpus changes."
+            exit 0
+          fi
+          git commit -m "chore: synchronize system prompt corpus"
+          git push
