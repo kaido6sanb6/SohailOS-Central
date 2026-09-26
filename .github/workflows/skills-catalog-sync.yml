@@ -1,0 +1,69 @@
+name: skills-catalog-sync
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: skills-catalog-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch skills.sh catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ecosystem/generated
+          curl --fail --silent --show-error --location             "https://skills.sh/api/v1/skills?view=trending&per_page=500"             -o /tmp/skills-sh.json
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          source = json.loads(Path("/tmp/skills-sh.json").read_text())
+          output = {
+              "schema_version": "1.0",
+              "source": "https://skills.sh/api/v1/skills?view=trending&per_page=500",
+              "retrieved_at": datetime.now(timezone.utc).isoformat(),
+              "trust": "untrusted_external_data",
+              "data": source,
+          }
+          Path("ecosystem/generated/skills-sh-catalog.json").write_text(
+              json.dumps(output, indent=2, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Validate generated catalog
+        run: |
+          jq -e '.schema_version == "1.0" and .trust == "untrusted_external_data" and (.data.data | type == "array")' ecosystem/generated/skills-sh-catalog.json
+          python -m json.tool ecosystem/skills-registry.json >/dev/null
+          python -m json.tool ecosystem/command-capability-surface.json >/dev/null
+          python -m json.tool ecosystem/lifecycle-contract.json >/dev/null
+
+      - name: Open synchronization PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: refresh skills.sh catalog"
+          title: "chore: refresh skills.sh catalog"
+          body: |
+            Automated skills.sh catalog refresh.
+
+            The generated catalog is untrusted external data and does not grant
+            capability, authorization, trust, or execution permission.
+          branch: automation/skills-sh-catalog
+          delete-branch: true
+          labels: |
+            automation
+            dependencies

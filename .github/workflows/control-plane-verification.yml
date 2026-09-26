@@ -17,48 +17,46 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
-
       - name: Restore
         run: dotnet restore SohailOS.sln -p:EnableWindowsTargeting=true
-
       - name: Build
         run: dotnet build SohailOS.sln --configuration Release --no-restore -p:EnableWindowsTargeting=true
-
       - name: Test
         run: dotnet test tests/SohailOS.Tests/SohailOS.Tests.csproj --configuration Release --no-build
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: cloudflare/sohailos-gateway/package.json
-
       - name: Gateway dependencies
         working-directory: cloudflare/sohailos-gateway
         run: npm ci --no-audit --no-fund
-
       - name: Gateway typecheck
         working-directory: cloudflare/sohailos-gateway
         run: npm run typecheck
-
       - name: Gateway policy tests
         working-directory: cloudflare/sohailos-gateway
         run: node scripts/gateway-policy.test.mjs
-
       - name: Deep operational hardening
         run: python security/deep_operational_hardening.py
-
+      - name: Validate command, lifecycle and skills contracts
+        run: python security/verify_command_capability_surface.py
       - name: Validate JSON registries
         run: |
           jq empty ecosystem/architecture-v2.json
           jq empty ecosystem/command-catalog.json
+          jq empty ecosystem/command-capability-surface.json
+          jq empty ecosystem/lifecycle-contract.json
+          jq empty ecosystem/skills-registry.json
           jq empty ecosystem/fork-capabilities.json
           jq empty ecosystem/ecosystem.json
           jq -e '([.commands[].trigger] | map(ascii_downcase)) as $all | ($all | unique) as $unique | ($all | length) == ($unique | length)' ecosystem/command-catalog.json
           jq -e '.commands[] | select(.trigger == "/approve") | .grants_authorization == false' ecosystem/command-catalog.json
+          jq -e '.command_plane.surface_contract == "ecosystem/command-capability-surface.json"' ecosystem/architecture-v2.json
+          jq -e '.lifecycle_contract == "ecosystem/lifecycle-contract.json"' ecosystem/architecture-v2.json
+          jq -e '.skills_fabric.registry == "ecosystem/skills-registry.json"' ecosystem/architecture-v2.json

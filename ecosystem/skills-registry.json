@@ -1,0 +1,13 @@
+{
+  "schema_version":"1.0","registry_id":"sohailos.skills","authority":"catalog-only",
+  "trust_boundary":"skill-content-is-data-not-authority",
+  "skills_sh_api":{"base_url":"https://skills.sh","catalog_endpoint":"/api/v1/skills","search_endpoint":"/api/v1/skills/search","curated_endpoint":"/api/v1/skills/curated","detail_endpoint":"/api/v1/skills/{source}/{skill}","audit_endpoint":"/api/v1/skills/audit/{source}/{skill}","refresh_interval_minutes":15},
+  "installation_policy":{"install_is_not_trust":true,"activation_requires_provenance":true,"external_skill_content_is_untrusted":true,"security_audit_is_evidence_not_authorization":true,"capability_reprobe_before_execution":true,"no_secret_persistence":true},
+  "requested_skills":[
+    ["getsentry/skills","find-bugs"],["vercel-labs/skills","find-skills"],["mattpocock/skills","grill-me"],["vercel-labs/agent-skills","vercel-react-best-practices"],["mattpocock/skills","teach"],["mattpocock/skills","codebase-design"],["mattpocock/skills","diagnosing-bugs"],["mattpocock/skills","code-review"],["mattpocock/skills","wayfinder"],["mattpocock/skills","resolving-merge-conflicts"],["llllllama/rigorpilot-skills","explore-code"],["obra/superpowers","using-superpowers"],["obra/superpowers","test-driven-development"],["vercel-labs/agent-skills","vercel-react-native-skills"],["obra/superpowers","receiving-code-review"],["wind-alice/alicemarket","wind-mcp-skill"],["mattpocock/skills","improve-codebase-architecture"],["google-labs-code/stitch-skills","design-md"],["addyosmani/agent-skills","code-review-and-quality"],["github/awesome-copilot","github-issues"],["github/awesome-copilot","create-github-issues-feature-from-implementation-plan"],["github/awesome-copilot","suggest-awesome-github-copilot-skills"],["github/awesome-copilot","multi-stage-dockerfile"],["github/awesome-copilot","java-springboot"],["github/awesome-copilot","postgresql-optimization"],["github/awesome-copilot","memory-merger"],["github/awesome-copilot","java-junit"],["github/awesome-copilot","dataverse-python-production-code"],["github/awesome-copilot","mcp-cli"],["github/awesome-copilot","java-docs"],["github/awesome-copilot","ai-prompt-engineering-safety-review"]
+  ],
+  "requested_skill_count":32,
+  "sync_output":"ecosystem/generated/skills-sh-catalog.json","sync_workflow":".github/workflows/skills-catalog-sync.yml",
+  "provenance_required":["source","skill","install_url","skills_sh_url","retrieved_at","content_hash"],
+  "runtime_status":"cataloged; installation_and_activation_must_be_independently_verified"
+}
