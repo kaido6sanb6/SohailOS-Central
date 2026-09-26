@@ -7,6 +7,7 @@ contents as executable instructions.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import urllib.request
@@ -36,6 +37,12 @@ def request_text(url: str) -> str:
     )
     with urllib.request.urlopen(request, timeout=60) as response:
         return response.read().decode("utf-8")
+
+
+def git_blob_sha(content: str) -> str:
+    payload = content.encode("utf-8")
+    header = f"blob {len(payload)}".encode("ascii") + b"\0"
+    return hashlib.sha1(header + payload).hexdigest()
 
 
 def classify(path: str) -> str:
@@ -114,10 +121,18 @@ def main() -> int:
         destination.parent.mkdir(parents=True, exist_ok=True)
 
         raw_url = (
-            f"https://raw.githubusercontent.com/{repo}/{quote(ref, safe='')}/"
+            f"https://raw.githubusercontent.com/{repo}/{quote(commit_sha, safe='')}/"
             f"{quote(source_path, safe='/')}"
         )
         content = request_text(raw_url)
+        expected_sha = item.get("sha")
+        actual_sha = git_blob_sha(content)
+        if expected_sha and actual_sha != expected_sha:
+            raise RuntimeError(
+                f"Git blob verification failed for {source_path}: "
+                f"expected {expected_sha}, got {actual_sha}"
+            )
+
         with destination.open("w", encoding="utf-8", newline="") as handle:
             handle.write(content)
         current[source_path] = source_path
@@ -152,7 +167,7 @@ def main() -> int:
                     f"{quote(source_path, safe='/')}"
                 ),
                 "raw_url": (
-                    f"https://raw.githubusercontent.com/{repo}/{quote(ref, safe='')}/"
+                    f"https://raw.githubusercontent.com/{repo}/{quote(commit_sha, safe='')}/"
                     f"{quote(source_path, safe='/')}"
                 ),
                 "blob_sha": item.get("sha"),
