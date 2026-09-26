@@ -40,7 +40,8 @@ public sealed class ControlPlaneHardeningTests
     public async Task MutationTransaction_BlocksReplayAndUnverifiedCompletion()
     {
         var approval = ApprovalBinding.Create("owner", "op", "target", "scope", "effect", DateTimeOffset.UtcNow.AddHours(1), Guid.NewGuid().ToString("N"));
-        var tx = new MutationTransactionContract(approval);
+        var request = new ExecutionRequest(ActionClass.Mutate, "op", "target", "scope", "effect");
+        var tx = new MutationTransactionContract(approval, request);
         await Assert.ThrowsAsync<InvalidOperationException>(() => tx.ExecuteAsync(() => Task.CompletedTask));
         tx.Preview();
         tx.ScheduleIndependentVerifier(() => Task.FromResult(true));
@@ -122,7 +123,8 @@ public sealed class ControlPlaneHardeningTests
             DateTimeOffset.UtcNow.AddHours(1),
             Guid.NewGuid().ToString("N"));
 
-        var tx = new MutationTransactionContract(approval);
+        var request = new ExecutionRequest(ActionClass.Mutate, "op", "target", "scope", "effect");
+        var tx = new MutationTransactionContract(approval, request);
         tx.Preview();
         tx.ScheduleIndependentVerifier(() => Task.FromResult(true));
 
@@ -130,6 +132,21 @@ public sealed class ControlPlaneHardeningTests
             tx.ExecuteAsync(() => throw new InvalidOperationException("boom")));
 
         Assert.Equal(MutationTransactionState.Failed, tx.State);
+    }
+
+    [Fact]
+    public void MutationTransaction_RejectsApprovalScopeMismatch()
+    {
+        var approval = ApprovalBinding.Create(
+            "owner", "op", "target", "scope-a", "effect",
+            DateTimeOffset.UtcNow.AddHours(1),
+            Guid.NewGuid().ToString("N"));
+
+        var request = new ExecutionRequest(ActionClass.Mutate, "op", "target", "scope-b", "effect");
+        var tx = new MutationTransactionContract(approval, request);
+
+        Assert.Throws<InvalidOperationException>(() => tx.Preview());
+        Assert.Equal(MutationTransactionState.Created, tx.State);
     }
 
     [Fact]
