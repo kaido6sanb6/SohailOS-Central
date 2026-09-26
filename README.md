@@ -104,17 +104,20 @@ npx wrangler versions upload
 
 can discover the Worker without requiring a nested working directory.
 
-The nested Worker configuration remains available for local development.
+The important distinction is that `wrangler versions upload` creates an uploaded Worker version but does not make it serve production traffic. Production must use `wrangler deploy`, or explicitly promote an uploaded version with `wrangler versions deploy`. citeturn0search0turn0search1
+
+The nested Worker configuration remains available for local development. The repository now provides a guarded, manual GitHub Actions production deployment workflow at `.github/workflows/cloudflare-production-deploy.yml`. It uses the pinned local Wrangler, the root config, the `production` environment, and the secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. It is intentionally manual rather than an automatic production mutation.
 
 Useful checks:
 
 ~~~text
-cd cloudflare/sohailos-gateway
 npm install
-npm run typecheck
-npx wrangler check
-npx wrangler versions upload --dry-run
+npm run cloudflare:check
+npm run cloudflare:dry-run
+npm run cloudflare:deploy
 ~~~
+
+The first three commands are non-production validation/upload checks; `npm run cloudflare:deploy` publishes the Worker to production and therefore must only run with the intended Cloudflare credentials and production approval.
 
 Provider credentials must be configured as platform secrets or variables, never committed to source control.
 

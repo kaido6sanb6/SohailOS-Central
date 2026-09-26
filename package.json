@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "cloudflare:check": "wrangler check",
-    "cloudflare:dry-run": "wrangler versions upload --dry-run"
+    "cloudflare:dry-run": "wrangler versions upload --dry-run",
+    "cloudflare:deploy": "wrangler deploy --config wrangler.jsonc"
   },
   "devDependencies": {
     "wrangler": "4.141.0"
