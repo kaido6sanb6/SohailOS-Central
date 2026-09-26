@@ -49,6 +49,34 @@ public sealed class AgentRuntimeMemorySecurityTests
     }
 
     [Fact]
+    public async Task Runtime_DoesNotClaimMutationCompletionWithoutIndependentVerification()
+    {
+        var registry = new ToolRegistry();
+        registry.Register(new StubDefinitionTool("write", ToolPermission.Write));
+
+        var runtime = new AgentRuntime(
+            new MutatingThenFinalProvider(),
+            registry,
+            new SuccessfulMutationExecutor());
+
+        var approval = ApprovalBinding.Create(
+            "test-user",
+            "write",
+            "repo/a",
+            "file:x",
+            "change x",
+            DateTimeOffset.UtcNow.AddMinutes(5),
+            Guid.NewGuid().ToString("N"));
+
+        var result = await runtime.RunAsync(
+            "system",
+            "change x",
+            approval: approval);
+
+        Assert.Contains("not reported as complete", result, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task DurableMemoryTransaction_RejectsInvalidBinding()
     {
         var memory = new RecordingMemoryStore();
@@ -67,6 +95,68 @@ public sealed class AgentRuntimeMemorySecurityTests
             transaction.PersistAsync(memory, "value"));
 
         Assert.Empty(memory.Saves);
+    }
+
+    private sealed class MutatingThenFinalProvider : IAiCompletionProvider
+    {
+        private int _calls;
+        public string Name => "test";
+
+        public Task<AiCompletion> CompleteAsync(
+            string systemPrompt,
+            string userPrompt,
+            IReadOnlyCollection<ToolDefinition> tools,
+            CancellationToken cancellationToken = default)
+        {
+            if (Interlocked.Increment(ref _calls) == 1)
+            {
+                return Task.FromResult(new AiCompletion(
+                    "tool call",
+                    [new ToolCall(
+                        "write",
+                        new Dictionary<string, object?>(),
+                        "repo/a",
+                        "file:x",
+                        "change x")]));
+            }
+
+            return Task.FromResult(new AiCompletion("done", Array.Empty<ToolCall>()));
+        }
+    }
+
+    private sealed class SuccessfulMutationExecutor : IToolExecutor
+    {
+        public Task<ToolExecutionResult> ExecuteAsync(
+            ToolCall call,
+            bool confirmed = false,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new ToolExecutionResult(
+                new ToolResult(call.Name, true, "changed"),
+                true,
+                false,
+                new PolicyDecision(true, "APPROVED", "ok"),
+                new EvidenceItem(
+                    "ev:mutation",
+                    EvidenceKind.ToolResult,
+                    call.Name,
+                    "changed",
+                    DateTimeOffset.UtcNow)));
+
+        public Task<ToolExecutionResult> ExecuteAsync(
+            ToolCall call,
+            ApprovalBinding approval,
+            CancellationToken cancellationToken = default) =>
+            ExecuteAsync(call, false, cancellationToken);
+    }
+
+    private sealed class StubDefinitionTool(string name, ToolPermission permission) : ITool
+    {
+        public ToolDefinition Definition { get; } = new(name, "test", permission);
+
+        public Task<ToolResult> ExecuteAsync(
+            IReadOnlyDictionary<string, object?> arguments,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new ToolResult(Definition.Name, true, "ok"));
     }
 
     private sealed class FinalProvider : IAiCompletionProvider
