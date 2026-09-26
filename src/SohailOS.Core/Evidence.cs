@@ -57,10 +57,28 @@ public sealed class BasicExecutionVerifier : IExecutionVerifier
             return new(VerificationStatus.Failed, "NOT_EXECUTED", "Execution did not occur.", []);
 
         var matching = evidence.Where(e => e.ParentEvidenceId == result.Evidence?.Id).Select(e => e.Id).ToArray();
-        if (result.Result.Success && result.Evidence is not null)
-            return new(VerificationStatus.Verified, "OBSERVED_TOOL_RESULT", "Tool success was independently observed as evidence.", matching.Append(result.Evidence.Id).ToArray());
 
-        return new(VerificationStatus.Failed, "RESULT_NOT_VERIFIED", "Tool output is not sufficient evidence of the requested outcome.", matching);
+        if (request.Action is ActionClass.Write or ActionClass.Mutate or ActionClass.Irreversible)
+            return new(
+                VerificationStatus.Unknown,
+                "EXTERNAL_OUTCOME_VERIFICATION_REQUIRED",
+                "A mutating tool's own result is not independent evidence of the requested external state change.",
+                matching.Append(result.Evidence?.Id ?? string.Empty)
+                       .Where(id => !string.IsNullOrWhiteSpace(id))
+                       .ToArray());
+
+        if (result.Result.Success && result.Evidence is not null)
+            return new(
+                VerificationStatus.Verified,
+                "OBSERVED_TOOL_RESULT",
+                "Read-only tool success was observed as evidence.",
+                matching.Append(result.Evidence.Id).ToArray());
+
+        return new(
+            VerificationStatus.Failed,
+            "RESULT_NOT_VERIFIED",
+            "Tool output is not sufficient evidence of the requested outcome.",
+            matching);
     }
 }
 

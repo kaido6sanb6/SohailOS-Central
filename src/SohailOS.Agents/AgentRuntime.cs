@@ -96,6 +96,7 @@ public sealed class AgentRuntime
             }
 
             var results = new List<string>();
+            var blockedMutationOutcome = false;
             foreach (var call in completion.ToolCalls)
             {
                 var result = approval is null
@@ -132,6 +133,10 @@ public sealed class AgentRuntime
                 if (validation.Status == ValidationStatus.Validated)
                     _telemetry?.Record(new(requestId, null, ExecutionEventType.Validated, DateTimeOffset.UtcNow, validation.Code, validation.Reason, new Dictionary<string, object?>()));
 
+                if (action is ActionClass.Write or ActionClass.Mutate or ActionClass.Irreversible &&
+                    validation.Status != ValidationStatus.Validated)
+                    blockedMutationOutcome = true;
+
                 results.Add(JsonSerializer.Serialize(new
                 {
                     tool = call.Name,
@@ -143,6 +148,17 @@ public sealed class AgentRuntime
                     verification = verification.Status.ToString(),
                     validation = validation.Status.ToString()
                 }));
+            }
+
+            if (blockedMutationOutcome)
+            {
+                _telemetry?.Record(new(
+                    requestId, null, ExecutionEventType.Blocked, DateTimeOffset.UtcNow,
+                    "MUTATION_OUTCOME_UNVERIFIED",
+                    "A mutating tool executed or attempted to execute, but independent verification/validation did not establish the requested external outcome.",
+                    new Dictionary<string, object?>()));
+
+                return "The requested mutation was not reported as complete because independent verification and validation evidence are missing or failed.";
             }
 
             prompt = $"{prompt}\n\nTool results from the previous step:\n{string.Join("\n", results)}\n\nContinue the task. Execution success is not equivalent to verified outcome; do not claim a requested side effect is complete unless verification and validation evidence support it.";
