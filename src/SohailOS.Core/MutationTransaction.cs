@@ -65,9 +65,17 @@ public sealed class MutationTransactionContract
             throw new InvalidOperationException("Mutation approval nonce has already been consumed or is invalid.");
         }
 
-        await mutation();
-        _state = MutationTransactionState.Executed;
-        return new(true, _approval.Digest, VerificationStatus.Unknown, "EXECUTED_NOT_VERIFIED");
+        try
+        {
+            await mutation();
+            _state = MutationTransactionState.Executed;
+            return new(true, _approval.Digest, VerificationStatus.Unknown, "EXECUTED_NOT_VERIFIED");
+        }
+        catch
+        {
+            _state = MutationTransactionState.Failed;
+            throw;
+        }
     }
 
     public async Task<VerificationStatus> VerifyAsync()
